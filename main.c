@@ -3,6 +3,7 @@
 
 
 //Assinatura das Funções
+void telaPrincipal(void);
 void telaSobre(void);
 void telaEquipe(void);
 
@@ -12,10 +13,25 @@ int main(void){
 
     SetConsoleOutputCP(65001); // UTF-8
     SetConsoleCP(65001);
-
+    telaPrincipal();
     telaSobre();
     telaEquipe();
     return 0;
+}
+
+void telaPrincipal(void) {
+    printf("\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||                          ~ ~ ~ SIG CIRCUS ~ ~ ~                          ||\n");
+    printf("||                                                                          ||\n");
+    printf("||                           -- Menu Principal --                           ||\n");
+    printf("||                                                                          ||\n");
+    printf("||             1. Sobre o Projeto                                           ||\n");
+    printf("||             2. Equipe de Desenvolvimento                                 ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("\nDigite sua opção: ");
 }
 
 void telaSobre(void){
