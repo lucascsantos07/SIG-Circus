@@ -1,8 +1,11 @@
 #include <stdio.h>
+#include <stdlib.h> 
 #include <windows.h>
 
 
 //Assinatura das Funções
+void limparTela(void);
+void telaPrincipal(void);
 void telaSobre(void);
 void telaEquipe(void);
 void telaFinalizacao(void);
@@ -11,16 +14,79 @@ void telaFinalizacao(void);
 //Programa Principal
 int main(void){
 
-    SetConsoleOutputCP(65001); // UTF-8
-    SetConsoleCP(65001);
+    #ifdef _WIN32
+        SetConsoleOutputCP(65001); // UTF-8
+        SetConsoleCP(65001);
+    #endif
 
-    telaSobre();
-    telaEquipe();
-    telaFinalizacao();
+    char opcao;
+
+    do{
+        telaPrincipal();
+        scanf(" %c", &opcao);
+        getchar(); //Bloqueia o uso do programa até digitar alguma coisa e pressionar enter
+
+        if (opcao == '1') {
+            telaSobre();
+        } else if (opcao == '2') {
+            telaEquipe();
+        } else if (opcao == '0') {
+            telaFinalizacao();
+        } else {
+            printf("\nOpção inválida! Tente novamente.\n");
+        }
+
+        if (opcao != '0') {
+            printf("\nPressione ENTER para continuar...");
+            getchar(); 
+            //Depois de selecionar uma opção mostra essa mensagem
+        }
+    
+    } while (opcao != '0');
+
+
     return 0;
 }
 
+void limparTela(void) {
+    // Peguei as ideias com o Gemini 2.5 pro
+    #ifdef _WIN32
+        // Se o sistema for Windows, executa o comando "cls"
+        system("cls");
+    #else
+        // Para outros sistemas (Linux, macOS), executa o comando "clear"
+        system("clear");
+    #endif
+}
+
+void telaPrincipal(void) {
+    limparTela();
+    printf("\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||             Universidade Federal do Rio Grande do Norte                  ||\n");
+    printf("||                 Centro de Ensino Superior do Seridó                      ||\n");
+    printf("||               Departamento de Computação e Tecnologia                    ||\n");
+    printf("||                  Disciplina DCT1106 -- Programação                       ||\n");
+    printf("||                         Projeto SIG-Circus                               ||\n");
+    printf("||             Developed by @ViniciusL07 -- since Aug, 2025                 ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||               ~ ~ ~ Sistema de Gestão Para Um Circo ~ ~ ~                ||\n");
+    printf("||                                                                          ||\n");
+    printf("||                           -- Menu Principal --                           ||\n");
+    printf("||                                                                          ||\n");
+    printf("||             1. Sobre o Projeto                                           ||\n");
+    printf("||             2. Equipe de Desenvolvimento                                 ||\n");
+    printf("||             0. Sair                                                      ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("\nDigite sua opção: ");
+}
+
 void telaSobre(void){
+    limparTela();
     printf("\n");
     printf("==============================================================================\n");
     printf("||                                                                          ||\n");
@@ -49,6 +115,7 @@ void telaSobre(void){
 }
 
 void telaEquipe(void){
+    limparTela();
     printf("\n");
     printf("==============================================================================\n");
     printf("||                                                                          ||\n");
@@ -80,6 +147,7 @@ void telaEquipe(void){
 }
 
 void telaFinalizacao(void) {
+    limparTela();
     printf("\n");
     printf("==============================================================================\n");
     printf("||                                                                          ||\n");
