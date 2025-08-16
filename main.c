@@ -1,8 +1,10 @@
 #include <stdio.h>
+#include <stdlib.h> 
 #include <windows.h>
 
 
 //Assinatura das Funções
+void limparTela(void);
 void telaPrincipal(void);
 void telaSobre(void);
 void telaEquipe(void);
@@ -12,8 +14,10 @@ void telaFinalizacao(void);
 //Programa Principal
 int main(void){
 
-    SetConsoleOutputCP(65001); // UTF-8
-    SetConsoleCP(65001);
+    #ifdef _WIN32
+        SetConsoleOutputCP(65001); // UTF-8
+        SetConsoleCP(65001);
+    #endif
 
     char opcao;
 
@@ -44,7 +48,19 @@ int main(void){
     return 0;
 }
 
+void limparTela(void) {
+    // Peguei as ideias com o Gemini 2.5 pro
+    #ifdef _WIN32
+        // Se o sistema for Windows, executa o comando "cls"
+        system("cls");
+    #else
+        // Para outros sistemas (Linux, macOS), executa o comando "clear"
+        system("clear");
+    #endif
+}
+
 void telaPrincipal(void) {
+    limparTela();
     printf("\n");
     printf("==============================================================================\n");
     printf("||                                                                          ||\n");
@@ -70,6 +86,7 @@ void telaPrincipal(void) {
 }
 
 void telaSobre(void){
+    limparTela();
     printf("\n");
     printf("==============================================================================\n");
     printf("||                                                                          ||\n");
@@ -98,6 +115,7 @@ void telaSobre(void){
 }
 
 void telaEquipe(void){
+    limparTela();
     printf("\n");
     printf("==============================================================================\n");
     printf("||                                                                          ||\n");
@@ -129,6 +147,7 @@ void telaEquipe(void){
 }
 
 void telaFinalizacao(void) {
+    limparTela();
     printf("\n");
     printf("==============================================================================\n");
     printf("||                                                                          ||\n");
