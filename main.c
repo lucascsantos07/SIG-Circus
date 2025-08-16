@@ -3,6 +3,7 @@
 
 
 //Assinatura das Funções
+void telaPrincipal(void);
 void telaSobre(void);
 void telaEquipe(void);
 void telaFinalizacao(void);
@@ -14,10 +15,35 @@ int main(void){
     SetConsoleOutputCP(65001); // UTF-8
     SetConsoleCP(65001);
 
+    telaPrincipal();
     telaSobre();
     telaEquipe();
     telaFinalizacao();
     return 0;
+}
+
+void telaPrincipal(void) {
+    printf("\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||             Universidade Federal do Rio Grande do Norte                  ||\n");
+    printf("||                 Centro de Ensino Superior do Seridó                      ||\n");
+    printf("||               Departamento de Computação e Tecnologia                    ||\n");
+    printf("||                  Disciplina DCT1106 -- Programação                       ||\n");
+    printf("||                         Projeto SIG-Circus                               ||\n");
+    printf("||             Developed by @ViniciusL07 -- since Aug, 2025                 ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||               ~ ~ ~ Sistema de Gestão Para Um Circo ~ ~ ~                ||\n");
+    printf("||                                                                          ||\n");
+    printf("||                           -- Menu Principal --                           ||\n");
+    printf("||                                                                          ||\n");
+    printf("||             1. Sobre o Projeto                                           ||\n");
+    printf("||             2. Equipe de Desenvolvimento                                 ||\n");
+    printf("||             0. Sair                                                      ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
 }
 
 void telaSobre(void){
