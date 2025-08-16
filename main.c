@@ -5,6 +5,7 @@
 //Assinatura das Funções
 void telaSobre(void);
 void telaEquipe(void);
+void telaFinalizacao(void);
 
 
 //Programa Principal
@@ -15,6 +16,7 @@ int main(void){
 
     telaSobre();
     telaEquipe();
+    telaFinalizacao();
     return 0;
 }
 
@@ -72,6 +74,29 @@ void telaEquipe(void){
     printf("||  Curso: Bacharelado em Sistemas de Informação - 2º Período               ||\n");
     printf("||                                                                          ||\n");
     printf("||  Repositório: https://github.com/lucascsantos07/SIG-Circus.git           ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("\n");
+}
+
+void telaFinalizacao(void) {
+    printf("\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||             Universidade Federal do Rio Grande do Norte                  ||\n");
+    printf("||                 Centro de Ensino Superior do Seridó                      ||\n");
+    printf("||               Departamento de Computação e Tecnologia                    ||\n");
+    printf("||                  Disciplina DCT1106 -- Programação                       ||\n");
+    printf("||                         Projeto SIG-Circus                               ||\n");
+    printf("||             Developed by @ViniciusL07 -- since Aug, 2025                 ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||               ~ ~ ~ Sistema de Gestão Para Um Circo ~ ~ ~                ||\n");
+    printf("||                                                                          ||\n");
+    printf("||                  Obrigado por utilizar o SIG-Circus!                     ||\n");
+    printf("||                                                                          ||\n");
+    printf("||                          Até a próxima!                                  ||\n");
     printf("||                                                                          ||\n");
     printf("==============================================================================\n");
     printf("\n");
