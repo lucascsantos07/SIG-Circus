@@ -15,10 +15,32 @@ int main(void){
     SetConsoleOutputCP(65001); // UTF-8
     SetConsoleCP(65001);
 
-    telaPrincipal();
-    telaSobre();
-    telaEquipe();
-    telaFinalizacao();
+    char opcao;
+
+    do{
+        telaPrincipal();
+        scanf(" %c", &opcao);
+        getchar(); //Bloqueia o uso do programa até digitar alguma coisa e pressionar enter
+
+        if (opcao == '1') {
+            telaSobre();
+        } else if (opcao == '2') {
+            telaEquipe();
+        } else if (opcao == '0') {
+            telaFinalizacao();
+        } else {
+            printf("\nOpção inválida! Tente novamente.\n");
+        }
+
+        if (opcao != '0') {
+            printf("\nPressione ENTER para continuar...");
+            getchar(); 
+            //Depois de selecionar uma opção mostra essa mensagem
+        }
+    
+    } while (opcao != '0');
+
+
     return 0;
 }
 
@@ -44,6 +66,7 @@ void telaPrincipal(void) {
     printf("||             0. Sair                                                      ||\n");
     printf("||                                                                          ||\n");
     printf("==============================================================================\n");
+    printf("\nDigite sua opção: ");
 }
 
 void telaSobre(void){
