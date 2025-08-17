@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h> 
-#include <windows.h>
+//#include <windows.h>
 
 
 //Assinatura das Funções
@@ -27,8 +27,18 @@ int main(void){
         getchar(); //Bloqueia o uso do programa até digitar alguma coisa e pressionar enter
 
         if (opcao == '1') {
-            telaSobre();
+            printf("\nO módulo Clientes está em desenvolvimento...\n");
         } else if (opcao == '2') {
+            printf("\nO módulo Funcionários está em desenvolvimento...\n");
+        } else if (opcao == '3') {
+            printf("\nO módulo Agendamentos está em desenvolvimento...\n");
+        } else if (opcao == '4') {
+            printf("\nO módulo Vendas de ingressos está em desenvolvimento...\n");
+        } else if (opcao == '5') {
+            printf("\nO módulo Relatórios está em desenvolvimento...\n");
+        } else if (opcao == '6') {
+            telaSobre();
+        } else if (opcao == '7') {
             telaEquipe();
         } else if (opcao == '0') {
             telaFinalizacao();
@@ -77,8 +87,13 @@ void telaPrincipal(void) {
     printf("||                                                                          ||\n");
     printf("||                           -- Menu Principal --                           ||\n");
     printf("||                                                                          ||\n");
-    printf("||             1. Sobre o Projeto                                           ||\n");
-    printf("||             2. Equipe de Desenvolvimento                                 ||\n");
+    printf("||             1. Clientes                                                  ||\n");
+    printf("||             2. Funcionários                                              ||\n");
+    printf("||             3. Agendamentos                                              ||\n");
+    printf("||             4. Vendas de ingressos                                       ||\n");
+    printf("||             5. Relatórios                                                ||\n");
+    printf("||             6. Sobre o Projeto                                           ||\n");
+    printf("||             7. Equipe de Desenvolvimento                                 ||\n");
     printf("||             0. Sair                                                      ||\n");
     printf("||                                                                          ||\n");
     printf("==============================================================================\n");
