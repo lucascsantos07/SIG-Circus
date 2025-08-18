@@ -1,6 +1,17 @@
+///////////////////////////////////////////////////////////////////////////////
+///             Universidade Federal do Rio Grande do Norte                 ///
+///                 Centro de Ensino Superior do Seridó                     ///
+///               Departamento de Computação e Tecnologia                   ///
+///                  Disciplina DCT1106 -- Programação                      ///
+///               Projeto SIG-Circus Sistema para um Circo                  ///
+///        Developed by @ViniciusL07 e lucascsantos07 -- since Aug, 2025    ///
+///////////////////////////////////////////////////////////////////////////////
+///                                Semana 1                                 ///
+///////////////////////////////////////////////////////////////////////////////
+
+
 #include <stdio.h>
 #include <stdlib.h> 
-//#include <windows.h>
 
 
 //Assinatura das Funções
@@ -13,11 +24,6 @@ void telaFinalizacao(void);
 
 //Programa Principal
 int main(void){
-
-    #ifdef _WIN32
-        SetConsoleOutputCP(65001); // UTF-8
-        SetConsoleCP(65001);
-    #endif
 
     char opcao;
 
