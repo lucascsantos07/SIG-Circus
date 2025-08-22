@@ -20,6 +20,7 @@ void telaPrincipal(void);
 void telaSobre(void);
 void telaEquipe(void);
 void telaFinalizacao(void);
+void menuCliente(void);
 
 
 //Programa Principal
@@ -33,7 +34,15 @@ int main(void){
         getchar(); //Bloqueia o uso do programa até digitar alguma coisa e pressionar enter
 
         if (opcao == '1') {
-            printf("\nO módulo Clientes está em desenvolvimento...\n");
+
+            char opcaoCliente;
+            do{
+
+                menuCliente();
+                scanf(" %c", &opcaoCliente);
+
+            }while(opcaoCliente != '0');
+
         } else if (opcao == '2') {
             printf("\nO módulo Funcionários está em desenvolvimento...\n");
         } else if (opcao == '3') {
@@ -189,4 +198,34 @@ void telaFinalizacao(void) {
     printf("||                                                                          ||\n");
     printf("==============================================================================\n");
     printf("\n");
+}
+
+
+
+void menuCliente(void) {
+    limparTela();
+    printf("\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||             Universidade Federal do Rio Grande do Norte                  ||\n");
+    printf("||                 Centro de Ensino Superior do Seridó                      ||\n");
+    printf("||               Departamento de Computação e Tecnologia                    ||\n");
+    printf("||                  Disciplina DCT1106 -- Programação                       ||\n");
+    printf("||                         Projeto SIG-Circus                               ||\n");
+    printf("||             Developed by @lucascsantos07 -- since Aug, 2025              ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||               ~ ~ ~ Sistema de Gestão Para Um Circo ~ ~ ~                ||\n");
+    printf("||                                                                          ||\n");
+    printf("||                           -- Menu Cliente --                             ||\n");
+    printf("||                                                                          ||\n");
+    printf("||             1. Cadastra-se                                               ||\n");
+    printf("||             2. Listar dados pessoais                                     ||\n");
+    printf("||             3. Editar dados pessoais                                     ||\n");
+    printf("||             4. Excluir conta                                             ||\n");
+    printf("||             0. Voltar Menu Principal                                     ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("\nDigite sua opção: ");
 }
