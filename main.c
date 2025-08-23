@@ -11,7 +11,7 @@
 
 
 #include <stdio.h>
-#include <stdlib.h> 
+#include <stdlib.h>
 
 
 //Assinatura das Funções
@@ -21,7 +21,7 @@ void telaSobre(void);
 void telaEquipe(void);
 void telaFinalizacao(void);
 void menuCliente(void);
-
+void telaCadastroCliente(void);
 
 //Programa Principal
 int main(void){
@@ -31,7 +31,7 @@ int main(void){
     do{
         telaPrincipal();
         scanf(" %c", &opcao);
-        getchar(); //Bloqueia o uso do programa até digitar alguma coisa e pressionar enter
+        getchar();
 
         if (opcao == '1') {
 
@@ -40,6 +40,7 @@ int main(void){
 
                 menuCliente();
                 scanf(" %c", &opcaoCliente);
+                telaCadastroCliente();
 
             }while(opcaoCliente != '0');
 
@@ -228,4 +229,44 @@ void menuCliente(void) {
     printf("||                                                                          ||\n");
     printf("==============================================================================\n");
     printf("\nDigite sua opção: ");
+}
+
+
+
+void telaCadastroCliente(void){
+    limparTela();
+    char nome[50];
+    char dataNascimento[20];
+    char email[100];
+    char cpf[20];
+    char sexo;
+    char cidade[50];
+
+    printf("\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||                      ~ ~ ~ Cadastro de Cliente ~ ~ ~                     ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+
+    getchar();
+    
+    printf("\n   Nome Completo       : ");
+    fgets(nome, sizeof(nome), stdin);
+    printf("   Data de Nascimento  : ");
+    fgets(dataNascimento, sizeof(dataNascimento), stdin);
+    printf("   Email               : ");
+    fgets(email, sizeof(email), stdin);
+    printf("   CPF                 : ");
+    fgets(cpf, sizeof(cpf), stdin);
+    printf("   Sexo (m/f)          : ");
+    scanf(" %c", &sexo);
+    getchar();
+    printf("   Cidade              : ");
+    fgets(cidade, sizeof(cidade), stdin);
+
+    printf("\n==============================================================================\n");
+    printf("||                             Cadastro concluído                           ||\n");
+    printf("==============================================================================\n");
+
 }
