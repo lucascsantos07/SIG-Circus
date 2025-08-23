@@ -22,6 +22,7 @@ void telaEquipe(void);
 void telaFinalizacao(void);
 void menuCliente(void);
 void telaCadastroCliente(void);
+void listarDadosCliente(void);
 
 //Programa Principal
 int main(void){
@@ -41,6 +42,7 @@ int main(void){
                 menuCliente();
                 scanf(" %c", &opcaoCliente);
                 telaCadastroCliente();
+                listarDadosCliente();
 
             }while(opcaoCliente != '0');
 
@@ -248,7 +250,8 @@ void telaCadastroCliente(void){
     printf("||                      ~ ~ ~ Cadastro de Cliente ~ ~ ~                     ||\n");
     printf("||                                                                          ||\n");
     printf("==============================================================================\n");
-
+    printf("||               Developed by @lucascsantos07 -- since Aug, 2025            ||\n"); 
+    printf("==============================================================================\n");
     getchar();
     
     printf("\n   Nome Completo       : ");
@@ -268,5 +271,36 @@ void telaCadastroCliente(void){
     printf("\n==============================================================================\n");
     printf("||                             Cadastro concluído                           ||\n");
     printf("==============================================================================\n");
+    getchar();
 
 }
+
+
+void listarDadosCliente(void){
+    limparTela();
+
+    char cpf[20];
+
+    printf("\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||                        ~ ~ ~ Dados Pessoais ~ ~ ~                        ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("||               Developed by @lucascsantos07 -- since Aug, 2025            ||\n"); 
+    printf("==============================================================================\n");
+
+    printf("\nInforme o seu CPF: ");
+    fgets(cpf, sizeof(cpf), stdin);
+
+    printf("\n==============================================================================\n");
+    printf("\nNome Completo: \n");
+    printf("Data de Nascimento: \n");
+    printf("Email: \n");
+    printf("CPF: \n");
+    printf("Sexo(m/f): \n");
+    printf("Cidade: \n");
+    printf("\n==============================================================================\n");
+    getchar();
+}
+
