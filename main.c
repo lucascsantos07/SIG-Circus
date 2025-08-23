@@ -12,7 +12,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <windows.h>
 
 
 //Assinatura das Funções
@@ -25,12 +24,10 @@ void menuCliente(void);
 void telaCadastroCliente(void);
 void listarDadosCliente(void);
 void editarDadoscliente(void);
+void excluirContacliente(void);
 
 //Programa Principal
 int main(void){
-
-    SetConsoleOutputCP(65001); // UTF-8
-    SetConsoleCP(65001);
 
     char opcao;
 
@@ -49,6 +46,7 @@ int main(void){
                 telaCadastroCliente();
                 listarDadosCliente();
                 editarDadoscliente();
+                excluirContacliente();
 
             }while(opcaoCliente != '0');
 
@@ -352,9 +350,48 @@ void editarDadoscliente(void){
 
     printf("\nDeseja Realmente alterar seus dados pessoais? s - sim ou n - não: ");
     scanf(" %c", &confirma);
+    getchar();
 
     printf("\n==============================================================================\n");
     printf("||                        Dados Atualizados com sucesso                     ||\n");
+    printf("==============================================================================\n");
+    getchar();
+}
+
+
+void excluirContacliente(void){
+    limparTela();
+
+    char cpf_busca[20];
+    char confirma;
+
+    printf("\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||                        ~ ~ ~ Excluir Conta ~ ~ ~                         ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("||               Developed by @lucascsantos07 -- since Aug, 2025            ||\n"); 
+    printf("==============================================================================\n");
+
+    printf("\n   Informe o seu CPF: ");
+    fgets(cpf_busca, sizeof(cpf_busca), stdin);
+
+    printf("\n==============================================================================\n");
+    printf("\nSeus Dados Cadastrados: \n");
+    printf("\nNome Completo: \n");
+    printf("Data de Nascimento: \n");
+    printf("Email: \n");
+    printf("CPF: \n");
+    printf("Sexo(m/f): \n");
+    printf("Cidade: \n");
+    printf("\n==============================================================================\n");
+
+    printf("\nDeseja Realmente Excluir sua Conta do Sistema? s - sim ou n - não: ");
+    scanf(" %c", &confirma);
+
+    printf("\n==============================================================================\n");
+    printf("||                        Cliente Excluido Com Sucesso                      ||\n");
     printf("==============================================================================\n");
     getchar();
 }
