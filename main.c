@@ -25,6 +25,7 @@ void telaCadastroCliente(void);
 void listarDadosCliente(void);
 void editarDadoscliente(void);
 void excluirContacliente(void);
+void menuFuncionarios(void);
 
 //Programa Principal
 int main(void){
@@ -394,4 +395,32 @@ void excluirContacliente(void){
     printf("||                        Cliente Excluido Com Sucesso                      ||\n");
     printf("==============================================================================\n");
     getchar();
+}
+
+void menuFuncionarios(void) {
+    limparTela();
+    printf("\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||             Universidade Federal do Rio Grande do Norte                  ||\n");
+    printf("||                 Centro de Ensino Superior do Seridó                      ||\n");
+    printf("||               Departamento de Computação e Tecnologia                    ||\n");
+    printf("||                  Disciplina DCT1106 -- Programação                       ||\n");
+    printf("||                         Projeto SIG-Circus                               ||\n");
+    printf("||             Developed by @ViniciusL07 -- since Aug, 2025                 ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||               ~ ~ ~ Módulo de Gestão de Funcionários ~ ~ ~               ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||             1. Cadastrar funcionário                                     ||\n");
+    printf("||             2. Listar dados do funcionário                               ||\n");
+    printf("||             3. Editar dados do funcionário                               ||\n");
+    printf("||             4. Excluir funcionário                                       ||\n");
+    printf("||             0. Voltar ao menu principal                                  ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("\nDigite sua opção: ");
 }
