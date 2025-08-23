@@ -12,6 +12,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <windows.h>
 
 
 //Assinatura das Funções
@@ -23,9 +24,13 @@ void telaFinalizacao(void);
 void menuCliente(void);
 void telaCadastroCliente(void);
 void listarDadosCliente(void);
+void editarDadoscliente(void);
 
 //Programa Principal
 int main(void){
+
+    SetConsoleOutputCP(65001); // UTF-8
+    SetConsoleCP(65001);
 
     char opcao;
 
@@ -43,6 +48,7 @@ int main(void){
                 scanf(" %c", &opcaoCliente);
                 telaCadastroCliente();
                 listarDadosCliente();
+                editarDadoscliente();
 
             }while(opcaoCliente != '0');
 
@@ -304,3 +310,51 @@ void listarDadosCliente(void){
     getchar();
 }
 
+
+
+void editarDadoscliente(void){
+    limparTela();
+
+    char cpf_busca[20];
+    char novoNome[50];
+    char novaDataNascimento[20];
+    char novoEmail[100];
+    char novoCpf[20];
+    char novoSexo;
+    char novaCidade[50];
+    char confirma;
+
+    printf("\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||                      ~ ~ ~ Editando seus Dados ~ ~ ~                     ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("||               Developed by @lucascsantos07 -- since Aug, 2025            ||\n"); 
+    printf("==============================================================================\n");
+
+    printf("\n   Informe o seu CPF: ");
+    fgets(cpf_busca, sizeof(cpf_busca), stdin);
+
+    printf("\n   Nome Completo       : ");
+    fgets(novoNome, sizeof(novoNome), stdin);
+    printf("   Data de Nascimento  : ");
+    fgets(novaDataNascimento, sizeof(novaDataNascimento), stdin);
+    printf("   Email               : ");
+    fgets(novoEmail, sizeof(novoEmail), stdin);
+    printf("   CPF                 : ");
+    fgets(novoCpf, sizeof(novoCpf), stdin);
+    printf("   Sexo (m/f)          : ");
+    scanf(" %c", &novoSexo);
+    getchar();
+    printf("   Cidade              : ");
+    fgets(novaCidade, sizeof(novaCidade), stdin);
+
+    printf("\nDeseja Realmente alterar seus dados pessoais? s - sim ou n - não: ");
+    scanf(" %c", &confirma);
+
+    printf("\n==============================================================================\n");
+    printf("||                        Dados Atualizados com sucesso                     ||\n");
+    printf("==============================================================================\n");
+    getchar();
+}
