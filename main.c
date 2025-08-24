@@ -29,6 +29,7 @@ void menuFuncionarios(void);
 void telaCadastroFuncionario(void);
 void listarDadosFuncionario(void);
 void editarDadosFuncionario(void);
+void excluirFuncionario(void);
 
 //Programa Principal
 int main(void){
@@ -63,6 +64,7 @@ int main(void){
                 telaCadastroFuncionario();
                 listarDadosFuncionario();
                 editarDadosFuncionario();
+                excluirFuncionario();
 
             }while(opcaoFuncionario != '0');
         } else if (opcao == '3') {
@@ -577,5 +579,39 @@ void editarDadosFuncionario(void) {
     printf("\n==============================================================================\n");
     printf("||                   Dados do Funcionário Atualizados com Sucesso             ||\n");
     printf("\n==============================================================================\n");
+    getchar();
+}
+
+
+void excluirFuncionario(void) {
+    limparTela();
+    char cpf[20];
+    char confirma;
+
+    printf("\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||                     ~ ~ ~ Excluir Funcionário ~ ~ ~                      ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("||               Developed by @ViniciusL07 -- since Aug, 2025               ||\n");
+    printf("==============================================================================\n");
+
+    printf("\n   Informe o CPF do funcionário: ");
+    fgets(cpf, sizeof(cpf), stdin);
+
+    printf("\nDeseja realmente excluir o funcionário? s - sim ou n - não: ");
+    scanf(" %c", &confirma);
+    getchar();
+
+    if (confirma == 's') {
+        printf("\n==============================================================================\n");
+        printf("||                   Funcionário Excluído com Sucesso                         ||\n");
+        printf("\n==============================================================================\n");
+    } else {
+        printf("\n==============================================================================\n");
+        printf("||                   Exclusão de Funcionário Cancelada                        ||\n");
+        printf("\n==============================================================================\n");
+    }
     getchar();
 }
