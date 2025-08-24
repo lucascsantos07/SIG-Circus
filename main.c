@@ -27,6 +27,7 @@ void editarDadoscliente(void);
 void excluirContacliente(void);
 void menuFuncionarios(void);
 void telaCadastroFuncionario(void);
+void listarDadosFuncionario(void);
 
 //Programa Principal
 int main(void){
@@ -59,6 +60,7 @@ int main(void){
                 menuFuncionarios();
                 scanf(" %c", &opcaoFuncionario);
                 telaCadastroFuncionario();
+                listarDadosFuncionario();
 
             }while(opcaoFuncionario != '0');
         } else if (opcao == '3') {
@@ -484,4 +486,34 @@ void telaCadastroFuncionario(void) {
     printf("\n==============================================================================\n");
     getchar();
 
+}
+
+void listarDadosFuncionario(void) {
+    limparTela();
+    char cpf[20];
+    printf("\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||                      ~ ~ ~ Dados do Funcionário ~ ~ ~                    ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("||               Developed by @ViniciusL07 -- since Aug, 2025               ||\n");
+    printf("==============================================================================\n");
+
+    printf("\nInforme o CPF do funcionário: ");
+    fgets(cpf, sizeof(cpf), stdin);
+
+    printf("\n==============================================================================\n");
+    printf("\nNome Completo: \n");
+    printf("Data de Nascimento: \n");
+    printf("Email: \n");
+    printf("CPF: \n");
+    printf("Sexo(m/f): \n");
+    printf("Endereço: \n");
+    printf("Telefone: \n");
+    printf("Salário: \n");
+    printf("Cargo: \n");
+    printf("Setor: \n");
+    printf("\n==============================================================================\n");
+    getchar();
 }
