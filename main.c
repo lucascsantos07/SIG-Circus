@@ -28,6 +28,7 @@ void excluirContacliente(void);
 void menuFuncionarios(void);
 void telaCadastroFuncionario(void);
 void listarDadosFuncionario(void);
+void editarDadosFuncionario(void);
 
 //Programa Principal
 int main(void){
@@ -61,6 +62,7 @@ int main(void){
                 scanf(" %c", &opcaoFuncionario);
                 telaCadastroFuncionario();
                 listarDadosFuncionario();
+                editarDadosFuncionario();
 
             }while(opcaoFuncionario != '0');
         } else if (opcao == '3') {
@@ -514,6 +516,66 @@ void listarDadosFuncionario(void) {
     printf("Salário: \n");
     printf("Cargo: \n");
     printf("Setor: \n");
+    printf("\n==============================================================================\n");
+    getchar();
+}
+
+
+void editarDadosFuncionario(void) {
+    limparTela();
+    char cpf_busca[20];
+    char novoNome[50];
+    char novaDataNascimento[20];
+    char novoEmail[100];
+    char novoCpf[20];
+    char novoSexo;
+    char novoEndereco[100];
+    char novoTelefone[15];
+    char novoSalario[25];
+    char novoCargo[30];
+    char novoSetor[30];
+    char confirma;
+
+    printf("\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||                    ~ ~ ~ Editar Dados do Funcionário ~ ~ ~               ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("||               Developed by @ViniciusL07 -- since Aug, 2025               ||\n");
+    printf("==============================================================================\n");
+
+    printf("\n   Informe o CPF do funcionário: ");
+    fgets(cpf_busca, sizeof(cpf_busca), stdin);
+
+    printf("\n   Nome Completo       : ");
+    fgets(novoNome, sizeof(novoNome), stdin);
+    printf("   Data de Nascimento  : ");
+    fgets(novaDataNascimento, sizeof(novaDataNascimento), stdin);
+    printf("   Email               : ");
+    fgets(novoEmail, sizeof(novoEmail), stdin);
+    printf("   CPF                 : ");
+    fgets(novoCpf, sizeof(novoCpf), stdin);
+    printf("   Sexo (m/f)          : ");
+    scanf(" %c", &novoSexo);
+    getchar();
+    printf("   Endereço            : ");
+    fgets(novoEndereco, sizeof(novoEndereco), stdin);
+    printf("   Telefone            : ");
+    fgets(novoTelefone, sizeof(novoTelefone), stdin);
+    printf("   Salário             : ");
+    fgets(novoSalario, sizeof(novoSalario), stdin);
+    printf("   Cargo               : ");
+    fgets(novoCargo, sizeof(novoCargo), stdin);
+    printf("   Setor               : ");
+    fgets(novoSetor, sizeof(novoSetor), stdin);
+
+    printf("\nDeseja Realmente alterar os dados do funcionário? s - sim ou n - não: ");
+    scanf(" %c", &confirma);
+    getchar();
+
+    printf("\n==============================================================================\n");
+    printf("||                   Dados do Funcionário Atualizados com Sucesso             ||\n");
     printf("\n==============================================================================\n");
     getchar();
 }
