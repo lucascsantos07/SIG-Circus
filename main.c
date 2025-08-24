@@ -26,6 +26,7 @@ void listarDadosCliente(void);
 void editarDadoscliente(void);
 void excluirContacliente(void);
 void menuFuncionarios(void);
+void telaCadastroFuncionario(void);
 
 //Programa Principal
 int main(void){
@@ -52,7 +53,14 @@ int main(void){
             }while(opcaoCliente != '0');
 
         } else if (opcao == '2') {
-            printf("\nO módulo Funcionários está em desenvolvimento...\n");
+            char opcaoFuncionario;
+            do{
+
+                menuFuncionarios();
+                scanf(" %c", &opcaoFuncionario);
+                telaCadastroFuncionario();
+
+            }while(opcaoFuncionario != '0');
         } else if (opcao == '3') {
             printf("\nO módulo Agendamentos está em desenvolvimento...\n");
         } else if (opcao == '4') {
@@ -423,4 +431,57 @@ void menuFuncionarios(void) {
     printf("||                                                                          ||\n");
     printf("==============================================================================\n");
     printf("\nDigite sua opção: ");
+}
+
+
+void telaCadastroFuncionario(void) {
+    limparTela();
+    char nome[50];
+    char dataNascimento[20];
+    char email[100];
+    char cpf[20];
+    char sexo;
+    char endereco[100];
+    char telefone[15];
+    char salario[25];
+    char cargo[30];
+    char setor[30];
+
+    printf("\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||                     ~ ~ ~ Cadastro de Funcionário ~ ~ ~                  ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("||               Developed by @ViniciusL07 -- since Aug, 2025               ||\n");
+    printf("==============================================================================\n");
+    getchar();
+    
+    printf("\n   Nome Completo       : ");
+    fgets(nome, sizeof(nome), stdin);
+    printf("   Data de Nascimento  : ");
+    fgets(dataNascimento, sizeof(dataNascimento), stdin);
+    printf("   Email               : ");
+    fgets(email, sizeof(email), stdin);
+    printf("   CPF                 : ");
+    fgets(cpf, sizeof(cpf), stdin);
+    printf("   Sexo (m/f)          : ");
+    scanf(" %c", &sexo);
+    getchar();
+    printf("   Endereço            : ");
+    fgets(endereco, sizeof(endereco), stdin);
+    printf("   Telefone            : ");
+    fgets(telefone, sizeof(telefone), stdin);
+    printf("   Salário             : ");
+    fgets(salario, sizeof(salario), stdin);
+    printf("   Cargo               : ");
+    fgets(cargo, sizeof(cargo), stdin);
+    printf("   Setor               : ");
+    fgets(setor, sizeof(setor), stdin);
+
+    printf("\n==============================================================================\n");
+    printf("||                             Cadastro concluído                             ||\n");
+    printf("\n==============================================================================\n");
+    getchar();
+
 }
