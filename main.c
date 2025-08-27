@@ -48,10 +48,24 @@ int main(void){
 
                 menuCliente();
                 scanf(" %c", &opcaoCliente);
-                telaCadastroCliente();
-                listarDadosCliente();
-                editarDadoscliente();
-                excluirContacliente();
+                getchar();
+                if(opcaoCliente == '1'){
+                    telaCadastroCliente();
+                }else if (opcaoCliente == '2'){
+                    listarDadosCliente();
+                }else if(opcaoCliente == '3'){
+                    editarDadoscliente();
+                }else if(opcaoCliente == '4'){
+                    excluirContacliente();
+                }else if(opcaoCliente != '0'){
+                    printf("\nOpção inválida! Tente novamente.\n");
+                }
+
+                if (opcaoCliente != '0') {
+                    printf("\nPressione ENTER para continuar...");
+                    getchar(); 
+                    //Depois de selecionar uma opção mostra essa mensagem
+                }
 
             }while(opcaoCliente != '0');
 
@@ -61,6 +75,7 @@ int main(void){
 
                 menuFuncionarios();
                 scanf(" %c", &opcaoFuncionario);
+                getchar();
                 telaCadastroFuncionario();
                 listarDadosFuncionario();
                 editarDadosFuncionario();
@@ -271,7 +286,6 @@ void telaCadastroCliente(void){
     printf("==============================================================================\n");
     printf("||               Developed by @lucascsantos07 -- since Aug, 2025            ||\n"); 
     printf("==============================================================================\n");
-    getchar();
     
     printf("\n   Nome Completo       : ");
     fgets(nome, sizeof(nome), stdin);
@@ -290,8 +304,7 @@ void telaCadastroCliente(void){
     printf("\n==============================================================================\n");
     printf("||                             Cadastro concluído                           ||\n");
     printf("==============================================================================\n");
-    getchar();
-
+    
 }
 
 
@@ -320,7 +333,7 @@ void listarDadosCliente(void){
     printf("Sexo(m/f): \n");
     printf("Cidade: \n");
     printf("\n==============================================================================\n");
-    getchar();
+ 
 }
 
 
@@ -370,7 +383,7 @@ void editarDadoscliente(void){
     printf("\n==============================================================================\n");
     printf("||                        Dados Atualizados com sucesso                     ||\n");
     printf("==============================================================================\n");
-    getchar();
+
 }
 
 
@@ -404,11 +417,12 @@ void excluirContacliente(void){
 
     printf("\nDeseja Realmente Excluir sua Conta do Sistema? s - sim ou n - não: ");
     scanf(" %c", &confirma);
+    getchar();
 
     printf("\n==============================================================================\n");
     printf("||                        Cliente Excluido Com Sucesso                      ||\n");
     printf("==============================================================================\n");
-    getchar();
+
 }
 
 void menuFuncionarios(void) {
