@@ -34,6 +34,8 @@ void listarDadosFuncionario(void);
 void editarDadosFuncionario(void);
 void excluirFuncionario(void);
 
+void menuAgendamentos(void);
+
 //Programa Principal
 int main(void){
 
@@ -61,8 +63,18 @@ int main(void){
                 excluirFuncionario();
 
             }while(opcaoFuncionario != '0');
+
         } else if (opcao == '3') {
-            printf("\nO módulo Agendamentos está em desenvolvimento...\n");
+
+            char opcaoAgendamento;
+            do{
+
+                menuAgendamentos();
+                scanf(" %c", &opcaoAgendamento);
+                getchar();
+
+            }while(opcaoAgendamento != '0');
+
         } else if (opcao == '4') {
             printf("\nO módulo Vendas de ingressos está em desenvolvimento...\n");
         } else if (opcao == '5') {
@@ -637,3 +649,33 @@ void exibirModuloClientes(void){
 
     }while(opcaoCliente != '0');
 }
+
+void menuAgendamentos(void){
+    limparTela();
+    printf("\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||             Universidade Federal do Rio Grande do Norte                  ||\n");
+    printf("||                 Centro de Ensino Superior do Seridó                      ||\n");
+    printf("||               Departamento de Computação e Tecnologia                    ||\n");
+    printf("||                  Disciplina DCT1106 -- Programação                       ||\n");
+    printf("||                         Projeto SIG-Circus                               ||\n");
+    printf("||             Developed by @lucascsantos07 -- since Aug, 2025              ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||               ~ ~ ~ Sistema de Gestão Para Um Circo ~ ~ ~                ||\n");
+    printf("||                                                                          ||\n");
+    printf("||                           -- Agendamentos --                             ||\n");
+    printf("||                                                                          ||\n");
+    printf("||             1. Cadastrar Agendamento                                     ||\n");
+    printf("||             2. Consultar Agendamentos                                    ||\n");
+    printf("||             3. Alterar Agendamentos                                      ||\n");
+    printf("||             4. Cancelar Agendamentos                                     ||\n");
+    printf("||             5. Listar Todos os Agendamentos Futuros                      ||\n");
+    printf("||             0. Voltar Menu Principal                                     ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("\nDigite sua opção: ");
+}
+
