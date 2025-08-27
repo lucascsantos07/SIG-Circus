@@ -20,11 +20,14 @@ void telaPrincipal(void);
 void telaSobre(void);
 void telaEquipe(void);
 void telaFinalizacao(void);
+
 void menuCliente(void);
 void telaCadastroCliente(void);
 void listarDadosCliente(void);
 void editarDadoscliente(void);
 void excluirContacliente(void);
+void exibirModuloClientes(void);
+
 void menuFuncionarios(void);
 void telaCadastroFuncionario(void);
 void listarDadosFuncionario(void);
@@ -43,31 +46,7 @@ int main(void){
 
         if (opcao == '1') {
 
-            char opcaoCliente;
-            do{
-
-                menuCliente();
-                scanf(" %c", &opcaoCliente);
-                getchar();
-                if(opcaoCliente == '1'){
-                    telaCadastroCliente();
-                }else if (opcaoCliente == '2'){
-                    listarDadosCliente();
-                }else if(opcaoCliente == '3'){
-                    editarDadoscliente();
-                }else if(opcaoCliente == '4'){
-                    excluirContacliente();
-                }else if(opcaoCliente != '0'){
-                    printf("\nOpção inválida! Tente novamente.\n");
-                }
-
-                if (opcaoCliente != '0') {
-                    printf("\nPressione ENTER para continuar...");
-                    getchar(); 
-                    //Depois de selecionar uma opção mostra essa mensagem
-                }
-
-            }while(opcaoCliente != '0');
+            exibirModuloClientes();
 
         } else if (opcao == '2') {
             char opcaoFuncionario;
@@ -304,7 +283,7 @@ void telaCadastroCliente(void){
     printf("\n==============================================================================\n");
     printf("||                             Cadastro concluído                           ||\n");
     printf("==============================================================================\n");
-    
+
 }
 
 
@@ -628,4 +607,33 @@ void excluirFuncionario(void) {
         printf("================================================================================\n");
     }
     getchar();
+}
+
+
+void exibirModuloClientes(void){
+    char opcaoCliente;
+    do{
+
+        menuCliente();
+        scanf(" %c", &opcaoCliente);
+        getchar();
+        if(opcaoCliente == '1'){
+            telaCadastroCliente();
+        }else if (opcaoCliente == '2'){
+            listarDadosCliente();
+        }else if(opcaoCliente == '3'){
+            editarDadoscliente();
+        }else if(opcaoCliente == '4'){
+            excluirContacliente();
+        }else if(opcaoCliente != '0'){
+            printf("\nOpção inválida! Tente novamente.\n");
+        }
+
+        if (opcaoCliente != '0') {
+            printf("\nPressione ENTER para continuar...");
+            getchar(); 
+            //Depois de selecionar uma opção mostra essa mensagem
+        }
+
+    }while(opcaoCliente != '0');
 }
