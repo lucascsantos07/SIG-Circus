@@ -27,6 +27,7 @@ void listarDadosCliente(void);
 void editarDadoscliente(void);
 void excluirContacliente(void);
 void exibirModuloClientes(void);
+void confirmarExclusao(const char *modulo);
 
 void menuFuncionarios(void);
 void telaCadastroFuncionario(void);
@@ -408,13 +409,28 @@ void excluirContacliente(void){
     printf("Cidade: \n");
     printf("\n==============================================================================\n");
 
+    confirmarExclusao("Cliente");
+
+}
+
+void confirmarExclusao(const char *modulo){
+
+    char confirma;
+
     printf("\nDeseja Realmente Excluir sua Conta do Sistema? s - sim ou n - não: ");
     scanf(" %c", &confirma);
     getchar();
-
-    printf("\n==============================================================================\n");
-    printf("||                        Cliente Excluido Com Sucesso                      ||\n");
-    printf("==============================================================================\n");
+    if(confirma == 's'){
+        printf("\n==============================================================================\n");
+        printf("                        %s Excluido Com Sucesso                      \n", modulo);
+        printf("==============================================================================\n");
+    }else if(confirma == 'n'){
+        printf("\n==============================================================================\n");
+        printf("||                            Exclusao Cancelado                            ||\n");
+        printf("==============================================================================\n");
+    }else{
+        printf("\nOpção inválida! Tente novamente.\n");
+    }
 
 }
 
@@ -894,13 +910,7 @@ void excluirAgendamento(void){
     printf("CPF Responsavel: \n");
     printf("\n==============================================================================\n");
 
-    printf("\n   Deseja Realmente excluir este agendamento? s - sim ou n - não: ");
-    scanf(" %c", &confirma);
-    getchar();
-
-    printf("\n==============================================================================\n");
-    printf("||                     Agendamento excluido com sucesso                     ||\n");
-    printf("==============================================================================\n");
+    confirmarExclusao("Agendamento");
 
 }
 
