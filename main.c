@@ -38,6 +38,7 @@ void menuAgendamentos(void);
 void telaCadastroAgendamento(void);
 void alterarAgendamento(void);
 void excluirAgendamento(void);
+void listarTodosAgendamentos(void);
 int menuTiposAgendamentos(void);
 int menuHorariosDisponiveis(void);
 int menuLocais(void);
@@ -82,6 +83,7 @@ int main(void){
                 telaCadastroAgendamento();
                 alterarAgendamento();
                 excluirAgendamento();
+                listarTodosAgendamentos();
 
             }while(opcaoAgendamento != '0');
 
@@ -878,5 +880,42 @@ void excluirAgendamento(void){
     printf("\n==============================================================================\n");
     printf("||                     Agendamento excluido com sucesso                     ||\n");
     printf("==============================================================================\n");
+    getchar();
     
+}
+
+
+void listarTodosAgendamentos(void){
+    limparTela();
+
+    char cpf[20];
+
+    printf("\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||                             ~ ~ ~ Agenda ~ ~ ~                           ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("||               Developed by @lucascsantos07 -- since Aug, 2025            ||\n"); 
+    printf("==============================================================================\n");
+
+    printf("\n>> Segunda Feira (27/10/2025) \n");
+
+    printf("\n==============================================================================\n");
+    printf("\n|| Tipo: Espetaculo\n");
+    printf("|| Horario: 20:00\n");
+    printf("|| Local: Palco Principal\n");
+    printf("|| Capacidade: 500\n");
+    printf("|| CPF Responsavel: 123.456.789-12\n");
+    printf("\n==============================================================================\n");
+
+    printf("\n>> Terça Feira (28/10/2025) \n");
+
+    printf("\n==============================================================================\n");
+    printf("\n|| Tipo: Ensaio\n");
+    printf("|| Horario: 09:00\n");
+    printf("|| Local: Area Externa\n");
+    printf("|| Capacidade: 0\n");
+    printf("|| CPF Responsavel: 123.444.777-99\n");
+    printf("\n==============================================================================\n");
 }
