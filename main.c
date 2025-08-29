@@ -37,6 +37,7 @@ void excluirFuncionario(void);
 void menuAgendamentos(void);
 void telaCadastroAgendamento(void);
 void alterarAgendamento(void);
+void excluirAgendamento(void);
 int menuTiposAgendamentos(void);
 int menuHorariosDisponiveis(void);
 int menuLocais(void);
@@ -80,6 +81,7 @@ int main(void){
 
                 telaCadastroAgendamento();
                 alterarAgendamento();
+                excluirAgendamento();
 
             }while(opcaoAgendamento != '0');
 
@@ -828,6 +830,53 @@ void alterarAgendamento(void){
 
     printf("\n==============================================================================\n");
     printf("||                     Agendamento alterado com sucesso                     ||\n");
+    printf("==============================================================================\n");
+    getchar();
+}
+
+
+void excluirAgendamento(void){
+    limparTela();
+
+    int codAgendamento;
+    char cpf_busca[20];
+    char confirma;
+
+
+    printf("\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||                 ~ ~ ~ Exclusao de Agendamentos ~ ~ ~                     ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("||               Developed by @lucascsantos07 -- since Aug, 2025            ||\n"); 
+    printf("==============================================================================\n");
+
+    printf("\n   Informe CPF do Responsavel pelo Agendamento: ");
+    fgets(cpf_busca, sizeof(cpf_busca), stdin);
+
+    printf("\n   Lista dos Agendamentos do Responsável Informado: \n");
+
+    printf("\n   Digite o código do Agendamento que deseja alterar: ");
+    scanf(" %d", &codAgendamento);
+    getchar();
+
+    printf("\n==============================================================================\n");
+    printf("\nAGENDAMENTO \n");
+    printf("\nTipo: \n");
+    printf("Data: \n");
+    printf("Horario: \n");
+    printf("Local: \n");
+    printf("Capacidade: \n");
+    printf("CPF Responsavel: \n");
+    printf("\n==============================================================================\n");
+
+    printf("\n   Deseja Realmente excluir este agendamento? s - sim ou n - não: ");
+    scanf(" %c", &confirma);
+    getchar();
+
+    printf("\n==============================================================================\n");
+    printf("||                     Agendamento excluido com sucesso                     ||\n");
     printf("==============================================================================\n");
     
 }
