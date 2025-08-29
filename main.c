@@ -35,6 +35,10 @@ void editarDadosFuncionario(void);
 void excluirFuncionario(void);
 
 void menuAgendamentos(void);
+void telaCadastroAgendamento(void);
+int menuTiposAgendamentos(void);
+int menuHorariosDisponiveis(void);
+int menuLocais(void);
 
 //Programa Principal
 int main(void){
@@ -72,6 +76,8 @@ int main(void){
                 menuAgendamentos();
                 scanf(" %c", &opcaoAgendamento);
                 getchar();
+
+                telaCadastroAgendamento();
 
             }while(opcaoAgendamento != '0');
 
@@ -679,3 +685,97 @@ void menuAgendamentos(void){
     printf("\nDigite sua opção: ");
 }
 
+void telaCadastroAgendamento(void){
+    limparTela();
+    int tipoAgendamento;
+    char data[12], cpfResponsavel[20];
+    int horario;
+    int capacidadeMax;
+    int local;
+
+    printf("\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||                      ~ ~ ~ Cadastro de Agendamento ~ ~ ~                 ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("||               Developed by @lucascsantos07 -- since Aug, 2025            ||\n"); 
+    printf("==============================================================================\n");
+    
+    tipoAgendamento = menuTiposAgendamentos();
+
+    printf("\n   Data (DD/MM/AAAA)                   : ");
+    fgets(data, sizeof(data), stdin);
+
+    horario = menuHorariosDisponiveis();
+
+    local = menuLocais();
+
+    printf("\n   Capacidade Maxima de Publico        : ");
+    scanf(" %d", &capacidadeMax);
+    getchar();
+
+    printf("\n   CPF do Responsável pelo Agendamento: ");
+    fgets(cpfResponsavel, sizeof(cpfResponsavel), stdin);
+
+    printf("\n==============================================================================\n");
+    printf("||                             Cadastro concluído                           ||\n");
+    printf("==============================================================================\n");
+
+}
+
+int menuTiposAgendamentos(void){
+
+    int tipoAgendamento;
+
+    printf("\n   Tipo de Agendamento                 \n");
+    printf("\n   1 - Espetaculo                        ");
+    printf("\n   2 - Ensaio                            ");
+    printf("\n   3 - Manutencao                        ");
+    printf("\n   4 - Evento Especial                   ");
+    printf("\n   5 - Montagem de Estrutura             ");
+    printf("\n   6 - Reunião Administrativa          \n");
+    printf("\n   Informe sua opcao                   : ");
+    scanf(" %d", &tipoAgendamento);
+    getchar();
+
+    return tipoAgendamento;
+}
+
+int menuHorariosDisponiveis(void){
+
+    int horario;
+
+    printf("\n   Horarios Disponiveis                   \n");
+    printf("\n   1 - 07:00                                ");
+    printf("\n   2 - 09:00                                ");
+    printf("\n   3 - 11:00                                ");
+    printf("\n   4 - 14:00                                ");
+    printf("\n   5 - 16:00                                ");
+    printf("\n   6 - 18:00                                ");
+    printf("\n   7 - 20:00 (exclusivo para espetaculos) \n");
+    printf("\n   Informe sua opcao                   : ");
+    scanf(" %d", &horario);
+    getchar();
+
+    return horario;
+}
+
+
+int menuLocais(void){
+
+    int local;
+
+    printf("\n   Local                               \n");
+    printf("\n   1 - Palco Principal                   ");
+    printf("\n   2 - Área Externa                      ");
+    printf("\n   3 - Área de Manutenção                ");
+    printf("\n   4 - Sala Administrativa               ");
+    printf("\n   5 - Camarins                        \n");
+    printf("\n   Informe sua opcao                   : ");
+    scanf(" %d", &local);
+    getchar();
+
+    return local;
+
+}
