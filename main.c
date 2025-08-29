@@ -36,6 +36,7 @@ void excluirFuncionario(void);
 
 void menuAgendamentos(void);
 void telaCadastroAgendamento(void);
+void alterarAgendamento(void);
 int menuTiposAgendamentos(void);
 int menuHorariosDisponiveis(void);
 int menuLocais(void);
@@ -78,6 +79,7 @@ int main(void){
                 getchar();
 
                 telaCadastroAgendamento();
+                alterarAgendamento();
 
             }while(opcaoAgendamento != '0');
 
@@ -721,7 +723,7 @@ void telaCadastroAgendamento(void){
     printf("\n==============================================================================\n");
     printf("||                             Cadastro concluído                           ||\n");
     printf("==============================================================================\n");
-
+    getchar();
 }
 
 int menuTiposAgendamentos(void){
@@ -778,4 +780,54 @@ int menuLocais(void){
 
     return local;
 
+}
+
+void alterarAgendamento(void){
+    limparTela();
+
+    int codAgendamento;
+    int tipoAgendamento;
+    char data[12], cpfResponsavel[20], cpf_busca[20];
+    int horario;
+    int capacidadeMax;
+    int local;
+    char confirma;
+
+    printf("\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||                ~ ~ ~ Alteracao de Agendamentos ~ ~ ~                     ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("||               Developed by @lucascsantos07 -- since Aug, 2025            ||\n"); 
+    printf("==============================================================================\n");
+
+    printf("\n   Informe CPF do Responsavel pelo Agendamento: ");
+    fgets(cpf_busca, sizeof(cpf_busca), stdin);
+
+    printf("\n   Lista dos Agendamentos do Responsável Informado: \n");
+
+    printf("\n   Digite o código do Agendamento que deseja alterar: ");
+    scanf(" %d", &codAgendamento);
+    getchar();
+
+    printf("\n   Data (DD/MM/AAAA)                   : ");
+    fgets(data, sizeof(data), stdin);
+
+    horario = menuHorariosDisponiveis();
+
+    local = menuLocais();
+
+    printf("\n   Capacidade Maxima de Publico        : ");
+    scanf(" %d", &capacidadeMax);
+    getchar();
+
+    printf("\n   Deseja Realmente alterar este agendamento? s - sim ou n - não: ");
+    scanf(" %c", &confirma);
+    getchar();
+
+    printf("\n==============================================================================\n");
+    printf("||                     Agendamento alterado com sucesso                     ||\n");
+    printf("==============================================================================\n");
+    
 }
