@@ -28,6 +28,9 @@ void editarDadoscliente(void);
 void excluirContacliente(void);
 void exibirModuloClientes(void);
 
+void confirmarExclusao(const char *modulo);
+void confirmarAlteracao(void);
+
 void menuFuncionarios(void);
 void telaCadastroFuncionario(void);
 void listarDadosFuncionario(void);
@@ -38,9 +41,12 @@ void menuAgendamentos(void);
 void telaCadastroAgendamento(void);
 void alterarAgendamento(void);
 void excluirAgendamento(void);
+void consultarAgendamento(void);
+void listarTodosAgendamentos(void);
 int menuTiposAgendamentos(void);
 int menuHorariosDisponiveis(void);
 int menuLocais(void);
+void exibirModuloAgendamentos(void);
 
 //Programa Principal
 int main(void){
@@ -72,19 +78,8 @@ int main(void){
 
         } else if (opcao == '3') {
 
-            char opcaoAgendamento;
-            do{
-
-                menuAgendamentos();
-                scanf(" %c", &opcaoAgendamento);
-                getchar();
-
-                telaCadastroAgendamento();
-                alterarAgendamento();
-                excluirAgendamento();
-
-            }while(opcaoAgendamento != '0');
-
+            exibirModuloAgendamentos();
+            
         } else if (opcao == '4') {
             printf("\nO módulo Vendas de ingressos está em desenvolvimento...\n");
         } else if (opcao == '5') {
@@ -377,13 +372,7 @@ void editarDadoscliente(void){
     printf("   Cidade              : ");
     fgets(novaCidade, sizeof(novaCidade), stdin);
 
-    printf("\nDeseja Realmente alterar seus dados pessoais? s - sim ou n - não: ");
-    scanf(" %c", &confirma);
-    getchar();
-
-    printf("\n==============================================================================\n");
-    printf("||                        Dados Atualizados com sucesso                     ||\n");
-    printf("==============================================================================\n");
+    confirmarAlteracao();
 
 }
 
@@ -392,7 +381,6 @@ void excluirContacliente(void){
     limparTela();
 
     char cpf_busca[20];
-    char confirma;
 
     printf("\n");
     printf("==============================================================================\n");
@@ -416,13 +404,50 @@ void excluirContacliente(void){
     printf("Cidade: \n");
     printf("\n==============================================================================\n");
 
-    printf("\nDeseja Realmente Excluir sua Conta do Sistema? s - sim ou n - não: ");
+    confirmarExclusao("Cliente");
+
+}
+
+void confirmarExclusao(const char *modulo){
+
+    char confirma;
+
+    printf("\nDeseja Realmente Excluir este dado do Sistema? s - sim ou n - não: ");
+    scanf(" %c", &confirma);
+    getchar();
+    if(confirma == 's'){
+        printf("\n==============================================================================\n");
+        printf("                        %s Excluido Com Sucesso                      \n", modulo);
+        printf("==============================================================================\n");
+    }else if(confirma == 'n'){
+        printf("\n==============================================================================\n");
+        printf("||                            Exclusao Cancelado                            ||\n");
+        printf("==============================================================================\n");
+    }else{
+        printf("\nOpção inválida! Tente novamente.\n");
+    }
+
+}
+
+void confirmarAlteracao(){
+
+    char confirma;
+
+    printf("\nDeseja Realmente alterar esse(s) dado(s)? s - sim ou n - não: ");
     scanf(" %c", &confirma);
     getchar();
 
-    printf("\n==============================================================================\n");
-    printf("||                        Cliente Excluido Com Sucesso                      ||\n");
-    printf("==============================================================================\n");
+    if(confirma == 's'){
+        printf("\n==============================================================================\n");
+        printf("||                     Dado(s) Atualizado(s) com sucesso                    ||\n");
+        printf("==============================================================================\n");
+    }else if(confirma == 'n'){
+        printf("\n==============================================================================\n");
+        printf("||                           Alteracao Cancelado                            ||\n");
+        printf("==============================================================================\n");
+    }else{
+        printf("\nOpção inválida! Tente novamente.\n");
+    }
 
 }
 
@@ -660,6 +685,37 @@ void exibirModuloClientes(void){
     }while(opcaoCliente != '0');
 }
 
+void exibirModuloAgendamentos(void){
+    char opcaoAgendamento;
+    do{
+
+        menuAgendamentos();
+        scanf(" %c", &opcaoAgendamento);
+        getchar();
+
+        if(opcaoAgendamento == '1'){
+            telaCadastroAgendamento();
+        }else if (opcaoAgendamento == '2'){
+            consultarAgendamento();
+        }else if(opcaoAgendamento == '3'){
+            alterarAgendamento();
+        }else if(opcaoAgendamento == '4'){
+            excluirAgendamento();
+        }else if(opcaoAgendamento == '5'){
+            listarTodosAgendamentos();
+        }else if(opcaoAgendamento != '0'){
+            printf("\nOpção inválida! Tente novamente.\n");
+        }
+
+        if (opcaoAgendamento != '0') {
+            printf("\nPressione ENTER para continuar...");
+            getchar(); 
+            //Depois de selecionar uma opção mostra essa mensagem
+        }
+
+    }while(opcaoAgendamento != '0');
+}
+
 void menuAgendamentos(void){
     limparTela();
     printf("\n");
@@ -725,7 +781,7 @@ void telaCadastroAgendamento(void){
     printf("\n==============================================================================\n");
     printf("||                             Cadastro concluído                           ||\n");
     printf("==============================================================================\n");
-    getchar();
+
 }
 
 int menuTiposAgendamentos(void){
@@ -789,7 +845,7 @@ void alterarAgendamento(void){
 
     int codAgendamento;
     int tipoAgendamento;
-    char data[12], cpfResponsavel[20], cpf_busca[20];
+    char data[12], cpf_busca[20];
     int horario;
     int capacidadeMax;
     int local;
@@ -824,14 +880,8 @@ void alterarAgendamento(void){
     scanf(" %d", &capacidadeMax);
     getchar();
 
-    printf("\n   Deseja Realmente alterar este agendamento? s - sim ou n - não: ");
-    scanf(" %c", &confirma);
-    getchar();
+    confirmarAlteracao();
 
-    printf("\n==============================================================================\n");
-    printf("||                     Agendamento alterado com sucesso                     ||\n");
-    printf("==============================================================================\n");
-    getchar();
 }
 
 
@@ -871,12 +921,80 @@ void excluirAgendamento(void){
     printf("CPF Responsavel: \n");
     printf("\n==============================================================================\n");
 
-    printf("\n   Deseja Realmente excluir este agendamento? s - sim ou n - não: ");
-    scanf(" %c", &confirma);
-    getchar();
+    confirmarExclusao("Agendamento");
+
+}
+
+
+void listarTodosAgendamentos(void){
+    limparTela();
+
+    printf("\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||                             ~ ~ ~ Agenda ~ ~ ~                           ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("||               Developed by @lucascsantos07 -- since Aug, 2025            ||\n"); 
+    printf("==============================================================================\n");
+
+    printf("\n>> Segunda Feira (27/10/2025) \n");
 
     printf("\n==============================================================================\n");
-    printf("||                     Agendamento excluido com sucesso                     ||\n");
+    printf("\n|| Tipo: Espetaculo\n");
+    printf("|| Horario: 20:00\n");
+    printf("|| Local: Palco Principal\n");
+    printf("|| Capacidade: 500\n");
+    printf("|| CPF Responsavel: 123.456.789-12\n");
+    printf("\n==============================================================================\n");
+
+    printf("\n>> Terça Feira (28/10/2025) \n");
+
+    printf("\n==============================================================================\n");
+    printf("\n|| Tipo: Ensaio\n");
+    printf("|| Horario: 09:00\n");
+    printf("|| Local: Area Externa\n");
+    printf("|| Capacidade: 0\n");
+    printf("|| CPF Responsavel: 123.444.777-99\n");
+    printf("\n==============================================================================\n");
+}
+
+void consultarAgendamento(void){
+    limparTela();
+
+    int escolha, tipoAgendamento;
+    char data[12], cpfResponsavel[20];
+
+    printf("\n");
     printf("==============================================================================\n");
-    
+    printf("||                                                                          ||\n");
+    printf("||                   ~ ~ ~ Consultar Agendamentos ~ ~ ~                     ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("||               Developed by @lucascsantos07 -- since Aug, 2025            ||\n"); 
+    printf("==============================================================================\n");
+
+    printf("\n   Deseja Pesquisar Por \n");
+    printf("\n      1 - Data ");
+    printf("\n      2 - Tipo ");
+    printf("\n      3 - Responsavel \n");
+    printf("\n   Digite sua opcao: ");
+    scanf(" %d", &escolha);
+    getchar();
+
+    if(escolha == 1){
+        printf("\n   Informe a Data (DD/MM/AAAA): ");
+        fgets(data, sizeof(data), stdin);
+        printf("\n   Agendamentos encontrados para a data %s\n", data);
+    }else if(escolha == 2){
+        tipoAgendamento = menuTiposAgendamentos();
+        printf("\n   Agendamentos encontrados do tipo selecionado: \n");
+    }else if(escolha == 3){
+        printf("\n   Informe a CPF do Responsavel: ");
+        fgets(cpfResponsavel, sizeof(cpfResponsavel), stdin);
+        printf("\n   Agendamentos encontrados para o responsável %s\n", cpfResponsavel);
+    }else{
+        printf("\nOpção inválida! Tente novamente.\n");
+    }
+
 }
