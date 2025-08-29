@@ -43,6 +43,7 @@ void listarTodosAgendamentos(void);
 int menuTiposAgendamentos(void);
 int menuHorariosDisponiveis(void);
 int menuLocais(void);
+void exibirModuloAgendamentos(void);
 
 //Programa Principal
 int main(void){
@@ -74,21 +75,8 @@ int main(void){
 
         } else if (opcao == '3') {
 
-            char opcaoAgendamento;
-            do{
-
-                menuAgendamentos();
-                scanf(" %c", &opcaoAgendamento);
-                getchar();
-
-                telaCadastroAgendamento();
-                consultarAgendamento();
-                alterarAgendamento();
-                excluirAgendamento();
-                listarTodosAgendamentos();
-
-            }while(opcaoAgendamento != '0');
-
+            exibirModuloAgendamentos();
+            
         } else if (opcao == '4') {
             printf("\nO módulo Vendas de ingressos está em desenvolvimento...\n");
         } else if (opcao == '5') {
@@ -664,6 +652,37 @@ void exibirModuloClientes(void){
     }while(opcaoCliente != '0');
 }
 
+void exibirModuloAgendamentos(void){
+    char opcaoAgendamento;
+    do{
+
+        menuAgendamentos();
+        scanf(" %c", &opcaoAgendamento);
+        getchar();
+
+        if(opcaoAgendamento == '1'){
+            telaCadastroAgendamento();
+        }else if (opcaoAgendamento == '2'){
+            consultarAgendamento();
+        }else if(opcaoAgendamento == '3'){
+            alterarAgendamento();
+        }else if(opcaoAgendamento == '4'){
+            excluirAgendamento();
+        }else if(opcaoAgendamento == '5'){
+            listarTodosAgendamentos();
+        }else if(opcaoAgendamento != '0'){
+            printf("\nOpção inválida! Tente novamente.\n");
+        }
+
+        if (opcaoAgendamento != '0') {
+            printf("\nPressione ENTER para continuar...");
+            getchar(); 
+            //Depois de selecionar uma opção mostra essa mensagem
+        }
+
+    }while(opcaoAgendamento != '0');
+}
+
 void menuAgendamentos(void){
     limparTela();
     printf("\n");
@@ -729,7 +748,7 @@ void telaCadastroAgendamento(void){
     printf("\n==============================================================================\n");
     printf("||                             Cadastro concluído                           ||\n");
     printf("==============================================================================\n");
-    getchar();
+
 }
 
 int menuTiposAgendamentos(void){
@@ -835,7 +854,7 @@ void alterarAgendamento(void){
     printf("\n==============================================================================\n");
     printf("||                     Agendamento alterado com sucesso                     ||\n");
     printf("==============================================================================\n");
-    getchar();
+
 }
 
 
@@ -882,8 +901,7 @@ void excluirAgendamento(void){
     printf("\n==============================================================================\n");
     printf("||                     Agendamento excluido com sucesso                     ||\n");
     printf("==============================================================================\n");
-    getchar();
-    
+
 }
 
 
@@ -957,7 +975,5 @@ void consultarAgendamento(void){
     }else{
         printf("\nOpção inválida! Tente novamente.\n");
     }
-
-    getchar();
 
 }
