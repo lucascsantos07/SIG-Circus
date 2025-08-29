@@ -27,7 +27,9 @@ void listarDadosCliente(void);
 void editarDadoscliente(void);
 void excluirContacliente(void);
 void exibirModuloClientes(void);
+
 void confirmarExclusao(const char *modulo);
+void confirmarAlteracao(void);
 
 void menuFuncionarios(void);
 void telaCadastroFuncionario(void);
@@ -370,13 +372,7 @@ void editarDadoscliente(void){
     printf("   Cidade              : ");
     fgets(novaCidade, sizeof(novaCidade), stdin);
 
-    printf("\nDeseja Realmente alterar seus dados pessoais? s - sim ou n - não: ");
-    scanf(" %c", &confirma);
-    getchar();
-
-    printf("\n==============================================================================\n");
-    printf("||                        Dados Atualizados com sucesso                     ||\n");
-    printf("==============================================================================\n");
+    confirmarAlteracao();
 
 }
 
@@ -385,7 +381,6 @@ void excluirContacliente(void){
     limparTela();
 
     char cpf_busca[20];
-    char confirma;
 
     printf("\n");
     printf("==============================================================================\n");
@@ -417,7 +412,7 @@ void confirmarExclusao(const char *modulo){
 
     char confirma;
 
-    printf("\nDeseja Realmente Excluir sua Conta do Sistema? s - sim ou n - não: ");
+    printf("\nDeseja Realmente Excluir este dado do Sistema? s - sim ou n - não: ");
     scanf(" %c", &confirma);
     getchar();
     if(confirma == 's'){
@@ -427,6 +422,28 @@ void confirmarExclusao(const char *modulo){
     }else if(confirma == 'n'){
         printf("\n==============================================================================\n");
         printf("||                            Exclusao Cancelado                            ||\n");
+        printf("==============================================================================\n");
+    }else{
+        printf("\nOpção inválida! Tente novamente.\n");
+    }
+
+}
+
+void confirmarAlteracao(){
+
+    char confirma;
+
+    printf("\nDeseja Realmente alterar esse(s) dado(s)? s - sim ou n - não: ");
+    scanf(" %c", &confirma);
+    getchar();
+
+    if(confirma == 's'){
+        printf("\n==============================================================================\n");
+        printf("||                     Dado(s) Atualizado(s) com sucesso                    ||\n");
+        printf("==============================================================================\n");
+    }else if(confirma == 'n'){
+        printf("\n==============================================================================\n");
+        printf("||                           Alteracao Cancelado                            ||\n");
         printf("==============================================================================\n");
     }else{
         printf("\nOpção inválida! Tente novamente.\n");
@@ -863,13 +880,7 @@ void alterarAgendamento(void){
     scanf(" %d", &capacidadeMax);
     getchar();
 
-    printf("\n   Deseja Realmente alterar este agendamento? s - sim ou n - não: ");
-    scanf(" %c", &confirma);
-    getchar();
-
-    printf("\n==============================================================================\n");
-    printf("||                     Agendamento alterado com sucesso                     ||\n");
-    printf("==============================================================================\n");
+    confirmarAlteracao();
 
 }
 
