@@ -36,6 +36,7 @@ void telaCadastroFuncionario(void);
 void listarDadosFuncionario(void);
 void editarDadosFuncionario(void);
 void excluirFuncionario(void);
+void exibirModuloFuncionarios(void);
 
 void menuAgendamentos(void);
 void telaCadastroAgendamento(void);
@@ -63,18 +64,8 @@ int main(void){
             exibirModuloClientes();
 
         } else if (opcao == '2') {
-            char opcaoFuncionario;
-            do{
 
-                menuFuncionarios();
-                scanf(" %c", &opcaoFuncionario);
-                getchar();
-                telaCadastroFuncionario();
-                listarDadosFuncionario();
-                editarDadosFuncionario();
-                excluirFuncionario();
-
-            }while(opcaoFuncionario != '0');
+            exibirModuloFuncionarios();
 
         } else if (opcao == '3') {
 
@@ -501,7 +492,6 @@ void telaCadastroFuncionario(void) {
     printf("==============================================================================\n");
     printf("||               Developed by @ViniciusL07 -- since Aug, 2025               ||\n");
     printf("==============================================================================\n");
-    getchar();
     
     printf("\n   Nome Completo       : ");
     fgets(nome, sizeof(nome), stdin);
@@ -528,7 +518,6 @@ void telaCadastroFuncionario(void) {
     printf("\n================================================================================\n");
     printf("||                             Cadastro concluído                             ||\n");
     printf("================================================================================\n");
-    getchar();
 
 }
 
@@ -559,7 +548,6 @@ void listarDadosFuncionario(void) {
     printf("Cargo: \n");
     printf("Setor: \n");
     printf("\n==============================================================================\n");
-    getchar();
 }
 
 
@@ -619,7 +607,6 @@ void editarDadosFuncionario(void) {
     printf("\n================================================================================\n");
     printf("||                   Dados do Funcionário Atualizados com Sucesso             ||\n");
     printf("================================================================================\n");
-    getchar();
 }
 
 
@@ -653,7 +640,6 @@ void excluirFuncionario(void) {
         printf("||                   Exclusão de Funcionário Cancelada                        ||\n");
         printf("================================================================================\n");
     }
-    getchar();
 }
 
 
@@ -997,4 +983,32 @@ void consultarAgendamento(void){
         printf("\nOpção inválida! Tente novamente.\n");
     }
 
+}
+
+
+void exibirModuloFuncionarios(void){
+    char opcaoFuncionario;
+    do{
+
+        menuFuncionarios();
+        scanf(" %c", &opcaoFuncionario);
+        getchar();
+        if(opcaoFuncionario == '1'){
+            telaCadastroFuncionario();
+        }else if (opcaoFuncionario == '2'){
+            listarDadosFuncionario();
+        }else if(opcaoFuncionario == '3'){
+            editarDadosFuncionario();
+        }else if(opcaoFuncionario == '4'){
+            excluirFuncionario();
+        }else if(opcaoFuncionario != '0'){
+            printf("\nOpção inválida! Tente novamente.\n");
+        }
+
+        if (opcaoFuncionario != '0') {
+            printf("\nPressione ENTER para continuar...");
+            getchar();   
+        }
+
+    }while(opcaoFuncionario != '0');
 }
