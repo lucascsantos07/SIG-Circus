@@ -53,6 +53,7 @@ void menuVendasIngressos(void);
 void telaCadastroVendaIngresso(void);
 void consultarVendaIngresso(void);
 void alterarVendaIngresso(void);
+void excluirVendaIngresso(void);
 
 //Programa Principal
 int main(void){
@@ -1052,7 +1053,7 @@ void telaCadastroVendaIngresso(void) {
     int quantidadeIngressos;
     float valorTotal;
     float precoIngresso;
-    //criar um id da venda
+    char idVenda[10];
 
     printf("\n");
     printf("==============================================================================\n");
@@ -1075,7 +1076,8 @@ void telaCadastroVendaIngresso(void) {
     getchar();
     valorTotal = quantidadeIngressos * precoIngresso;
     printf("   Valor Total           : R$ %.2f", valorTotal);
-    getchar();
+    printf("   Digite o ID da Venda: ");
+    fgets(idVenda, sizeof(idVenda), stdin);
 
     printf("\n==============================================================================\n");
     printf("||                           Venda concluída                                ||\n");
@@ -1166,4 +1168,24 @@ void alterarVendaIngresso(void){
 
     confirmarAlteracao();
 
+}
+
+
+void excluirVendaIngresso(void){
+    limparTela();
+    char idVenda[10];
+
+    printf("\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||                   ~ ~ ~ Excluir Venda de Ingressos ~ ~ ~                ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("||               Developed by @ViniciusL07 -- since Aug, 2025               ||\n");
+    printf("==============================================================================\n");
+
+    printf("\n   Informe o ID da Venda que deseja excluir: ");
+    fgets(idVenda, sizeof(idVenda), stdin);
+
+    confirmarExclusao("Venda de Ingresso");
 }
