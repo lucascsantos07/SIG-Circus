@@ -50,6 +50,7 @@ int menuLocais(void);
 void exibirModuloAgendamentos(void);
 
 void menuVendasIngressos(void);
+void telaCadastroVendaIngresso(void);
 
 //Programa Principal
 int main(void){
@@ -1039,4 +1040,42 @@ void menuVendasIngressos(void) {
     printf("||                                                                          ||\n");
     printf("==============================================================================\n");
     printf("\nDigite sua opção: ");
+}
+
+
+void telaCadastroVendaIngresso(void) {
+    limparTela();
+    char cpfCliente[20];
+    char listaEspetaculos[100];
+    int quantidadeIngressos;
+    float valorTotal;
+    float precoIngresso;
+
+    printf("\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||                      ~ ~ ~ Venda de Ingressos ~ ~ ~                      ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("||               Developed by @ViniciusL07 -- since Aug, 2025               ||\n");
+    printf("==============================================================================\n");
+    
+    printf("\n   CPF do Cliente        : ");
+    fgets(cpfCliente, sizeof(cpfCliente), stdin);
+    printf("   Lista de Espetáculos  : ");
+    printf("   Digite o valor do ingresso: ");
+    scanf(" %f", &precoIngresso);
+    getchar();
+    printf("   Valor do ingresso: R$ %.2f", precoIngresso);
+    printf("   Digite a Quantidade de Ingressos: ");
+    scanf(" %d", &quantidadeIngressos);
+    getchar();
+    valorTotal = quantidadeIngressos * precoIngresso;
+    printf("   Valor Total           : R$ %.2f", valorTotal);
+    getchar();
+
+    printf("\n==============================================================================\n");
+    printf("||                           Venda concluída                                ||\n");
+    printf("==============================================================================\n");
+
 }
