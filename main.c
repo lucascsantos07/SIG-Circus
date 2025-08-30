@@ -36,6 +36,7 @@ void telaCadastroFuncionario(void);
 void listarDadosFuncionario(void);
 void editarDadosFuncionario(void);
 void excluirFuncionario(void);
+void exibirModuloFuncionarios(void);
 
 void menuAgendamentos(void);
 void telaCadastroAgendamento(void);
@@ -47,6 +48,13 @@ int menuTiposAgendamentos(void);
 int menuHorariosDisponiveis(void);
 int menuLocais(void);
 void exibirModuloAgendamentos(void);
+
+void menuVendasIngressos(void);
+void telaCadastroVendaIngresso(void);
+void consultarVendaIngresso(void);
+void alterarVendaIngresso(void);
+void excluirVendaIngresso(void);
+void exibirModuloVendasIngressos(void);
 
 //Programa Principal
 int main(void){
@@ -63,25 +71,17 @@ int main(void){
             exibirModuloClientes();
 
         } else if (opcao == '2') {
-            char opcaoFuncionario;
-            do{
 
-                menuFuncionarios();
-                scanf(" %c", &opcaoFuncionario);
-                getchar();
-                telaCadastroFuncionario();
-                listarDadosFuncionario();
-                editarDadosFuncionario();
-                excluirFuncionario();
-
-            }while(opcaoFuncionario != '0');
+            exibirModuloFuncionarios();
 
         } else if (opcao == '3') {
 
             exibirModuloAgendamentos();
             
         } else if (opcao == '4') {
-            printf("\nO módulo Vendas de ingressos está em desenvolvimento...\n");
+
+            exibirModuloVendasIngressos();
+
         } else if (opcao == '5') {
             printf("\nO módulo Relatórios está em desenvolvimento...\n");
         } else if (opcao == '6') {
@@ -501,7 +501,6 @@ void telaCadastroFuncionario(void) {
     printf("==============================================================================\n");
     printf("||               Developed by @ViniciusL07 -- since Aug, 2025               ||\n");
     printf("==============================================================================\n");
-    getchar();
     
     printf("\n   Nome Completo       : ");
     fgets(nome, sizeof(nome), stdin);
@@ -528,7 +527,6 @@ void telaCadastroFuncionario(void) {
     printf("\n================================================================================\n");
     printf("||                             Cadastro concluído                             ||\n");
     printf("================================================================================\n");
-    getchar();
 
 }
 
@@ -559,7 +557,6 @@ void listarDadosFuncionario(void) {
     printf("Cargo: \n");
     printf("Setor: \n");
     printf("\n==============================================================================\n");
-    getchar();
 }
 
 
@@ -612,14 +609,7 @@ void editarDadosFuncionario(void) {
     printf("   Setor               : ");
     fgets(novoSetor, sizeof(novoSetor), stdin);
 
-    printf("\nDeseja Realmente alterar os dados do funcionário? s - sim ou n - não: ");
-    scanf(" %c", &confirma);
-    getchar();
-
-    printf("\n================================================================================\n");
-    printf("||                   Dados do Funcionário Atualizados com Sucesso             ||\n");
-    printf("================================================================================\n");
-    getchar();
+    confirmarAlteracao();
 }
 
 
@@ -640,20 +630,20 @@ void excluirFuncionario(void) {
     printf("\n   Informe o CPF do funcionário: ");
     fgets(cpf, sizeof(cpf), stdin);
 
-    printf("\nDeseja realmente excluir o funcionário? s - sim ou n - não: ");
-    scanf(" %c", &confirma);
-    getchar();
+    printf("\n==============================================================================\n");
+    printf("\nNome Completo: \n");
+    printf("Data de Nascimento: \n");
+    printf("Email: \n");
+    printf("CPF: \n");
+    printf("Sexo(m/f): \n");
+    printf("Endereço: \n");
+    printf("Telefone: \n");
+    printf("Salário: \n");
+    printf("Cargo: \n");
+    printf("Setor: \n");
+    printf("\n==============================================================================\n");
 
-    if (confirma == 's') {
-        printf("\n================================================================================\n");
-        printf("||                   Funcionário Excluído com Sucesso                         ||\n");
-        printf("================================================================================\n");
-    } else {
-        printf("\n================================================================================\n");
-        printf("||                   Exclusão de Funcionário Cancelada                        ||\n");
-        printf("================================================================================\n");
-    }
-    getchar();
+    confirmarExclusao("Funcionário");
 }
 
 
@@ -997,4 +987,235 @@ void consultarAgendamento(void){
         printf("\nOpção inválida! Tente novamente.\n");
     }
 
+}
+
+
+void exibirModuloFuncionarios(void){
+    char opcaoFuncionario;
+    do{
+
+        menuFuncionarios();
+        scanf(" %c", &opcaoFuncionario);
+        getchar();
+        if(opcaoFuncionario == '1'){
+            telaCadastroFuncionario();
+        }else if (opcaoFuncionario == '2'){
+            listarDadosFuncionario();
+        }else if(opcaoFuncionario == '3'){
+            editarDadosFuncionario();
+        }else if(opcaoFuncionario == '4'){
+            excluirFuncionario();
+        }else if(opcaoFuncionario != '0'){
+            printf("\nOpção inválida! Tente novamente.\n");
+        }
+
+        if (opcaoFuncionario != '0') {
+            printf("\nPressione ENTER para continuar...");
+            getchar();   
+        }
+
+    }while(opcaoFuncionario != '0');
+}
+
+
+void menuVendasIngressos(void) {
+    limparTela();
+    printf("\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||             Universidade Federal do Rio Grande do Norte                  ||\n");
+    printf("||                 Centro de Ensino Superior do Seridó                      ||\n");
+    printf("||               Departamento de Computação e Tecnologia                    ||\n");
+    printf("||                  Disciplina DCT1106 -- Programação                       ||\n");
+    printf("||                         Projeto SIG-Circus                               ||\n");
+    printf("||             Developed by @ViniciusL07 -- since Aug, 2025                 ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||               ~ ~ ~ Sistema de Gestão Para Um Circo ~ ~ ~                ||\n");
+    printf("||                                                                          ||\n");
+    printf("||                        -- Venda de Ingressos --                          ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||             1. Cadastrar Venda de Ingresso                               ||\n");
+    printf("||             2. Consultar Venda de Ingresso                               ||\n");
+    printf("||             3. Alterar Venda de Ingresso                                 ||\n");
+    printf("||             4. Cancelar Venda de Ingresso                                ||\n");
+    printf("||             0. Voltar Menu Principal                                     ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("\nDigite sua opção: ");
+}
+
+
+void telaCadastroVendaIngresso(void) {
+    limparTela();
+    char cpfCliente[20];
+    char listaEspetaculos[100];
+    int quantidadeIngressos;
+    float valorTotal;
+    float precoIngresso;
+    char idVenda[10];
+
+    printf("\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||                      ~ ~ ~ Venda de Ingressos ~ ~ ~                      ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("||               Developed by @ViniciusL07 -- since Aug, 2025               ||\n");
+    printf("==============================================================================\n");
+    
+    printf("\n   CPF do Cliente        : ");
+    fgets(cpfCliente, sizeof(cpfCliente), stdin);
+    printf("   Lista de Espetáculos  : ");
+    printf("\n   Digite o valor do ingresso: ");
+    scanf(" %f", &precoIngresso);
+    getchar();
+    printf("   Valor do ingresso: R$ %.2f", precoIngresso);
+    printf("\n   Digite a Quantidade de Ingressos: ");
+    scanf(" %d", &quantidadeIngressos);
+    getchar();
+    valorTotal = quantidadeIngressos * precoIngresso;
+    printf("   Valor Total: R$ %.2f", valorTotal);
+    printf("\n   Digite o ID da Venda: ");
+    fgets(idVenda, sizeof(idVenda), stdin);
+
+    printf("\n==============================================================================\n");
+    printf("||                           Venda concluída                                ||\n");
+    printf("==============================================================================\n");
+
+}
+
+
+void consultarVendaIngresso(void) {
+    limparTela();
+    int escolha;
+    char data[12], cpfCliente[20];
+
+    printf("\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||                      ~ ~ ~ Consultar Vendas ~ ~ ~                        ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("||                   Developed by @ViniciusL07 -- since Aug, 2025           ||\n");
+    printf("==============================================================================\n");
+
+    printf("\n   Deseja Pesquisar Por \n");
+    printf("\n      1 - Data ");
+    printf("\n      2 - Espetaculo ");
+    printf("\n      3 - Cliente \n");
+    printf("\n   Digite sua opcao: ");
+    scanf(" %d", &escolha);
+    getchar();
+
+    if(escolha == 1){
+        printf("\n   Informe a Data (DD/MM/AAAA): ");
+        fgets(data, sizeof(data), stdin);
+        printf("\n   Vendas encontradas para a data %s\n", data);
+    }else if(escolha == 2){
+        printf("\n   Vendas encontradas para o espetáculo selecionado: \n");
+    }else if(escolha == 3){
+        printf("\n   Informe a CPF do Cliente: ");
+        fgets(cpfCliente, sizeof(cpfCliente), stdin);
+        printf("\n   Vendas encontradas para o cliente %s\n", cpfCliente);
+    }else{
+        printf("\nOpção inválida! Tente novamente.\n");
+    }
+
+}
+
+
+void alterarVendaIngresso(void){
+    limparTela();
+    char cpfCliente[20];
+    char listaEspetaculos[100];
+    int quantidadeIngressos;
+    float valorTotal;
+    float precoIngresso;
+    char confirma;
+    char idVenda[10];
+
+    printf("\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||                  ~ ~ ~ Alterar Venda de Ingressos ~ ~ ~                  ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("||               Developed by @ViniciusL07 -- since Aug, 2025               ||\n");
+    printf("==============================================================================\n");
+
+    printf("\n   Informe o CPF do Cliente: ");
+    fgets(cpfCliente, sizeof(cpfCliente), stdin);
+
+    printf("\n   Lista das Vendas do Cliente Informado: \n");
+
+    printf("\n   Digite o código da Venda que deseja alterar: ");
+    fgets(idVenda, sizeof(idVenda), stdin);
+
+    printf("\n   CPF do Cliente        : ");
+    fgets(cpfCliente, sizeof(cpfCliente), stdin);
+    printf("   Lista de Espetáculos  : ");
+    printf("\n   Digite o valor do ingresso: ");
+    scanf(" %f", &precoIngresso);
+    getchar();
+    printf("   Valor do ingresso: R$ %.2f", precoIngresso);
+    printf("\n   Digite a Quantidade de Ingressos: ");
+    scanf(" %d", &quantidadeIngressos);
+    getchar();
+    valorTotal = quantidadeIngressos * precoIngresso;
+    printf("   Valor Total: R$ %.2f", valorTotal);
+
+    confirmarAlteracao();
+
+}
+
+
+void excluirVendaIngresso(void){
+    limparTela();
+    char idVenda[10];
+
+    printf("\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||                   ~ ~ ~ Excluir Venda de Ingressos ~ ~ ~                ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("||               Developed by @ViniciusL07 -- since Aug, 2025               ||\n");
+    printf("==============================================================================\n");
+
+    printf("\n   Informe o ID da Venda que deseja excluir: ");
+    fgets(idVenda, sizeof(idVenda), stdin);
+
+    confirmarExclusao("Venda de Ingresso");
+}
+
+
+void exibirModuloVendasIngressos(void){
+    char opcaoVendaIngresso;
+    do{
+
+        menuVendasIngressos();
+        scanf(" %c", &opcaoVendaIngresso);
+        getchar();
+        if(opcaoVendaIngresso == '1'){
+            telaCadastroVendaIngresso();
+        }else if (opcaoVendaIngresso == '2'){
+            consultarVendaIngresso();
+        }else if(opcaoVendaIngresso == '3'){
+            alterarVendaIngresso();
+        }else if(opcaoVendaIngresso == '4'){
+            excluirVendaIngresso();
+        }else if(opcaoVendaIngresso != '0'){
+            printf("\nOpção inválida! Tente novamente.\n");
+        }
+
+        if (opcaoVendaIngresso != '0') {
+            printf("\nPressione ENTER para continuar...");
+            getchar();   
+        }
+
+    }while(opcaoVendaIngresso != '0');
 }
