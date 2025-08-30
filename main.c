@@ -52,6 +52,7 @@ void exibirModuloAgendamentos(void);
 void menuVendasIngressos(void);
 void telaCadastroVendaIngresso(void);
 void consultarVendaIngresso(void);
+void alterarVendaIngresso(void);
 
 //Programa Principal
 int main(void){
@@ -1051,6 +1052,7 @@ void telaCadastroVendaIngresso(void) {
     int quantidadeIngressos;
     float valorTotal;
     float precoIngresso;
+    //criar um id da venda
 
     printf("\n");
     printf("==============================================================================\n");
@@ -1117,5 +1119,51 @@ void consultarVendaIngresso(void) {
     }else{
         printf("\nOpção inválida! Tente novamente.\n");
     }
+
+}
+
+
+void alterarVendaIngresso(void){
+    limparTela();
+    char cpfCliente[20];
+    char listaEspetaculos[100];
+    int quantidadeIngressos;
+    float valorTotal;
+    float precoIngresso;
+    char confirma;
+    char idVenda[10];
+
+    printf("\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||                  ~ ~ ~ Alterar Venda de Ingressos ~ ~ ~                  ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("||               Developed by @ViniciusL07 -- since Aug, 2025               ||\n");
+    printf("==============================================================================\n");
+
+    printf("\n   Informe o CPF do Cliente: ");
+    fgets(cpfCliente, sizeof(cpfCliente), stdin);
+
+    printf("\n   Lista das Vendas do Cliente Informado: \n");
+
+    printf("\n   Digite o código da Venda que deseja alterar: ");
+    fgets(idVenda, sizeof(idVenda), stdin);
+
+    printf("\n   CPF do Cliente        : ");
+    fgets(cpfCliente, sizeof(cpfCliente), stdin);
+    printf("   Lista de Espetáculos  : ");
+    printf("   Digite o valor do ingresso: ");
+    scanf(" %f", &precoIngresso);
+    getchar();
+    printf("   Valor do ingresso: R$ %.2f", precoIngresso);
+    printf("   Digite a Quantidade de Ingressos: ");
+    scanf(" %d", &quantidadeIngressos);
+    getchar();
+    valorTotal = quantidadeIngressos * precoIngresso;
+    printf("   Valor Total           : R$ %.2f", valorTotal);
+    getchar();
+
+    confirmarAlteracao();
 
 }
