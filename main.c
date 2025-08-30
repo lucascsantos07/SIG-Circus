@@ -51,6 +51,7 @@ void exibirModuloAgendamentos(void);
 
 void menuVendasIngressos(void);
 void telaCadastroVendaIngresso(void);
+void consultarVendaIngresso(void);
 
 //Programa Principal
 int main(void){
@@ -1077,5 +1078,44 @@ void telaCadastroVendaIngresso(void) {
     printf("\n==============================================================================\n");
     printf("||                           Venda concluída                                ||\n");
     printf("==============================================================================\n");
+
+}
+
+
+void consultarVendaIngresso(void) {
+    limparTela();
+    int escolha;
+    char data[12], cpfCliente[20];
+
+    printf("\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||                      ~ ~ ~ Consultar Vendas ~ ~ ~                        ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("||                   Developed by @ViniciusL07 -- since Aug, 2025           ||\n");
+    printf("==============================================================================\n");
+
+    printf("\n   Deseja Pesquisar Por \n");
+    printf("\n      1 - Data ");
+    printf("\n      2 - Espetaculo ");
+    printf("\n      3 - Cliente \n");
+    printf("\n   Digite sua opcao: ");
+    scanf(" %d", &escolha);
+    getchar();
+
+    if(escolha == 1){
+        printf("\n   Informe a Data (DD/MM/AAAA): ");
+        fgets(data, sizeof(data), stdin);
+        printf("\n   Vendas encontradas para a data %s\n", data);
+    }else if(escolha == 2){
+        printf("\n   Vendas encontradas para o espetáculo selecionado: \n");
+    }else if(escolha == 3){
+        printf("\n   Informe a CPF do Cliente: ");
+        fgets(cpfCliente, sizeof(cpfCliente), stdin);
+        printf("\n   Vendas encontradas para o cliente %s\n", cpfCliente);
+    }else{
+        printf("\nOpção inválida! Tente novamente.\n");
+    }
 
 }
