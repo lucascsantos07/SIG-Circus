@@ -600,13 +600,7 @@ void editarDadosFuncionario(void) {
     printf("   Setor               : ");
     fgets(novoSetor, sizeof(novoSetor), stdin);
 
-    printf("\nDeseja Realmente alterar os dados do funcionário? s - sim ou n - não: ");
-    scanf(" %c", &confirma);
-    getchar();
-
-    printf("\n================================================================================\n");
-    printf("||                   Dados do Funcionário Atualizados com Sucesso             ||\n");
-    printf("================================================================================\n");
+    confirmarAlteracao();
 }
 
 
@@ -627,19 +621,20 @@ void excluirFuncionario(void) {
     printf("\n   Informe o CPF do funcionário: ");
     fgets(cpf, sizeof(cpf), stdin);
 
-    printf("\nDeseja realmente excluir o funcionário? s - sim ou n - não: ");
-    scanf(" %c", &confirma);
-    getchar();
+    printf("\n==============================================================================\n");
+    printf("\nNome Completo: \n");
+    printf("Data de Nascimento: \n");
+    printf("Email: \n");
+    printf("CPF: \n");
+    printf("Sexo(m/f): \n");
+    printf("Endereço: \n");
+    printf("Telefone: \n");
+    printf("Salário: \n");
+    printf("Cargo: \n");
+    printf("Setor: \n");
+    printf("\n==============================================================================\n");
 
-    if (confirma == 's') {
-        printf("\n================================================================================\n");
-        printf("||                   Funcionário Excluído com Sucesso                         ||\n");
-        printf("================================================================================\n");
-    } else {
-        printf("\n================================================================================\n");
-        printf("||                   Exclusão de Funcionário Cancelada                        ||\n");
-        printf("================================================================================\n");
-    }
+    confirmarExclusao("Funcionário");
 }
 
 
