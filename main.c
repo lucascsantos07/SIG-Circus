@@ -54,6 +54,7 @@ void telaCadastroVendaIngresso(void);
 void consultarVendaIngresso(void);
 void alterarVendaIngresso(void);
 void excluirVendaIngresso(void);
+void exibirModuloVendasIngressos(void);
 
 //Programa Principal
 int main(void){
@@ -78,7 +79,9 @@ int main(void){
             exibirModuloAgendamentos();
             
         } else if (opcao == '4') {
-            printf("\nO módulo Vendas de ingressos está em desenvolvimento...\n");
+
+            exibirModuloVendasIngressos();
+
         } else if (opcao == '5') {
             printf("\nO módulo Relatórios está em desenvolvimento...\n");
         } else if (opcao == '6') {
@@ -1067,16 +1070,16 @@ void telaCadastroVendaIngresso(void) {
     printf("\n   CPF do Cliente        : ");
     fgets(cpfCliente, sizeof(cpfCliente), stdin);
     printf("   Lista de Espetáculos  : ");
-    printf("   Digite o valor do ingresso: ");
+    printf("\n   Digite o valor do ingresso: ");
     scanf(" %f", &precoIngresso);
     getchar();
     printf("   Valor do ingresso: R$ %.2f", precoIngresso);
-    printf("   Digite a Quantidade de Ingressos: ");
+    printf("\n   Digite a Quantidade de Ingressos: ");
     scanf(" %d", &quantidadeIngressos);
     getchar();
     valorTotal = quantidadeIngressos * precoIngresso;
-    printf("   Valor Total           : R$ %.2f", valorTotal);
-    printf("   Digite o ID da Venda: ");
+    printf("   Valor Total: R$ %.2f", valorTotal);
+    printf("\n   Digite o ID da Venda: ");
     fgets(idVenda, sizeof(idVenda), stdin);
 
     printf("\n==============================================================================\n");
@@ -1155,16 +1158,15 @@ void alterarVendaIngresso(void){
     printf("\n   CPF do Cliente        : ");
     fgets(cpfCliente, sizeof(cpfCliente), stdin);
     printf("   Lista de Espetáculos  : ");
-    printf("   Digite o valor do ingresso: ");
+    printf("\n   Digite o valor do ingresso: ");
     scanf(" %f", &precoIngresso);
     getchar();
     printf("   Valor do ingresso: R$ %.2f", precoIngresso);
-    printf("   Digite a Quantidade de Ingressos: ");
+    printf("\n   Digite a Quantidade de Ingressos: ");
     scanf(" %d", &quantidadeIngressos);
     getchar();
     valorTotal = quantidadeIngressos * precoIngresso;
-    printf("   Valor Total           : R$ %.2f", valorTotal);
-    getchar();
+    printf("   Valor Total: R$ %.2f", valorTotal);
 
     confirmarAlteracao();
 
@@ -1188,4 +1190,32 @@ void excluirVendaIngresso(void){
     fgets(idVenda, sizeof(idVenda), stdin);
 
     confirmarExclusao("Venda de Ingresso");
+}
+
+
+void exibirModuloVendasIngressos(void){
+    char opcaoVendaIngresso;
+    do{
+
+        menuVendasIngressos();
+        scanf(" %c", &opcaoVendaIngresso);
+        getchar();
+        if(opcaoVendaIngresso == '1'){
+            telaCadastroVendaIngresso();
+        }else if (opcaoVendaIngresso == '2'){
+            consultarVendaIngresso();
+        }else if(opcaoVendaIngresso == '3'){
+            alterarVendaIngresso();
+        }else if(opcaoVendaIngresso == '4'){
+            excluirVendaIngresso();
+        }else if(opcaoVendaIngresso != '0'){
+            printf("\nOpção inválida! Tente novamente.\n");
+        }
+
+        if (opcaoVendaIngresso != '0') {
+            printf("\nPressione ENTER para continuar...");
+            getchar();   
+        }
+
+    }while(opcaoVendaIngresso != '0');
 }
