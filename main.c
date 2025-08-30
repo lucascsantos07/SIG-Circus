@@ -49,6 +49,8 @@ int menuHorariosDisponiveis(void);
 int menuLocais(void);
 void exibirModuloAgendamentos(void);
 
+void menuVendasIngressos(void);
+
 //Programa Principal
 int main(void){
 
@@ -1006,4 +1008,35 @@ void exibirModuloFuncionarios(void){
         }
 
     }while(opcaoFuncionario != '0');
+}
+
+
+void menuVendasIngressos(void) {
+    limparTela();
+    printf("\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||             Universidade Federal do Rio Grande do Norte                  ||\n");
+    printf("||                 Centro de Ensino Superior do Seridó                      ||\n");
+    printf("||               Departamento de Computação e Tecnologia                    ||\n");
+    printf("||                  Disciplina DCT1106 -- Programação                       ||\n");
+    printf("||                         Projeto SIG-Circus                               ||\n");
+    printf("||             Developed by @ViniciusL07 -- since Aug, 2025                 ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||               ~ ~ ~ Sistema de Gestão Para Um Circo ~ ~ ~                ||\n");
+    printf("||                                                                          ||\n");
+    printf("||                        -- Venda de Ingressos --                          ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||             1. Cadastrar Venda de Ingresso                               ||\n");
+    printf("||             2. Consultar Venda de Ingresso                               ||\n");
+    printf("||             3. Alterar Venda de Ingresso                                 ||\n");
+    printf("||             4. Cancelar Venda de Ingresso                                ||\n");
+    printf("||             0. Voltar Menu Principal                                     ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("\nDigite sua opção: ");
 }
