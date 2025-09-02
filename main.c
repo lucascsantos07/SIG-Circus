@@ -52,8 +52,7 @@ void exibirModuloAgendamentos(void);
 void menuVendasIngressos(void);
 void telaCadastroVendaIngresso(void);
 void consultarVendaIngresso(void);
-void alterarVendaIngresso(void);
-void excluirVendaIngresso(void);
+void reembolsarVendaIngresso(void);
 void exibirModuloVendasIngressos(void);
 
 //Programa Principal
@@ -1040,8 +1039,7 @@ void menuVendasIngressos(void) {
     printf("||                                                                          ||\n");
     printf("||             1. Cadastrar Venda de Ingresso                               ||\n");
     printf("||             2. Consultar Venda de Ingresso                               ||\n");
-    printf("||             3. Alterar Venda de Ingresso                                 ||\n");
-    printf("||             4. Cancelar Venda de Ingresso                                ||\n");
+    printf("||             3. Reembolsar Venda de Ingresso                              ||\n");
     printf("||             0. Voltar Menu Principal                                     ||\n");
     printf("||                                                                          ||\n");
     printf("==============================================================================\n");
@@ -1053,10 +1051,9 @@ void telaCadastroVendaIngresso(void) {
     limparTela();
     char cpfCliente[20];
     char listaEspetaculos[100];
-    int quantidadeIngressos;
+    int quantidadeIngressos, escolha;
     float valorTotal;
     float precoIngresso;
-    char idVenda[10];
 
     printf("\n");
     printf("==============================================================================\n");
@@ -1079,8 +1076,13 @@ void telaCadastroVendaIngresso(void) {
     getchar();
     valorTotal = quantidadeIngressos * precoIngresso;
     printf("   Valor Total: R$ %.2f", valorTotal);
-    printf("\n   Digite o ID da Venda: ");
-    fgets(idVenda, sizeof(idVenda), stdin);
+
+    printf("\n   Forma de Pagamento: \n");
+    printf("\n      1 - PIX ");
+    printf("\n      2 - Cartão de Crédito \n");
+    printf("\n   Digite sua opcao: ");
+    scanf(" %d", &escolha);
+    getchar();
 
     printf("\n==============================================================================\n");
     printf("||                           Venda concluída                                ||\n");
@@ -1128,69 +1130,45 @@ void consultarVendaIngresso(void) {
 }
 
 
-void alterarVendaIngresso(void){
+void reembolsarVendaIngresso(void){
     limparTela();
-    char cpfCliente[20];
-    char listaEspetaculos[100];
-    int quantidadeIngressos;
-    float valorTotal;
-    float precoIngresso;
+    char cpf_busca[20];
+    char justificativa[200];
     char confirma;
-    char idVenda[10];
+    int idVenda;
 
     printf("\n");
     printf("==============================================================================\n");
     printf("||                                                                          ||\n");
-    printf("||                  ~ ~ ~ Alterar Venda de Ingressos ~ ~ ~                  ||\n");
+    printf("||                   ~ ~ ~ Reembolso de Venda de Ingressos ~ ~ ~            ||\n");
     printf("||                                                                          ||\n");
     printf("==============================================================================\n");
     printf("||               Developed by @ViniciusL07 -- since Aug, 2025               ||\n");
     printf("==============================================================================\n");
 
-    printf("\n   Informe o CPF do Cliente: ");
-    fgets(cpfCliente, sizeof(cpfCliente), stdin);
+    printf("\n   Informe seu CPF: ");
+    fgets(cpf_busca, sizeof(cpf_busca), stdin);
+    printf("\n   Lista seus Ingressos:\n");
 
-    printf("\n   Lista das Vendas do Cliente Informado: \n");
-
-    printf("\n   Digite o código da Venda que deseja alterar: ");
-    fgets(idVenda, sizeof(idVenda), stdin);
-
-    printf("\n   CPF do Cliente        : ");
-    fgets(cpfCliente, sizeof(cpfCliente), stdin);
-    printf("   Lista de Espetáculos  : ");
-    printf("\n   Digite o valor do ingresso: ");
-    scanf(" %f", &precoIngresso);
+    printf("\n   Informe o ID da Venda que deseja reembolsar: ");
+    scanf("%d", &idVenda);
     getchar();
-    printf("   Valor do ingresso: R$ %.2f", precoIngresso);
-    printf("\n   Digite a Quantidade de Ingressos: ");
-    scanf(" %d", &quantidadeIngressos);
+
+    printf("\n   Justificativa do reembolso: ");
+    fgets(justificativa, sizeof(justificativa), stdin);
+
+    printf("\n   Confirma o reembolso da venda %d? (S/N): ", idVenda);
+    scanf(" %c", &confirma);
     getchar();
-    valorTotal = quantidadeIngressos * precoIngresso;
-    printf("   Valor Total: R$ %.2f", valorTotal);
 
-    confirmarAlteracao();
-
+    if (confirma == 'S' || confirma == 's') {
+        printf("\n   Reembolso realizado com sucesso!\n");
+        printf("   Motivo: %s\n", justificativa);
+    } else {
+        printf("\n   Reembolso cancelado.\n");
+    }
 }
 
-
-void excluirVendaIngresso(void){
-    limparTela();
-    char idVenda[10];
-
-    printf("\n");
-    printf("==============================================================================\n");
-    printf("||                                                                          ||\n");
-    printf("||                   ~ ~ ~ Excluir Venda de Ingressos ~ ~ ~                ||\n");
-    printf("||                                                                          ||\n");
-    printf("==============================================================================\n");
-    printf("||               Developed by @ViniciusL07 -- since Aug, 2025               ||\n");
-    printf("==============================================================================\n");
-
-    printf("\n   Informe o ID da Venda que deseja excluir: ");
-    fgets(idVenda, sizeof(idVenda), stdin);
-
-    confirmarExclusao("Venda de Ingresso");
-}
 
 
 void exibirModuloVendasIngressos(void){
@@ -1205,9 +1183,7 @@ void exibirModuloVendasIngressos(void){
         }else if (opcaoVendaIngresso == '2'){
             consultarVendaIngresso();
         }else if(opcaoVendaIngresso == '3'){
-            alterarVendaIngresso();
-        }else if(opcaoVendaIngresso == '4'){
-            excluirVendaIngresso();
+            reembolsarVendaIngresso();
         }else if(opcaoVendaIngresso != '0'){
             printf("\nOpção inválida! Tente novamente.\n");
         }
