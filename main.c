@@ -4,7 +4,7 @@
 ///               Departamento de Computação e Tecnologia                   ///
 ///                  Disciplina DCT1106 -- Programação                      ///
 ///               Projeto SIG-Circus Sistema para um Circo                  ///
-///        Developed by @ViniciusL07 e lucascsantos07 -- since Aug, 2025    ///
+///        Developed by @ViniciusL07 e @lucascsantos07 -- since Aug, 2025    ///
 ///////////////////////////////////////////////////////////////////////////////
 ///                                Semana 2                                 ///
 ///////////////////////////////////////////////////////////////////////////////
