@@ -12,6 +12,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "./Clientes/clientes.h"
+#include "./Utilitarios/utilitarios.h"
 
 
 //Assinatura das Funções
@@ -20,16 +22,6 @@ void telaPrincipal(void);
 void telaSobre(void);
 void telaEquipe(void);
 void telaFinalizacao(void);
-
-void menuCliente(void);
-void telaCadastroCliente(void);
-void listarDadosCliente(void);
-void editarDadoscliente(void);
-void excluirContacliente(void);
-void exibirModuloClientes(void);
-
-void confirmarExclusao(const char *modulo);
-void confirmarAlteracao(void);
 
 void menuFuncionarios(void);
 void telaCadastroFuncionario(void);
@@ -103,17 +95,6 @@ int main(void){
 
 
     return 0;
-}
-
-void limparTela(void) {
-    // Peguei as ideias com o Gemini 2.5 pro
-    #ifdef _WIN32
-        // Se o sistema for Windows, executa o comando "cls"
-        system("cls");
-    #else
-        // Para outros sistemas (Linux, macOS), executa o comando "clear"
-        system("clear");
-    #endif
 }
 
 void telaPrincipal(void) {
@@ -233,222 +214,6 @@ void telaFinalizacao(void) {
 }
 
 
-
-void menuCliente(void) {
-    limparTela();
-    printf("\n");
-    printf("==============================================================================\n");
-    printf("||                                                                          ||\n");
-    printf("||             Universidade Federal do Rio Grande do Norte                  ||\n");
-    printf("||                 Centro de Ensino Superior do Seridó                      ||\n");
-    printf("||               Departamento de Computação e Tecnologia                    ||\n");
-    printf("||                  Disciplina DCT1106 -- Programação                       ||\n");
-    printf("||                         Projeto SIG-Circus                               ||\n");
-    printf("||             Developed by @lucascsantos07 -- since Aug, 2025              ||\n");
-    printf("||                                                                          ||\n");
-    printf("==============================================================================\n");
-    printf("||                                                                          ||\n");
-    printf("||               ~ ~ ~ Sistema de Gestão Para Um Circo ~ ~ ~                ||\n");
-    printf("||                                                                          ||\n");
-    printf("||                           -- Menu Cliente --                             ||\n");
-    printf("||                                                                          ||\n");
-    printf("||             1. Cadastra-se                                               ||\n");
-    printf("||             2. Listar dados pessoais                                     ||\n");
-    printf("||             3. Editar dados pessoais                                     ||\n");
-    printf("||             4. Excluir conta                                             ||\n");
-    printf("||             0. Voltar Menu Principal                                     ||\n");
-    printf("||                                                                          ||\n");
-    printf("==============================================================================\n");
-    printf("\nDigite sua opção: ");
-}
-
-
-
-void telaCadastroCliente(void){
-    limparTela();
-    char nome[50];
-    char dataNascimento[20];
-    char email[100];
-    char cpf[20];
-    char sexo;
-    char cidade[50];
-
-    printf("\n");
-    printf("==============================================================================\n");
-    printf("||                                                                          ||\n");
-    printf("||                      ~ ~ ~ Cadastro de Cliente ~ ~ ~                     ||\n");
-    printf("||                                                                          ||\n");
-    printf("==============================================================================\n");
-    printf("||               Developed by @lucascsantos07 -- since Aug, 2025            ||\n"); 
-    printf("==============================================================================\n");
-    
-    printf("\n   Nome Completo       : ");
-    fgets(nome, sizeof(nome), stdin);
-    printf("   Data de Nascimento  : ");
-    fgets(dataNascimento, sizeof(dataNascimento), stdin);
-    printf("   Email               : ");
-    fgets(email, sizeof(email), stdin);
-    printf("   CPF                 : ");
-    fgets(cpf, sizeof(cpf), stdin);
-    printf("   Sexo (m/f)          : ");
-    scanf(" %c", &sexo);
-    getchar();
-    printf("   Cidade              : ");
-    fgets(cidade, sizeof(cidade), stdin);
-
-    printf("\n==============================================================================\n");
-    printf("||                             Cadastro concluído                           ||\n");
-    printf("==============================================================================\n");
-
-}
-
-
-void listarDadosCliente(void){
-    limparTela();
-
-    char cpf[20];
-
-    printf("\n");
-    printf("==============================================================================\n");
-    printf("||                                                                          ||\n");
-    printf("||                        ~ ~ ~ Dados Pessoais ~ ~ ~                        ||\n");
-    printf("||                                                                          ||\n");
-    printf("==============================================================================\n");
-    printf("||               Developed by @lucascsantos07 -- since Aug, 2025            ||\n"); 
-    printf("==============================================================================\n");
-
-    printf("\nInforme o seu CPF: ");
-    fgets(cpf, sizeof(cpf), stdin);
-
-    printf("\n==============================================================================\n");
-    printf("\nNome Completo: \n");
-    printf("Data de Nascimento: \n");
-    printf("Email: \n");
-    printf("CPF: \n");
-    printf("Sexo(m/f): \n");
-    printf("Cidade: \n");
-    printf("\n==============================================================================\n");
- 
-}
-
-
-
-void editarDadoscliente(void){
-    limparTela();
-
-    char cpf_busca[20];
-    char novoNome[50];
-    char novaDataNascimento[20];
-    char novoEmail[100];
-    char novoCpf[20];
-    char novoSexo;
-    char novaCidade[50];
-    char confirma;
-
-    printf("\n");
-    printf("==============================================================================\n");
-    printf("||                                                                          ||\n");
-    printf("||                      ~ ~ ~ Editando seus Dados ~ ~ ~                     ||\n");
-    printf("||                                                                          ||\n");
-    printf("==============================================================================\n");
-    printf("||               Developed by @lucascsantos07 -- since Aug, 2025            ||\n"); 
-    printf("==============================================================================\n");
-
-    printf("\n   Informe o seu CPF: ");
-    fgets(cpf_busca, sizeof(cpf_busca), stdin);
-
-    printf("\n   Nome Completo       : ");
-    fgets(novoNome, sizeof(novoNome), stdin);
-    printf("   Data de Nascimento  : ");
-    fgets(novaDataNascimento, sizeof(novaDataNascimento), stdin);
-    printf("   Email               : ");
-    fgets(novoEmail, sizeof(novoEmail), stdin);
-    printf("   CPF                 : ");
-    fgets(novoCpf, sizeof(novoCpf), stdin);
-    printf("   Sexo (m/f)          : ");
-    scanf(" %c", &novoSexo);
-    getchar();
-    printf("   Cidade              : ");
-    fgets(novaCidade, sizeof(novaCidade), stdin);
-
-    confirmarAlteracao();
-
-}
-
-
-void excluirContacliente(void){
-    limparTela();
-
-    char cpf_busca[20];
-
-    printf("\n");
-    printf("==============================================================================\n");
-    printf("||                                                                          ||\n");
-    printf("||                        ~ ~ ~ Excluir Conta ~ ~ ~                         ||\n");
-    printf("||                                                                          ||\n");
-    printf("==============================================================================\n");
-    printf("||               Developed by @lucascsantos07 -- since Aug, 2025            ||\n"); 
-    printf("==============================================================================\n");
-
-    printf("\n   Informe o seu CPF: ");
-    fgets(cpf_busca, sizeof(cpf_busca), stdin);
-
-    printf("\n==============================================================================\n");
-    printf("\nSeus Dados Cadastrados: \n");
-    printf("\nNome Completo: \n");
-    printf("Data de Nascimento: \n");
-    printf("Email: \n");
-    printf("CPF: \n");
-    printf("Sexo(m/f): \n");
-    printf("Cidade: \n");
-    printf("\n==============================================================================\n");
-
-    confirmarExclusao("Cliente");
-
-}
-
-void confirmarExclusao(const char *modulo){
-
-    char confirma;
-
-    printf("\nDeseja Realmente Excluir este dado do Sistema? s - sim ou n - não: ");
-    scanf(" %c", &confirma);
-    getchar();
-    if(confirma == 's'){
-        printf("\n==============================================================================\n");
-        printf("                        %s Excluido Com Sucesso                      \n", modulo);
-        printf("==============================================================================\n");
-    }else if(confirma == 'n'){
-        printf("\n==============================================================================\n");
-        printf("||                            Exclusao Cancelado                            ||\n");
-        printf("==============================================================================\n");
-    }else{
-        printf("\nOpção inválida! Tente novamente.\n");
-    }
-
-}
-
-void confirmarAlteracao(){
-
-    char confirma;
-
-    printf("\nDeseja Realmente alterar esse(s) dado(s)? s - sim ou n - não: ");
-    scanf(" %c", &confirma);
-    getchar();
-
-    if(confirma == 's'){
-        printf("\n==============================================================================\n");
-        printf("||                     Dado(s) Atualizado(s) com sucesso                    ||\n");
-        printf("==============================================================================\n");
-    }else if(confirma == 'n'){
-        printf("\n==============================================================================\n");
-        printf("||                           Alteracao Cancelado                            ||\n");
-        printf("==============================================================================\n");
-    }else{
-        printf("\nOpção inválida! Tente novamente.\n");
-    }
-
-}
 
 void menuFuncionarios(void) {
     limparTela();
@@ -572,7 +337,6 @@ void editarDadosFuncionario(void) {
     char novoSalario[25];
     char novoCargo[30];
     char novoSetor[30];
-    char confirma;
 
     printf("\n");
     printf("==============================================================================\n");
@@ -615,7 +379,6 @@ void editarDadosFuncionario(void) {
 void excluirFuncionario(void) {
     limparTela();
     char cpf[20];
-    char confirma;
 
     printf("\n");
     printf("==============================================================================\n");
@@ -838,7 +601,6 @@ void alterarAgendamento(void){
     int horario;
     int capacidadeMax;
     int local;
-    char confirma;
 
     printf("\n");
     printf("==============================================================================\n");
@@ -879,7 +641,6 @@ void excluirAgendamento(void){
 
     int codAgendamento;
     char cpf_busca[20];
-    char confirma;
 
 
     printf("\n");
