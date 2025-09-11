@@ -174,3 +174,31 @@ void excluirContacliente(void){
     confirmarExclusao("Cliente");
 
 }
+
+void exibirModuloClientes(void){
+    char opcaoCliente;
+    do{
+
+        menuCliente();
+        scanf(" %c", &opcaoCliente);
+        getchar();
+        if(opcaoCliente == '1'){
+            telaCadastroCliente();
+        }else if (opcaoCliente == '2'){
+            listarDadosCliente();
+        }else if(opcaoCliente == '3'){
+            editarDadoscliente();
+        }else if(opcaoCliente == '4'){
+            excluirContacliente();
+        }else if(opcaoCliente != '0'){
+            printf("\nOpção inválida! Tente novamente.\n");
+        }
+
+        if (opcaoCliente != '0') {
+            printf("\nPressione ENTER para continuar...");
+            getchar(); 
+            //Depois de selecionar uma opção mostra essa mensagem
+        }
+
+    }while(opcaoCliente != '0');
+}
