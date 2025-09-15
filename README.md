@@ -8,3 +8,68 @@ Ele permite gerenciar clientes, com cadastro e consulta de informações; funcio
 Linguagem: C
 
 IDE: Visual Studio Code (VSCode)
+
+Make/Makefile
+
+Compilador: GCC (GNU Compiler Collection)
+
+## **Como Rodar**
+### **No Linux:**
+Instale a extensão Makefile Tools no VSCode
+
+Abra o terminal e navegue até a pasta do projeto.
+
+```
+cd ~/projeto/programa
+```
+
+Compile e execute o projeto:
+```
+make run
+```
+
+### **No Windows:**
+1. Instalar o MSYS2: https://www.msys2.org
+2. Atualizar pacotes do MSYS2
+
+Depois de instalar, abra o MSYS2 MSYS (atalho criado na instalação) e digite:
+```
+pacman -Syu
+```
+
+3. Instalar GCC e Make
+
+No terminal MSYS2 MinGW 64-bit (procure pelo atalho MSYS2 MinGW 64-bit), digite:
+
+```
+pacman -S mingw-w64-x86_64-gcc make
+```
+
+4. Verificar instalação
+
+Depois da instalação, rode:
+```
+gcc --version
+make --version
+```
+
+5. Verifique se o GCC está no PATH:
+```
+echo $PATH
+```
+
+6. Se necessário, adicione o GCC ao PATH:
+```
+export PATH=$PATH:/mingw64/bin
+```
+
+7. Compilação e execução
+Navegue até a pasta do projeto:
+```
+cd ~/projeto/programa
+```
+
+8. Compile e execute o projeto usando o Makefile:
+```
+make run
+```
