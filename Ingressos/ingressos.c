@@ -37,10 +37,8 @@ void menuVendasIngressos(void) {
 void telaCadastroVendaIngresso(void) {
     limparTela();
     char cpfCliente[20];
-    char listaEspetaculos[100];
-    int quantidadeIngressos, escolha;
-    float valorTotal;
-    float precoIngresso;
+    int quantidadeIngressos, escolha, idEspetaculo;
+    float valorTotal, precoIngresso;
 
     printf("\n");
     printf("==============================================================================\n");
@@ -53,18 +51,19 @@ void telaCadastroVendaIngresso(void) {
     
     printf("\n   CPF do Cliente        : ");
     fgets(cpfCliente, sizeof(cpfCliente), stdin);
-    printf("   Lista de Espetáculos  : ");
-    printf("\n   Digite o valor do ingresso: ");
-    scanf(" %f", &precoIngresso);
+    printf("\n   Lista de Espetáculos  : ");
+    printf("\n\n   Digite o id do espetáculo: ");
+    scanf(" %f", &idEspetaculo);
     getchar();
-    printf("   Valor do ingresso: R$ %.2f", precoIngresso);
-    printf("\n   Digite a Quantidade de Ingressos: ");
+    precoIngresso = 20.00;
+    printf("\n   Valor do ingresso: R$ %.2f", precoIngresso);
+    printf("\n\n   Digite a Quantidade de Ingressos: ");
     scanf(" %d", &quantidadeIngressos);
     getchar();
     valorTotal = quantidadeIngressos * precoIngresso;
-    printf("   Valor Total: R$ %.2f", valorTotal);
+    printf("\n   Valor Total: R$ %.2f", valorTotal);
 
-    printf("\n   Forma de Pagamento: \n");
+    printf("\n\n   Forma de Pagamento: \n");
     printf("\n      1 - PIX ");
     printf("\n      2 - Cartão de Crédito \n");
     printf("\n   Digite sua opcao: ");
