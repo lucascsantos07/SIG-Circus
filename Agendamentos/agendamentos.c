@@ -52,10 +52,10 @@ void menuAgendamentos(void){
     printf("||                                                                          ||\n");
     printf("||                           -- Agendamentos --                             ||\n");
     printf("||                                                                          ||\n");
-    printf("||             1. Cadastrar Agendamento                                     ||\n");
-    printf("||             2. Consultar Agendamentos                                    ||\n");
-    printf("||             3. Alterar Agendamentos                                      ||\n");
-    printf("||             4. Cancelar Agendamentos                                     ||\n");
+    printf("||             1. Cadastrar Espetaculo                                      ||\n");
+    printf("||             2. Consultar Espetaculo                                      ||\n");
+    printf("||             3. Alterar Espetaculo                                        ||\n");
+    printf("||             4. Cancelar Espetaculo                                       ||\n");
     printf("||             5. Listar Todos os Agendamentos Futuros                      ||\n");
     printf("||             0. Voltar Menu Principal                                     ||\n");
     printf("||                                                                          ||\n");
@@ -65,32 +65,34 @@ void menuAgendamentos(void){
 
 void telaCadastroAgendamento(void){
     limparTela();
-    int tipoAgendamento;
-    char data[12], cpfResponsavel[20];
-    int horario;
+    char data[12], cpfResponsavel[20], cidade[50], horario[10];
     int capacidadeMax;
-    int local;
+    float precoIngresso;
 
     printf("\n");
     printf("==============================================================================\n");
     printf("||                                                                          ||\n");
-    printf("||                      ~ ~ ~ Cadastro de Agendamento ~ ~ ~                 ||\n");
+    printf("||                    ~ ~ ~ Agendamento de Espetáculo ~ ~ ~                 ||\n");
     printf("||                                                                          ||\n");
     printf("==============================================================================\n");
     printf("||               Developed by @lucascsantos07 -- since Aug, 2025            ||\n"); 
     printf("==============================================================================\n");
-    
-    tipoAgendamento = menuTiposAgendamentos();
 
-    printf("\n   Data (DD/MM/AAAA)                   : ");
+    printf("\n   Data (DD/MM/AAAA): ");
     fgets(data, sizeof(data), stdin);
 
-    horario = menuHorariosDisponiveis();
+    printf("\n   Horário(HH:MM): ");
+    fgets(horario, sizeof(horario), stdin);
 
-    local = menuLocais();
+    printf("\n   Cidade que será realizado o espetáculo: ");
+    fgets(cidade, sizeof(cidade), stdin);
 
-    printf("\n   Capacidade Maxima de Publico        : ");
+    printf("\n   Capacidade Maxima de Publico: ");
     scanf(" %d", &capacidadeMax);
+    getchar();
+
+    printf("\n   Preço do Ingresso: ");
+    scanf(" %f", &precoIngresso);
     getchar();
 
     printf("\n   CPF do Responsável pelo Agendamento: ");
@@ -102,76 +104,17 @@ void telaCadastroAgendamento(void){
 
 }
 
-int menuTiposAgendamentos(void){
-
-    int tipoAgendamento;
-
-    printf("\n   Tipo de Agendamento                 \n");
-    printf("\n   1 - Espetaculo                        ");
-    printf("\n   2 - Ensaio                            ");
-    printf("\n   3 - Manutencao                        ");
-    printf("\n   4 - Evento Especial                   ");
-    printf("\n   5 - Montagem de Estrutura             ");
-    printf("\n   6 - Reunião Administrativa          \n");
-    printf("\n   Informe sua opcao                   : ");
-    scanf(" %d", &tipoAgendamento);
-    getchar();
-
-    return tipoAgendamento;
-}
-
-int menuHorariosDisponiveis(void){
-
-    int horario;
-
-    printf("\n   Horarios Disponiveis                   \n");
-    printf("\n   1 - 07:00                                ");
-    printf("\n   2 - 09:00                                ");
-    printf("\n   3 - 11:00                                ");
-    printf("\n   4 - 14:00                                ");
-    printf("\n   5 - 16:00                                ");
-    printf("\n   6 - 18:00                                ");
-    printf("\n   7 - 20:00 (exclusivo para espetaculos) \n");
-    printf("\n   Informe sua opcao                   : ");
-    scanf(" %d", &horario);
-    getchar();
-
-    return horario;
-}
-
-
-int menuLocais(void){
-
-    int local;
-
-    printf("\n   Local                               \n");
-    printf("\n   1 - Palco Principal                   ");
-    printf("\n   2 - Área Externa                      ");
-    printf("\n   3 - Área de Manutenção                ");
-    printf("\n   4 - Sala Administrativa               ");
-    printf("\n   5 - Camarins                        \n");
-    printf("\n   Informe sua opcao                   : ");
-    scanf(" %d", &local);
-    getchar();
-
-    return local;
-
-}
-
 void alterarAgendamento(void){
     limparTela();
 
-    int codAgendamento;
-    int tipoAgendamento;
-    char data[12], cpf_busca[20];
-    int horario;
-    int capacidadeMax;
-    int local;
+    int codAgendamento, capacidadeMax;
+    float precoIngresso;
+    char data[12], cpf_busca[20], cidade[50], horario[7];
 
     printf("\n");
     printf("==============================================================================\n");
     printf("||                                                                          ||\n");
-    printf("||                ~ ~ ~ Alteracao de Agendamentos ~ ~ ~                     ||\n");
+    printf("||                 ~ ~ ~ Alteracao de Agendamento ~ ~ ~                     ||\n");
     printf("||                                                                          ||\n");
     printf("==============================================================================\n");
     printf("||               Developed by @lucascsantos07 -- since Aug, 2025            ||\n"); 
@@ -189,12 +132,18 @@ void alterarAgendamento(void){
     printf("\n   Data (DD/MM/AAAA)                   : ");
     fgets(data, sizeof(data), stdin);
 
-    horario = menuHorariosDisponiveis();
+    printf("\n   Horário(HH:MM): ");
+    fgets(horario, sizeof(horario), stdin);
 
-    local = menuLocais();
+    printf("\n   Cidade que será realizado o espetáculo: ");
+    fgets(cidade, sizeof(cidade), stdin);
 
     printf("\n   Capacidade Maxima de Publico        : ");
     scanf(" %d", &capacidadeMax);
+    getchar();
+
+    printf("\n   Preço do Ingresso: ");
+    scanf(" %f", &precoIngresso);
     getchar();
 
     confirmarAlteracao();
@@ -212,7 +161,7 @@ void excluirAgendamento(void){
     printf("\n");
     printf("==============================================================================\n");
     printf("||                                                                          ||\n");
-    printf("||                 ~ ~ ~ Exclusao de Agendamentos ~ ~ ~                     ||\n");
+    printf("||                  ~ ~ ~ Exclusao de Espetaculo ~ ~ ~                      ||\n");
     printf("||                                                                          ||\n");
     printf("==============================================================================\n");
     printf("||               Developed by @lucascsantos07 -- since Aug, 2025            ||\n"); 
@@ -223,17 +172,17 @@ void excluirAgendamento(void){
 
     printf("\n   Lista dos Agendamentos do Responsável Informado: \n");
 
-    printf("\n   Digite o código do Agendamento que deseja alterar: ");
+    printf("\n   Digite o código do Agendamento que deseja excluir: ");
     scanf(" %d", &codAgendamento);
     getchar();
 
     printf("\n==============================================================================\n");
     printf("\nAGENDAMENTO \n");
-    printf("\nTipo: \n");
     printf("Data: \n");
     printf("Horario: \n");
     printf("Local: \n");
     printf("Capacidade: \n");
+    printf("Preço: \n");
     printf("CPF Responsavel: \n");
     printf("\n==============================================================================\n");
 
@@ -257,9 +206,8 @@ void listarTodosAgendamentos(void){
     printf("\n>> Segunda Feira (27/10/2025) \n");
 
     printf("\n==============================================================================\n");
-    printf("\n|| Tipo: Espetaculo\n");
-    printf("|| Horario: 20:00\n");
-    printf("|| Local: Palco Principal\n");
+    printf("\n|| Horario: 20:00\n");
+    printf("|| Local: Parelhas\n");
     printf("|| Capacidade: 500\n");
     printf("|| CPF Responsavel: 123.456.789-12\n");
     printf("\n==============================================================================\n");
@@ -267,9 +215,8 @@ void listarTodosAgendamentos(void){
     printf("\n>> Terça Feira (28/10/2025) \n");
 
     printf("\n==============================================================================\n");
-    printf("\n|| Tipo: Ensaio\n");
-    printf("|| Horario: 09:00\n");
-    printf("|| Local: Area Externa\n");
+    printf("\n|| Horario: 09:00\n");
+    printf("|| Local: Caicó\n");
     printf("|| Capacidade: 0\n");
     printf("|| CPF Responsavel: 123.444.777-99\n");
     printf("\n==============================================================================\n");
@@ -278,7 +225,7 @@ void listarTodosAgendamentos(void){
 void consultarAgendamento(void){
     limparTela();
 
-    int escolha, tipoAgendamento;
+    int escolha;
     char data[12], cpfResponsavel[20];
 
     printf("\n");
@@ -292,8 +239,7 @@ void consultarAgendamento(void){
 
     printf("\n   Deseja Pesquisar Por \n");
     printf("\n      1 - Data ");
-    printf("\n      2 - Tipo ");
-    printf("\n      3 - Responsavel \n");
+    printf("\n      2 - Responsavel \n");
     printf("\n   Digite sua opcao: ");
     scanf(" %d", &escolha);
     getchar();
@@ -303,12 +249,9 @@ void consultarAgendamento(void){
         fgets(data, sizeof(data), stdin);
         printf("\n   Agendamentos encontrados para a data %s\n", data);
     }else if(escolha == 2){
-        tipoAgendamento = menuTiposAgendamentos();
-        printf("\n   Agendamentos encontrados do tipo selecionado: \n");
-    }else if(escolha == 3){
         printf("\n   Informe a CPF do Responsavel: ");
         fgets(cpfResponsavel, sizeof(cpfResponsavel), stdin);
-        printf("\n   Agendamentos encontrados para o responsável %s\n", cpfResponsavel);
+        printf("\n   Agendamentos cadastrado pelo responsável %s\n", cpfResponsavel);
     }else{
         printf("\nOpção inválida! Tente novamente.\n");
     }

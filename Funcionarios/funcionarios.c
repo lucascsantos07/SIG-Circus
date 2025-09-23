@@ -57,24 +57,24 @@ void telaCadastroFuncionario(void) {
     
     printf("\n   Nome Completo       : ");
     fgets(nome, sizeof(nome), stdin);
-    printf("   Data de Nascimento  : ");
+    printf("\n   Data de Nascimento  : ");
     fgets(dataNascimento, sizeof(dataNascimento), stdin);
-    printf("   Email               : ");
+    printf("\n   Email               : ");
     fgets(email, sizeof(email), stdin);
-    printf("   CPF                 : ");
+    printf("\n   CPF                 : ");
     fgets(cpf, sizeof(cpf), stdin);
-    printf("   Sexo (m/f)          : ");
+    printf("\n   Sexo (m/f)          : ");
     scanf(" %c", &sexo);
     getchar();
-    printf("   Endereço            : ");
+    printf("\n   Endereço            : ");
     fgets(endereco, sizeof(endereco), stdin);
-    printf("   Telefone            : ");
+    printf("\n   Telefone            : ");
     fgets(telefone, sizeof(telefone), stdin);
-    printf("   Salário             : ");
+    printf("\n   Salário             : ");
     fgets(salario, sizeof(salario), stdin);
-    printf("   Cargo               : ");
+    printf("\n   Cargo               : ");
     fgets(cargo, sizeof(cargo), stdin);
-    printf("   Setor               : ");
+    printf("\n   Setor               : ");
     fgets(setor, sizeof(setor), stdin);
 
     printf("\n================================================================================\n");
@@ -142,24 +142,24 @@ void editarDadosFuncionario(void) {
 
     printf("\n   Nome Completo       : ");
     fgets(novoNome, sizeof(novoNome), stdin);
-    printf("   Data de Nascimento  : ");
+    printf("\n   Data de Nascimento  : ");
     fgets(novaDataNascimento, sizeof(novaDataNascimento), stdin);
-    printf("   Email               : ");
+    printf("\n   Email               : ");
     fgets(novoEmail, sizeof(novoEmail), stdin);
-    printf("   CPF                 : ");
+    printf("\n   CPF                 : ");
     fgets(novoCpf, sizeof(novoCpf), stdin);
-    printf("   Sexo (m/f)          : ");
+    printf("\n   Sexo (m/f)          : ");
     scanf(" %c", &novoSexo);
     getchar();
-    printf("   Endereço            : ");
+    printf("\n   Endereço            : ");
     fgets(novoEndereco, sizeof(novoEndereco), stdin);
-    printf("   Telefone            : ");
+    printf("\n   Telefone            : ");
     fgets(novoTelefone, sizeof(novoTelefone), stdin);
-    printf("   Salário             : ");
+    printf("\n   Salário             : ");
     fgets(novoSalario, sizeof(novoSalario), stdin);
-    printf("   Cargo               : ");
+    printf("\n   Cargo               : ");
     fgets(novoCargo, sizeof(novoCargo), stdin);
-    printf("   Setor               : ");
+    printf("\n   Setor               : ");
     fgets(novoSetor, sizeof(novoSetor), stdin);
 
     confirmarAlteracao();

@@ -39,8 +39,6 @@ void telaCadastroCliente(void){
     char dataNascimento[20];
     char email[100];
     char cpf[20];
-    char sexo;
-    char cidade[50];
 
     printf("\n");
     printf("==============================================================================\n");
@@ -53,17 +51,12 @@ void telaCadastroCliente(void){
     
     printf("\n   Nome Completo       : ");
     fgets(nome, sizeof(nome), stdin);
-    printf("   Data de Nascimento  : ");
+    printf("\n   Data de Nascimento  : ");
     fgets(dataNascimento, sizeof(dataNascimento), stdin);
-    printf("   Email               : ");
+    printf("\n   Email               : ");
     fgets(email, sizeof(email), stdin);
-    printf("   CPF                 : ");
+    printf("\n   CPF                 : ");
     fgets(cpf, sizeof(cpf), stdin);
-    printf("   Sexo (m/f)          : ");
-    scanf(" %c", &sexo);
-    getchar();
-    printf("   Cidade              : ");
-    fgets(cidade, sizeof(cidade), stdin);
 
     printf("\n==============================================================================\n");
     printf("||                             Cadastro concluído                           ||\n");
@@ -94,8 +87,6 @@ void listarDadosCliente(void){
     printf("Data de Nascimento: \n");
     printf("Email: \n");
     printf("CPF: \n");
-    printf("Sexo(m/f): \n");
-    printf("Cidade: \n");
     printf("\n==============================================================================\n");
  
 }
@@ -110,8 +101,6 @@ void editarDadoscliente(void){
     char novaDataNascimento[20];
     char novoEmail[100];
     char novoCpf[20];
-    char novoSexo;
-    char novaCidade[50];
 
     printf("\n");
     printf("==============================================================================\n");
@@ -127,17 +116,12 @@ void editarDadoscliente(void){
 
     printf("\n   Nome Completo       : ");
     fgets(novoNome, sizeof(novoNome), stdin);
-    printf("   Data de Nascimento  : ");
+    printf("\n   Data de Nascimento  : ");
     fgets(novaDataNascimento, sizeof(novaDataNascimento), stdin);
-    printf("   Email               : ");
+    printf("\n   Email               : ");
     fgets(novoEmail, sizeof(novoEmail), stdin);
-    printf("   CPF                 : ");
+    printf("\n   CPF                 : ");
     fgets(novoCpf, sizeof(novoCpf), stdin);
-    printf("   Sexo (m/f)          : ");
-    scanf(" %c", &novoSexo);
-    getchar();
-    printf("   Cidade              : ");
-    fgets(novaCidade, sizeof(novaCidade), stdin);
 
     confirmarAlteracao();
 
@@ -167,8 +151,6 @@ void excluirContacliente(void){
     printf("Data de Nascimento: \n");
     printf("Email: \n");
     printf("CPF: \n");
-    printf("Sexo(m/f): \n");
-    printf("Cidade: \n");
     printf("\n==============================================================================\n");
 
     confirmarExclusao("Cliente");

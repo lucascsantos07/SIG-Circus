@@ -23,7 +23,7 @@ void telaPrincipal(void) {
     printf("||                                                                          ||\n");
     printf("||             1. Clientes                                                  ||\n");
     printf("||             2. Funcionários                                              ||\n");
-    printf("||             3. Agendamentos                                              ||\n");
+    printf("||             3. Agendamentos de Espetáculo                                ||\n");
     printf("||             4. Vendas de ingressos                                       ||\n");
     printf("||             5. Relatórios                                                ||\n");
     printf("||             6. Sobre o Projeto                                           ||\n");

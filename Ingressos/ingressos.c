@@ -79,7 +79,7 @@ void telaCadastroVendaIngresso(void) {
 
 void consultarVendaIngresso(void) {
     limparTela();
-    int escolha;
+    int escolha, idEspetaculo;
     char data[12], cpfCliente[20];
 
     printf("\n");
@@ -104,11 +104,14 @@ void consultarVendaIngresso(void) {
         fgets(data, sizeof(data), stdin);
         printf("\n   Vendas encontradas para a data %s\n", data);
     }else if(escolha == 2){
+        printf("\n   Digite o id do espetáculo: ");
+        scanf(" %d", &idEspetaculo);
+        getchar();
         printf("\n   Vendas encontradas para o espetáculo selecionado: \n");
     }else if(escolha == 3){
         printf("\n   Informe a CPF do Cliente: ");
         fgets(cpfCliente, sizeof(cpfCliente), stdin);
-        printf("\n   Vendas encontradas para o cliente %s\n", cpfCliente);
+        printf("\n   Compras encontradas do cliente %s\n", cpfCliente);
     }else{
         printf("\nOpção inválida! Tente novamente.\n");
     }
