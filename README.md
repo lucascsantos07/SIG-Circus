@@ -1,4 +1,17 @@
 # **SIG-Circus: Um Sistema de Gestão para um Circo**
+
+##  Desenvolvedores
+
+- **Lucas da Costa Santos**  
+  📧 [lucascsparelhas@gmail.com](mailto:lucascsparelhas@gmail.com)  
+  🔗 [GitHub](https://github.com/lucascsantos07)
+
+- **Vinícius Linhares Queiroz**  
+  📧 [vinicius.linhares.702@ufrn.edu.br](mailto:vinicius.linhares.702@ufrn.edu.br)  
+  🔗 [GitHub](https://github.com/ViniciusL07) 
+
+---
+
 ## **Descrição do Projeto**
 Este projeto foi desenvolvido para facilitar a gestão completa de um circo. O SIG-Circus integra em um único sistema o controle das principais áreas administrativas, tornando os processos mais ágeis e organizados.
 
