@@ -97,6 +97,7 @@ void telaCadastroAgendamento(void){
 
     printf("\n   CPF do Responsável pelo Agendamento: ");
     fgets(cpfResponsavel, sizeof(cpfResponsavel), stdin);
+    
 
     printf("\n==============================================================================\n");
     printf("||                             Cadastro concluído                           ||\n");

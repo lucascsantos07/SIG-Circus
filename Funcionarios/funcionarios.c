@@ -46,6 +46,8 @@ void telaCadastroFuncionario(void) {
     char cargo[30];
     char setor[30];
 
+    FILE *fp_funcionario;
+
     printf("\n");
     printf("==============================================================================\n");
     printf("||                                                                          ||\n");
@@ -77,6 +79,25 @@ void telaCadastroFuncionario(void) {
     printf("\n   Setor               : ");
     fgets(setor, sizeof(setor), stdin);
 
+    fp_funcionario = fopen("Funcionarios/funcionarios.txt","wt");
+
+    if (fp_funcionario == NULL){
+        printf("Erro na criacao do arquivo\n!");
+        exit(1);
+    }
+    
+    fprintf(fp_funcionario,"%s", nome);
+    fprintf(fp_funcionario,"%s",dataNascimento);
+    fprintf(fp_funcionario,"%s",email);
+    fprintf(fp_funcionario,"%s",cpf);
+    fprintf(fp_funcionario,"%c", sexo);
+    fprintf(fp_funcionario,"%s", endereco);
+    fprintf(fp_funcionario,"%s", telefone);
+    fprintf(fp_funcionario,"%s", salario);
+    fprintf(fp_funcionario,"%s", cargo);
+    fprintf(fp_funcionario,"%s", setor);
+    fclose(fp_funcionario);
+
     printf("\n================================================================================\n");
     printf("||                             Cadastro concluído                             ||\n");
     printf("================================================================================\n");
@@ -87,6 +108,10 @@ void telaCadastroFuncionario(void) {
 void listarDadosFuncionario(void) {
     limparTela();
     char cpf[20];
+
+    FILE *fp;
+    char linha[255];
+
     printf("\n");
     printf("==============================================================================\n");
     printf("||                                                                          ||\n");
@@ -99,18 +124,17 @@ void listarDadosFuncionario(void) {
     printf("\nInforme o CPF do funcionário: ");
     fgets(cpf, sizeof(cpf), stdin);
 
-    printf("\n==============================================================================\n");
-    printf("\nNome Completo: \n");
-    printf("Data de Nascimento: \n");
-    printf("Email: \n");
-    printf("CPF: \n");
-    printf("Sexo(m/f): \n");
-    printf("Endereço: \n");
-    printf("Telefone: \n");
-    printf("Salário: \n");
-    printf("Cargo: \n");
-    printf("Setor: \n");
-    printf("\n==============================================================================\n");
+    fp = fopen("Funcionarios/funcionarios.txt","rt");
+    if (fp == NULL){
+        printf("Erro na criacao do arquivo\n!");
+        exit(1);
+    }
+    while (fscanf(fp,"%[^\n]",linha) == 1) {
+        
+        printf("%s\n",linha);
+        fgetc(fp);
+    }
+    fclose(fp);
 }
 
 
