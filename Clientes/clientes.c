@@ -87,8 +87,13 @@ void telaCadastroCliente(void){
 
 void listarDadosCliente(void){
     limparTela();
-
     char cpf[20];
+    char nome[50];
+    char dataNascimento[20];
+    char email[100];
+    
+    char cpf_lido[20];
+    FILE *arq_cliente;
 
     printf("\n");
     printf("==============================================================================\n");
@@ -100,15 +105,38 @@ void listarDadosCliente(void){
     printf("==============================================================================\n");
 
     printf("\nInforme o seu CPF: ");
-    fgets(cpf, sizeof(cpf), stdin);
+    fgets(cpf_lido, 20, stdin);
+    cpf_lido[strcspn(cpf_lido, "\n")] = '\0';
 
-    printf("\n==============================================================================\n");
-    printf("\nNome Completo: \n");
-    printf("Data de Nascimento: \n");
-    printf("Email: \n");
-    printf("CPF: \n");
-    printf("\n==============================================================================\n");
- 
+    arq_cliente= fopen("Clientes/clientes.csv","rt");
+
+    if (arq_cliente == NULL){
+        printf("Erro na criacao do arquivo\n!");
+        exit(1);
+    }
+
+    while(!feof(arq_cliente)){
+        fscanf(arq_cliente, "%[^;]",cpf);
+        fgetc(arq_cliente);
+        fscanf(arq_cliente, "%[^;]",nome);
+        fgetc(arq_cliente);
+        fscanf(arq_cliente, "%[^;]",email);
+        fgetc(arq_cliente);
+        fscanf(arq_cliente, "%[^\n]",dataNascimento);
+        fgetc(arq_cliente);
+        if(strcmp(cpf,cpf_lido)==0){
+            printf("\n==============================================================================\n");
+            printf("\nCPF: %s\n",cpf);
+            printf("Nome: %s\n",nome);
+            printf("Email: %s\n",email);
+            printf("Data de Nascimento: %s",dataNascimento);
+            printf("\n==============================================================================\n");
+            fclose(arq_cliente);
+            return;
+        }
+    }
+    fclose(arq_cliente);
+    printf("Cliente não encontrado");
 }
 
 

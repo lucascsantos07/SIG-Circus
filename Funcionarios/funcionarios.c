@@ -46,8 +46,6 @@ void telaCadastroFuncionario(void) {
     char cargo[30];
     char setor[30];
 
-    FILE *fp_funcionario;
-
     printf("\n");
     printf("==============================================================================\n");
     printf("||                                                                          ||\n");
@@ -78,25 +76,6 @@ void telaCadastroFuncionario(void) {
     fgets(cargo, sizeof(cargo), stdin);
     printf("\n   Setor               : ");
     fgets(setor, sizeof(setor), stdin);
-
-    fp_funcionario = fopen("Funcionarios/funcionarios.txt","wt");
-
-    if (fp_funcionario == NULL){
-        printf("Erro na criacao do arquivo\n!");
-        exit(1);
-    }
-    
-    fprintf(fp_funcionario,"%s", nome);
-    fprintf(fp_funcionario,"%s",dataNascimento);
-    fprintf(fp_funcionario,"%s",email);
-    fprintf(fp_funcionario,"%s",cpf);
-    fprintf(fp_funcionario,"%c", sexo);
-    fprintf(fp_funcionario,"%s", endereco);
-    fprintf(fp_funcionario,"%s", telefone);
-    fprintf(fp_funcionario,"%s", salario);
-    fprintf(fp_funcionario,"%s", cargo);
-    fprintf(fp_funcionario,"%s", setor);
-    fclose(fp_funcionario);
 
     printf("\n================================================================================\n");
     printf("||                             Cadastro concluído                             ||\n");
