@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "agendamentos.h"
 #include "../Utilitarios/utilitarios.h"
 
@@ -65,9 +66,11 @@ void menuAgendamentos(void){
 
 void telaCadastroAgendamento(void){
     limparTela();
-    char data[12], cpfResponsavel[20], cidade[50], horario[10];
+    char data[12], cpfResponsavel[20], cidade[50], horario[7];
     int capacidadeMax;
     float precoIngresso;
+
+    FILE *arq_agendamentos;
 
     printf("\n");
     printf("==============================================================================\n");
@@ -79,13 +82,16 @@ void telaCadastroAgendamento(void){
     printf("==============================================================================\n");
 
     printf("\n   Data (DD/MM/AAAA): ");
-    fgets(data, sizeof(data), stdin);
+    fgets(data, 12, stdin);
+    data[strcspn(data, "\n")] = '\0';
 
     printf("\n   Horário(HH:MM): ");
-    fgets(horario, sizeof(horario), stdin);
+    fgets(horario, 7, stdin);
+    horario[strcspn(horario, "\n")] = '\0';
 
     printf("\n   Cidade que será realizado o espetáculo: ");
-    fgets(cidade, sizeof(cidade), stdin);
+    fgets(cidade, 50, stdin);
+    cidade[strcspn(cidade, "\n")] = '\0';
 
     printf("\n   Capacidade Maxima de Publico: ");
     scanf(" %d", &capacidadeMax);
@@ -96,7 +102,22 @@ void telaCadastroAgendamento(void){
     getchar();
 
     printf("\n   CPF do Responsável pelo Agendamento: ");
-    fgets(cpfResponsavel, sizeof(cpfResponsavel), stdin);
+    fgets(cpfResponsavel, 20, stdin);
+    cpfResponsavel[strcspn(cpfResponsavel, "\n")] = '\0';
+
+    arq_agendamentos = fopen("Agendamentos/agendamentos.csv","at");
+
+    if (arq_agendamentos == NULL){
+        printf("Erro na criacao do arquivo\n!");
+        exit(1);
+    }
+    
+    fprintf(arq_agendamentos,"%s;",data);
+    fprintf(arq_agendamentos,"%s;",horario);
+    fprintf(arq_agendamentos,"%d;",capacidadeMax);
+    fprintf(arq_agendamentos,"%.2f;",precoIngresso);
+    fprintf(arq_agendamentos,"%s\n",cpfResponsavel);
+    fclose(arq_agendamentos);
     
 
     printf("\n==============================================================================\n");
