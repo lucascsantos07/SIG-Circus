@@ -151,14 +151,16 @@ void listarDadosFuncionario(void) {
     cpf_input[strcspn(cpf_input, "\n")] = 0;
 
     fp_funcionario = fopen("Funcionarios/funcionarios.csv", "rt");
+    if (fp_funcionario == NULL) {
+        printf("Erro ao abrir arquivo!\n");
+        exit(1);
+    }
 
     while (fgets(linha, sizeof(linha), fp_funcionario)) {
-    sscanf(linha, "%[^;];%[^;];%[^;];%[^;];%[^;];%[^;];%[^;];%[^;];%[^;];%[^;\n]",
-           cpf_info, nome, dataNascimento, email, sexo, endereco, telefone, salario, cargo, setor);
-
+        sscanf(linha, "%[^;];%[^;];%[^;];%[^;];%[^;];%[^;];%[^;];%[^;];%[^;];%[^;\n]",
+               cpf_info, nome, dataNascimento, email, sexo, endereco, telefone, salario, cargo, setor);
 
         if (strcmp(cpf_input, cpf_info) == 0) {
-
             printf("\n==============================================================================\n");
             printf("\nNome Completo: %s \n", nome);
             printf("Data de Nascimento: %s \n", dataNascimento);
@@ -171,10 +173,12 @@ void listarDadosFuncionario(void) {
             printf("Cargo: %s \n", cargo);
             printf("Setor: %s \n", setor);
             printf("\n==============================================================================\n");
-
         }
     }
+
+    fclose(fp_funcionario);
 }
+
 
 
 void editarDadosFuncionario(void) {
