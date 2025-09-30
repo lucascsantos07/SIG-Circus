@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "funcionarios.h"
 #include "../Utilitarios/utilitarios.h"
 
@@ -42,11 +43,11 @@ void telaCadastroFuncionario(void) {
     char sexo[12];
     char endereco[100];
     char telefone[15];
-    char salario[25];
+    char salario[10];
     char cargo[30];
     char setor[30];
 
-    FILE *fp_funcionario;
+    FILE *arqFuncionarios;
 
     printf("\n");
     printf("==============================================================================\n");
@@ -58,60 +59,55 @@ void telaCadastroFuncionario(void) {
     printf("==============================================================================\n");
     
     printf("\n   Nome Completo       : ");
-    fgets(nome, sizeof(nome), stdin);
-    nome[strcspn(nome, "\n")] = 0;
+    fgets(nome, 50, stdin);
+    nome[strcspn(nome, "\n")] = '\0';
     printf("\n   Data de Nascimento  : ");
-    fgets(dataNascimento, sizeof(dataNascimento), stdin);
-    dataNascimento[strcspn(dataNascimento, "\n")] = 0;
+    fgets(dataNascimento, 20, stdin);
+    dataNascimento[strcspn(dataNascimento, "\n")] = '\0';
     printf("\n   Email               : ");
-    fgets(email, sizeof(email), stdin);
-    email[strcspn(email, "\n")] = 0;
+    fgets(email, 100, stdin);
+    email[strcspn(email, "\n")] = '\0';
     printf("\n   CPF                 : ");
-    fgets(cpf, sizeof(cpf), stdin);
-    cpf[strcspn(cpf, "\n")] = 0;
+    fgets(cpf, 20, stdin);
+    cpf[strcspn(cpf, "\n")] = '\0';
     printf("\n   Sexo (m/f)          : ");
-    fgets(sexo, sizeof(sexo), stdin);
-    sexo[strcspn(sexo, "\n")] = 0;
+    fgets(sexo, 12, stdin);
+    sexo[strcspn(sexo, "\n")] = '\0';
     printf("\n   Endereço            : ");
-    fgets(endereco, sizeof(endereco), stdin);
-    endereco[strcspn(endereco, "\n")] = 0;
+    fgets(endereco, 100, stdin);
+    endereco[strcspn(endereco, "\n")] = '\0';
     printf("\n   Telefone            : ");
-    fgets(telefone, sizeof(telefone), stdin);
-    telefone[strcspn(telefone, "\n")] = 0;
+    fgets(telefone, 15, stdin);
+    telefone[strcspn(telefone, "\n")] = '\0';
     printf("\n   Salário             : ");
-    fgets(salario, sizeof(salario), stdin);
-    salario[strcspn(salario, "\n")] = 0;
+    fgets(salario, 10, stdin);
+    salario[strcspn(salario, "\n")] = '\0';
     printf("\n   Cargo               : ");
-    fgets(cargo, sizeof(cargo), stdin);
-    cargo[strcspn(cargo, "\n")] = 0;
+    fgets(cargo, 30, stdin);
+    cargo[strcspn(cargo, "\n")] = '\0';
     printf("\n   Setor               : ");
-    fgets(setor, sizeof(setor), stdin);
-    setor[strcspn(setor, "\n")] = 0;
+    fgets(setor, 30, stdin);
+    setor[strcspn(setor, "\n")] = '\0';
 
-    fp_funcionario = fopen("Funcionarios/funcionarios.csv", "at");
+    arqFuncionarios = fopen("Funcionarios/funcionarios.csv", "at");
 
-    if (fp_funcionario == NULL) {
+    if (arqFuncionarios == NULL) {
         printf("FAIL");
         exit(1);
     }
 
-    if (ftell(fp_funcionario) == 0) {
-        fprintf(fp_funcionario, "%s;", cpf);
-    } else {
-        fprintf(fp_funcionario, "\n%s;", cpf);
-    }
+    fprintf(arqFuncionarios, "%s;", cpf);
+    fprintf(arqFuncionarios, "%s;", nome);
+    fprintf(arqFuncionarios, "%s;", dataNascimento);
+    fprintf(arqFuncionarios, "%s;", email);
+    fprintf(arqFuncionarios, "%s;", sexo);
+    fprintf(arqFuncionarios, "%s;", endereco);
+    fprintf(arqFuncionarios, "%s;", telefone);
+    fprintf(arqFuncionarios, "%s;", salario);
+    fprintf(arqFuncionarios, "%s;", cargo);
+    fprintf(arqFuncionarios, "%s\n", setor);
 
-    fprintf(fp_funcionario, "%s;", nome);
-    fprintf(fp_funcionario, "%s;", dataNascimento);
-    fprintf(fp_funcionario, "%s;", email);
-    fprintf(fp_funcionario, "%s;", sexo);
-    fprintf(fp_funcionario, "%s;", endereco);
-    fprintf(fp_funcionario, "%s;", telefone);
-    fprintf(fp_funcionario, "%s;", salario);
-    fprintf(fp_funcionario, "%s;", cargo);
-    fprintf(fp_funcionario, "%s;", setor);
-
-    fclose(fp_funcionario);
+    fclose(arqFuncionarios);
 
     printf("\n================================================================================\n");
     printf("||                             Cadastro concluído                             ||\n");
