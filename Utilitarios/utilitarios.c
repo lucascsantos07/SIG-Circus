@@ -13,7 +13,7 @@ void limparTela(void) {
     #endif
 }
 
-void confirmarExclusao(const char *modulo){
+int confirmarExclusao(const char *modulo){
 
     char confirma;
 
@@ -24,17 +24,19 @@ void confirmarExclusao(const char *modulo){
         printf("\n==============================================================================\n");
         printf("                        %s Excluido Com Sucesso                      \n", modulo);
         printf("==============================================================================\n");
+        return 1;
     }else if(confirma == 'n'){
         printf("\n==============================================================================\n");
         printf("||                            Exclusao Cancelado                            ||\n");
         printf("==============================================================================\n");
+        return 0;
     }else{
         printf("\nOpção inválida! Tente novamente.\n");
     }
 
 }
 
-void confirmarAlteracao(){
+int confirmarAlteracao(){
 
     char confirma;
 
@@ -46,10 +48,12 @@ void confirmarAlteracao(){
         printf("\n==============================================================================\n");
         printf("||                     Dado(s) Atualizado(s) com sucesso                    ||\n");
         printf("==============================================================================\n");
+        return 1;
     }else if(confirma == 'n'){
         printf("\n==============================================================================\n");
         printf("||                           Alteracao Cancelado                            ||\n");
         printf("==============================================================================\n");
+        return 0;
     }else{
         printf("\nOpção inválida! Tente novamente.\n");
     }
