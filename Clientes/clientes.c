@@ -356,6 +356,21 @@ void excluirContacliente(void){
 
     char cpf_busca[20];
 
+    char cpf[20];
+    char nome[50];
+    char dataNascimento[20];
+    char email[100];
+
+    char cpfDel[20];
+    char nomeDel[50];
+    char dataNascimentoDel[20];
+    char emailDel[100];
+
+    int retorno;
+
+    FILE *arqCliente;
+    FILE *arqClienteTemp;
+
     printf("\n");
     printf("==============================================================================\n");
     printf("||                                                                          ||\n");
@@ -366,17 +381,61 @@ void excluirContacliente(void){
     printf("==============================================================================\n");
 
     printf("\n   Informe o seu CPF: ");
-    fgets(cpf_busca, sizeof(cpf_busca), stdin);
+    fgets(cpf_busca, 20, stdin);
+    cpf_busca[strcspn(cpf_busca, "\n")] = '\0';
 
-    printf("\n==============================================================================\n");
-    printf("\nSeus Dados Cadastrados: \n");
-    printf("\nNome Completo: \n");
-    printf("Data de Nascimento: \n");
-    printf("Email: \n");
-    printf("CPF: \n");
-    printf("\n==============================================================================\n");
+    arqCliente= fopen("Clientes/clientes.csv","rt");
+    arqClienteTemp = fopen("Clientes/clientesTemp.csv","wt");
 
-    confirmarExclusao("Cliente");
+    if (arqCliente == NULL){
+        printf("Erro na criacao do arquivo\n!");
+        exit(1);
+    }
+
+    if (arqClienteTemp == NULL){
+        printf("Erro na criacao do arquivo\n!");
+        exit(1);
+    }
+
+    while(fscanf(arqCliente, "%[^;]",cpf) == 1){
+        fgetc(arqCliente);
+        fscanf(arqCliente, "%[^;]",nome);
+        fgetc(arqCliente);
+        fscanf(arqCliente, "%[^;]",email);
+        fgetc(arqCliente);
+        fscanf(arqCliente, "%[^\n]",dataNascimento);
+        fgetc(arqCliente);
+
+        if(strcmp(cpf,cpf_busca)!=0){
+            fprintf(arqClienteTemp,"%s;",cpf);
+            fprintf(arqClienteTemp,"%s;",nome);
+            fprintf(arqClienteTemp,"%s;",email);
+            fprintf(arqClienteTemp,"%s\n",dataNascimento);
+        }else{
+
+            printf("\n==============================================================================\n");
+            printf("\nSeus Dados Cadastrados: \n");
+            printf("\nNome Completo: %s\n", nome);
+            printf("Data de Nascimento: %s\n", dataNascimento);
+            printf("Email: %s\n", email);
+            printf("CPF: %s\n", cpf);
+            printf("\n==============================================================================\n");
+
+            retorno = confirmarExclusao("Cliente");
+            if(retorno == 0){
+                fprintf(arqClienteTemp,"%s;",cpf);
+                fprintf(arqClienteTemp,"%s;",nome);
+                fprintf(arqClienteTemp,"%s;",email);
+                fprintf(arqClienteTemp,"%s\n",dataNascimento);
+            }
+        }
+    }
+
+    fclose(arqCliente);
+    fclose(arqClienteTemp);
+    
+    remove("Clientes/clientes.csv");
+    rename("Clientes/clientesTemp.csv", "Clientes/clientes.csv");
 
 }
 
