@@ -34,7 +34,7 @@ void confirmarExclusao(const char *modulo){
 
 }
 
-void confirmarAlteracao(){
+int confirmarAlteracao(){
 
     char confirma;
 
@@ -46,10 +46,12 @@ void confirmarAlteracao(){
         printf("\n==============================================================================\n");
         printf("||                     Dado(s) Atualizado(s) com sucesso                    ||\n");
         printf("==============================================================================\n");
+        return 1;
     }else if(confirma == 'n'){
         printf("\n==============================================================================\n");
         printf("||                           Alteracao Cancelado                            ||\n");
         printf("==============================================================================\n");
+        return 0;
     }else{
         printf("\nOpção inválida! Tente novamente.\n");
     }
