@@ -6,3 +6,12 @@ void listarDadosCliente(void);
 void editarDadoscliente(void);
 void excluirContacliente(void);
 void exibirModuloClientes(void);
+
+typedef struct cliente Cliente;
+
+struct cliente{
+    char nome[50];
+    char dataNascimento[20];
+    char email[100];
+    char cpf[20];
+};
