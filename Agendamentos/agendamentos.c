@@ -66,8 +66,8 @@ void menuAgendamentos(void){
 
 void telaCadastroAgendamento(void){
     limparTela();
-    char data[12], cpfResponsavel[20], cidade[50], horario[7];
-    int capacidadeMax;
+    char data[12], cpfResponsavel[20], cidade[50], horario[7], linha[255];
+    int capacidadeMax, id;
     float precoIngresso;
 
     FILE *arq_agendamentos;
@@ -105,6 +105,15 @@ void telaCadastroAgendamento(void){
     fgets(cpfResponsavel, 20, stdin);
     cpfResponsavel[strcspn(cpfResponsavel, "\n")] = 0;
 
+    id=1;
+    arq_agendamentos = fopen("Agendamentos/agendamentos.csv", "r");
+    if (arq_agendamentos != NULL) {
+        while (fgets(linha, sizeof(linha), arq_agendamentos) != NULL) {
+            id++;
+        }
+        fclose(arq_agendamentos);
+    }
+
     arq_agendamentos = fopen("Agendamentos/agendamentos.csv","at");
 
     if (arq_agendamentos == NULL){
@@ -112,6 +121,7 @@ void telaCadastroAgendamento(void){
         exit(1);
     }
 
+    fprintf(arq_agendamentos, "%d;", id);
     fprintf(arq_agendamentos, "%s;", data);
     fprintf(arq_agendamentos,"%s;",horario);
     fprintf(arq_agendamentos,"%s;",cidade);
