@@ -38,7 +38,6 @@ void telaCadastroCliente(void){
     limparTela();
 
     FILE *arq_cliente;
-
     Cliente cliente;
 
     printf("\n");
@@ -50,35 +49,11 @@ void telaCadastroCliente(void){
     printf("||               Developed by @lucascsantos07 -- since Aug, 2025            ||\n"); 
     printf("==============================================================================\n");
     
-    printf("\n   CPF: ");
-    fgets(cliente.cpf, 20, stdin);
-    cliente.cpf[strcspn(cliente.cpf, "\n")] = '\0';
-    printf("\n   Nome Completo: ");
-    fgets(cliente.nome, 50, stdin);
-    cliente.nome[strcspn(cliente.nome, "\n")] = '\0';
-    printf("\n   Email: ");
-    fgets(cliente.email, 100, stdin);
-    cliente.email[strcspn(cliente.email, "\n")] = '\0';
-    printf("\n   Data de Nascimento: ");
-    fgets(cliente.dataNascimento, 20, stdin);
-    cliente.dataNascimento[strcspn(cliente.dataNascimento, "\n")] = '\0';
+    cliente = coletarDadosCliente();
 
-    arq_cliente = fopen("Clientes/clientes.csv","at");
+    exibirCliente(&cliente);
 
-    if (arq_cliente == NULL){
-        printf("Erro na criacao do arquivo\n!");
-        exit(1);
-    }
-    
-    fprintf(arq_cliente,"%s;",cliente.cpf);
-    fprintf(arq_cliente,"%s;",cliente.nome);
-    fprintf(arq_cliente,"%s;",cliente.email);
-    fprintf(arq_cliente,"%s\n",cliente.dataNascimento);
-    fclose(arq_cliente);
-
-    printf("\n==============================================================================\n");
-    printf("||                             Cadastro concluído                           ||\n");
-    printf("==============================================================================\n");
+    confirmacaoCadastroCliente(&cliente);
 
 }
 
@@ -468,4 +443,67 @@ void exibirModuloClientes(void){
         }
 
     }while(opcaoCliente != '0');
+}
+
+Cliente coletarDadosCliente(void){
+    Cliente cliente;
+    printf("\n   CPF: ");
+    fgets(cliente.cpf, 20, stdin);
+    cliente.cpf[strcspn(cliente.cpf, "\n")] = '\0';
+    printf("\n   Nome Completo: ");
+    fgets(cliente.nome, 50, stdin);
+    cliente.nome[strcspn(cliente.nome, "\n")] = '\0';
+    printf("\n   Email: ");
+    fgets(cliente.email, 100, stdin);
+    cliente.email[strcspn(cliente.email, "\n")] = '\0';
+    printf("\n   Data de Nascimento: ");
+    fgets(cliente.dataNascimento, 20, stdin);
+    cliente.dataNascimento[strcspn(cliente.dataNascimento, "\n")] = '\0';
+    return cliente;
+}
+
+void exibirCliente(Cliente *cliente){
+    printf("\n==============================================================================\n");
+    printf("\nSeus Dados Cadastrados: \n");
+    printf("\nNome Completo: %s\n", cliente->nome);
+    printf("Data de Nascimento: %s\n", cliente->dataNascimento);
+    printf("Email: %s\n", cliente->email);
+    printf("CPF: %s\n", cliente->cpf);
+    printf("\n==============================================================================\n");
+}
+
+void confirmacaoCadastroCliente(Cliente *cliente){
+    char opcao;
+    FILE *arqCliente;
+    printf("\nDigite 1 para confirmar cadastro\n");
+    printf("Digite 2 para cancelar cadastro\n");
+    printf("\nOpção: ");
+    scanf("%c",&opcao);
+    getchar();
+
+    if(opcao == '1'){
+        arqCliente = fopen("Clientes/clientes.csv","at");
+
+        if (arqCliente == NULL){
+            printf("Erro na criacao do arquivo\n!");
+            exit(1);
+        }
+
+        fprintf(arqCliente,"%s;",cliente->cpf);
+        fprintf(arqCliente,"%s;",cliente->nome);
+        fprintf(arqCliente,"%s;",cliente->email);
+        fprintf(arqCliente,"%s\n",cliente->dataNascimento);
+        fclose(arqCliente);
+
+        printf("\n==============================================================================\n");
+        printf("||                             Cadastro concluído                           ||\n");
+        printf("==============================================================================\n");
+    }else if(opcao == '2'){
+        printf("\n==============================================================================\n");
+        printf("||                             Cadastro cancelado                           ||\n");
+        printf("==============================================================================\n");
+    }else{
+        printf("\nOpção inválida\n");
+    }
+    
 }

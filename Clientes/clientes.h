@@ -15,3 +15,7 @@ struct cliente{
     char email[100];
     char cpf[20];
 };
+
+Cliente coletarDadosCliente(void);
+void exibirCliente(Cliente *cliente);
+void confirmacaoCadastroCliente(Cliente *cliente);
