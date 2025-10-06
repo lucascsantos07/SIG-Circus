@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 // Assinaturas da Funções do Clientes
 
 void menuCliente(void);
@@ -19,3 +21,4 @@ struct cliente{
 Cliente coletarDadosCliente(void);
 void exibirCliente(Cliente *cliente);
 void confirmacaoCadastroCliente(Cliente *cliente);
+void salvarCliente(FILE *arqCliente, Cliente *cliente);

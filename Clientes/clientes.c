@@ -37,7 +37,6 @@ void menuCliente(void) {
 void telaCadastroCliente(void){
     limparTela();
 
-    FILE *arq_cliente;
     Cliente cliente;
 
     printf("\n");
@@ -96,12 +95,7 @@ void listarDadosCliente(void){
         fscanf(arq_cliente, "%[^\n]",cliente.dataNascimento);
         fgetc(arq_cliente);
         if(strcmp(cliente.cpf,cpf_lido)==0){
-            printf("\n==============================================================================\n");
-            printf("\nCPF: %s\n",cliente.cpf);
-            printf("Nome: %s\n",cliente.nome);
-            printf("Email: %s\n",cliente.email);
-            printf("Data de Nascimento: %s\n",cliente.dataNascimento);
-            printf("\n==============================================================================\n");
+            exibirCliente(&cliente);
             fclose(arq_cliente);
             return;
         }
@@ -198,15 +192,10 @@ void editarDadoscliente(void){
                     
                     if(retorno == 1){
                         strcpy(cliente.cpf, novoCpf);
-                        fprintf(arqClienteTemp,"%s;",cliente.cpf);
-                        fprintf(arqClienteTemp,"%s;",cliente.nome);
-                        fprintf(arqClienteTemp,"%s;",cliente.email);
-                        fprintf(arqClienteTemp,"%s\n",cliente.dataNascimento);
+                        salvarCliente(arqClienteTemp, &cliente);
+
                     }else if(retorno == 0){
-                        fprintf(arqClienteTemp,"%s;",cliente.cpf);
-                        fprintf(arqClienteTemp,"%s;",cliente.nome);
-                        fprintf(arqClienteTemp,"%s;",cliente.email);
-                        fprintf(arqClienteTemp,"%s\n",cliente.dataNascimento);
+                        salvarCliente(arqClienteTemp, &cliente);
                     }
 
                     break;
@@ -229,15 +218,9 @@ void editarDadoscliente(void){
                     
                     if(retorno == 1){
                         strcpy(cliente.nome, novoNome);
-                        fprintf(arqClienteTemp,"%s;",cliente.cpf);
-                        fprintf(arqClienteTemp,"%s;",cliente.nome);
-                        fprintf(arqClienteTemp,"%s;",cliente.email);
-                        fprintf(arqClienteTemp,"%s\n",cliente.dataNascimento);
+                        salvarCliente(arqClienteTemp, &cliente);
                     }else if(retorno == 0){
-                        fprintf(arqClienteTemp,"%s;",cliente.cpf);
-                        fprintf(arqClienteTemp,"%s;",cliente.nome);
-                        fprintf(arqClienteTemp,"%s;",cliente.email);
-                        fprintf(arqClienteTemp,"%s\n",cliente.dataNascimento);
+                        salvarCliente(arqClienteTemp, &cliente);
                     }
                     break;
 
@@ -259,15 +242,9 @@ void editarDadoscliente(void){
                     
                     if(retorno == 1){
                         strcpy(cliente.email, novoEmail);
-                        fprintf(arqClienteTemp,"%s;",cliente.cpf);
-                        fprintf(arqClienteTemp,"%s;",cliente.nome);
-                        fprintf(arqClienteTemp,"%s;",cliente.email);
-                        fprintf(arqClienteTemp,"%s\n",cliente.dataNascimento);
+                        salvarCliente(arqClienteTemp, &cliente);
                     }else if(retorno == 0){
-                        fprintf(arqClienteTemp,"%s;",cliente.cpf);
-                        fprintf(arqClienteTemp,"%s;",cliente.nome);
-                        fprintf(arqClienteTemp,"%s;",cliente.email);
-                        fprintf(arqClienteTemp,"%s\n",cliente.dataNascimento);
+                        salvarCliente(arqClienteTemp, &cliente);
                     }
 
                     break;
@@ -290,15 +267,9 @@ void editarDadoscliente(void){
                     
                     if(retorno == 1){
                         strcpy(cliente.dataNascimento, novaDataNascimento);
-                        fprintf(arqClienteTemp,"%s;",cliente.cpf);
-                        fprintf(arqClienteTemp,"%s;",cliente.nome);
-                        fprintf(arqClienteTemp,"%s;",cliente.email);
-                        fprintf(arqClienteTemp,"%s\n",cliente.dataNascimento);
+                        salvarCliente(arqClienteTemp, &cliente);
                     }else if(retorno == 0){
-                        fprintf(arqClienteTemp,"%s;",cliente.cpf);
-                        fprintf(arqClienteTemp,"%s;",cliente.nome);
-                        fprintf(arqClienteTemp,"%s;",cliente.email);
-                        fprintf(arqClienteTemp,"%s\n",cliente.dataNascimento);
+                        salvarCliente(arqClienteTemp, &cliente);
                     }
 
                     break;
@@ -312,10 +283,7 @@ void editarDadoscliente(void){
 
 
         }else{
-            fprintf(arqClienteTemp,"%s;",cliente.cpf);
-            fprintf(arqClienteTemp,"%s;",cliente.nome);
-            fprintf(arqClienteTemp,"%s;",cliente.email);
-            fprintf(arqClienteTemp,"%s\n",cliente.dataNascimento);
+            salvarCliente(arqClienteTemp, &cliente);
         }
     }
 
@@ -472,9 +440,19 @@ void exibirCliente(Cliente *cliente){
     printf("\n==============================================================================\n");
 }
 
+void salvarCliente(FILE *arqCliente, Cliente *cliente){
+
+    fprintf(arqCliente,"%s;",cliente->cpf);
+    fprintf(arqCliente,"%s;",cliente->nome);
+    fprintf(arqCliente,"%s;",cliente->email);
+    fprintf(arqCliente,"%s\n",cliente->dataNascimento);
+
+}
+
 void confirmacaoCadastroCliente(Cliente *cliente){
     char opcao;
     FILE *arqCliente;
+
     printf("\nDigite 1 para confirmar cadastro\n");
     printf("Digite 2 para cancelar cadastro\n");
     printf("\nOpção: ");
@@ -489,10 +467,7 @@ void confirmacaoCadastroCliente(Cliente *cliente){
             exit(1);
         }
 
-        fprintf(arqCliente,"%s;",cliente->cpf);
-        fprintf(arqCliente,"%s;",cliente->nome);
-        fprintf(arqCliente,"%s;",cliente->email);
-        fprintf(arqCliente,"%s\n",cliente->dataNascimento);
+        salvarCliente(arqCliente, cliente);
         fclose(arqCliente);
 
         printf("\n==============================================================================\n");

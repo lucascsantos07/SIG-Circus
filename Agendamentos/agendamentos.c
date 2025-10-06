@@ -66,9 +66,10 @@ void menuAgendamentos(void){
 
 void telaCadastroAgendamento(void){
     limparTela();
-    char data[12], cpfResponsavel[20], cidade[50], horario[7], linha[255];
-    int capacidadeMax, id, maiorID;
-    float precoIngresso;
+
+    Agendamento agendamento;
+    char linha[255];
+    int maiorID;
 
     FILE *arq_agendamentos;
 
@@ -82,43 +83,43 @@ void telaCadastroAgendamento(void){
     printf("==============================================================================\n");
 
     printf("\n   Data (DD/MM/AAAA): ");
-    fgets(data, 12, stdin);
-    data[strcspn(data, "\n")] = 0;
+    fgets(agendamento.data, 12, stdin);
+    agendamento.data[strcspn(agendamento.data, "\n")] = 0;
 
     printf("\n   Horário(HH:MM): ");
-    fgets(horario, 7, stdin);
-    horario[strcspn(horario, "\n")] = 0;
+    fgets(agendamento.horario, 7, stdin);
+    agendamento.horario[strcspn(agendamento.horario, "\n")] = 0;
 
     printf("\n   Cidade que será realizado o espetáculo: ");
-    fgets(cidade, 50, stdin);
-    cidade[strcspn(cidade, "\n")] = 0;
+    fgets(agendamento.cidade, 50, stdin);
+    agendamento.cidade[strcspn(agendamento.cidade, "\n")] = 0;
 
     printf("\n   Capacidade Maxima de Publico: ");
-    scanf(" %d", &capacidadeMax);
+    scanf(" %d", &agendamento.capacidade);
     getchar();
 
     printf("\n   Preço do Ingresso: ");
-    scanf(" %f", &precoIngresso);
+    scanf(" %f", &agendamento.precoIngresso);
     getchar();
 
     printf("\n   CPF do Responsável pelo Agendamento: ");
-    fgets(cpfResponsavel, 20, stdin);
-    cpfResponsavel[strcspn(cpfResponsavel, "\n")] = 0;
+    fgets(agendamento.cpfResponsavel, 20, stdin);
+    agendamento.cpfResponsavel[strcspn(agendamento.cpfResponsavel, "\n")] = 0;
 
-    id=0;
+    agendamento.id=0;
     maiorID=0;
     arq_agendamentos = fopen("Agendamentos/agendamentos.csv", "rt");
     if (arq_agendamentos != NULL) {
         while (fgets(linha, sizeof(linha), arq_agendamentos) != NULL) {
-            sscanf(linha, "%d;", &id);
-            if (id > maiorID) {
-                maiorID = id;
+            sscanf(linha, "%d;", &agendamento.id);
+            if (agendamento.id > maiorID) {
+                maiorID = agendamento.id;
             }
         }
-        id = maiorID + 1;
+        agendamento.id = maiorID + 1;
         fclose(arq_agendamentos);
     }else{
-        id = 1;
+        agendamento.id = 1;
     }
 
     arq_agendamentos = fopen("Agendamentos/agendamentos.csv","at");
@@ -128,13 +129,13 @@ void telaCadastroAgendamento(void){
         exit(1);
     }
 
-    fprintf(arq_agendamentos, "%d;", id);
-    fprintf(arq_agendamentos, "%s;", data);
-    fprintf(arq_agendamentos,"%s;",horario);
-    fprintf(arq_agendamentos,"%s;",cidade);
-    fprintf(arq_agendamentos,"%d;",capacidadeMax);
-    fprintf(arq_agendamentos,"%.2f;",precoIngresso);
-    fprintf(arq_agendamentos,"%s\n",cpfResponsavel);
+    fprintf(arq_agendamentos, "%d;", agendamento.id);
+    fprintf(arq_agendamentos, "%s;", agendamento.data);
+    fprintf(arq_agendamentos,"%s;", agendamento.horario);
+    fprintf(arq_agendamentos,"%s;", agendamento.cidade);
+    fprintf(arq_agendamentos,"%d;", agendamento.capacidade);
+    fprintf(arq_agendamentos,"%.2f;", agendamento.precoIngresso);
+    fprintf(arq_agendamentos,"%s\n", agendamento.cpfResponsavel);
     fclose(arq_agendamentos);
     
 
@@ -147,11 +148,12 @@ void telaCadastroAgendamento(void){
 void alterarAgendamento(void){
     limparTela();
 
-    int codAgendamento, id, capacidade, retorno, encontrado, novaCapacidade;
-    float precoIngresso, novoPreco;
-    char cpf_busca[20], data[12], cpfResponsavel[20], cidade[50], horario[7], linha[255];
+    int codAgendamento, retorno, encontrado, novaCapacidade;
+    float novoPreco;
+    char cpf_busca[20], linha[255];
     char novaData[12], novoHorario[7];
     char opcao;
+    Agendamento agendamento;
     FILE *arqAgendamentos, *arqAgendamentosTemp;
 
     printf("\n");
@@ -179,9 +181,9 @@ void alterarAgendamento(void){
     printf("\nID    | Data         | Hora     | Cidade          | Capacidade | Preço      | CPF Responsável\n");
     printf("-----------------------------------------------------------------------------------------------\n");
     while (fgets(linha, 255, arqAgendamentos)) {
-        sscanf(linha, "%d;%[^;];%[^;];%[^;];%d;%f;%[^\n]", &id,data, horario, cidade, &capacidade, &precoIngresso, cpfResponsavel);
-        if(strcmp(cpfResponsavel, cpf_busca)==0){
-            printf("%-5d | %-12s | %-8s | %-15s | %-10d | %-11.2f | %-15s\n",id, data, horario, cidade, capacidade, precoIngresso, cpfResponsavel);
+        sscanf(linha, "%d;%[^;];%[^;];%[^;];%d;%f;%[^\n]", &agendamento.id,agendamento.data, agendamento.horario, agendamento.cidade, &agendamento.capacidade, &agendamento.precoIngresso, agendamento.cpfResponsavel);
+        if(strcmp(agendamento.cpfResponsavel, cpf_busca)==0){
+            printf("%-5d | %-12s | %-8s | %-15s | %-10d | %-11.2f | %-15s\n",agendamento.id, agendamento.data, agendamento.horario, agendamento.cidade, agendamento.capacidade, agendamento.precoIngresso, agendamento.cpfResponsavel);
         }
     }
 
@@ -202,10 +204,10 @@ void alterarAgendamento(void){
 
     while(fgets(linha, 255, arqAgendamentos)){
 
-        sscanf(linha, "%d;%[^;];%[^;];%[^;];%d;%f;%[^\n]", &id,data, horario, cidade, &capacidade, &precoIngresso, cpfResponsavel);
+        sscanf(linha, "%d;%[^;];%[^;];%[^;];%d;%f;%[^\n]", &agendamento.id,agendamento.data, agendamento.horario, agendamento.cidade, &agendamento.capacidade, &agendamento.precoIngresso, agendamento.cpfResponsavel);
 
 
-        if(id == codAgendamento){
+        if(agendamento.id == codAgendamento){
 
             encontrado = 1;
 
@@ -229,34 +231,34 @@ void alterarAgendamento(void){
 
                     printf("\n==============================================================================\n");
                     printf("\nAGENDAMENTO \n");
-                    printf("ID: %d\n", id);
+                    printf("ID: %d\n", agendamento.id);
                     printf("Data: %s\n",novaData);
-                    printf("Horario: %s\n",horario);
-                    printf("Cidade: %s\n",cidade);
-                    printf("Capacidade: %d\n",capacidade);
-                    printf("Preço: %.2f\n",precoIngresso);
-                    printf("CPF Responsavel: %s\n",cpfResponsavel);
+                    printf("Horario: %s\n",agendamento.horario);
+                    printf("Cidade: %s\n",agendamento.cidade);
+                    printf("Capacidade: %d\n",agendamento.capacidade);
+                    printf("Preço: %.2f\n",agendamento.precoIngresso);
+                    printf("CPF Responsavel: %s\n",agendamento.cpfResponsavel);
                     printf("\n==============================================================================\n");
 
                     retorno = confirmarAlteracao();
                     
                     if(retorno == 1){
-                        strcpy(data, novaData);
-                        fprintf(arqAgendamentosTemp, "%d;", id);
-                        fprintf(arqAgendamentosTemp, "%s;", data);
-                        fprintf(arqAgendamentosTemp,"%s;",horario);
-                        fprintf(arqAgendamentosTemp,"%s;",cidade);
-                        fprintf(arqAgendamentosTemp,"%d;",capacidade);
-                        fprintf(arqAgendamentosTemp,"%.2f;",precoIngresso);
-                        fprintf(arqAgendamentosTemp,"%s\n",cpfResponsavel);
+                        strcpy(agendamento.data, novaData);
+                        fprintf(arqAgendamentosTemp, "%d;", agendamento.id);
+                        fprintf(arqAgendamentosTemp, "%s;", agendamento.data);
+                        fprintf(arqAgendamentosTemp,"%s;",agendamento.horario);
+                        fprintf(arqAgendamentosTemp,"%s;",agendamento.cidade);
+                        fprintf(arqAgendamentosTemp,"%d;",agendamento.capacidade);
+                        fprintf(arqAgendamentosTemp,"%.2f;",agendamento.precoIngresso);
+                        fprintf(arqAgendamentosTemp,"%s\n",agendamento.cpfResponsavel);
                     }else if(retorno == 0){
-                        fprintf(arqAgendamentosTemp, "%d;", id);
-                        fprintf(arqAgendamentosTemp, "%s;", data);
-                        fprintf(arqAgendamentosTemp,"%s;",horario);
-                        fprintf(arqAgendamentosTemp,"%s;",cidade);
-                        fprintf(arqAgendamentosTemp,"%d;",capacidade);
-                        fprintf(arqAgendamentosTemp,"%.2f;",precoIngresso);
-                        fprintf(arqAgendamentosTemp,"%s\n",cpfResponsavel);
+                        fprintf(arqAgendamentosTemp, "%d;", agendamento.id);
+                        fprintf(arqAgendamentosTemp, "%s;", agendamento.data);
+                        fprintf(arqAgendamentosTemp,"%s;",agendamento.horario);
+                        fprintf(arqAgendamentosTemp,"%s;",agendamento.cidade);
+                        fprintf(arqAgendamentosTemp,"%d;",agendamento.capacidade);
+                        fprintf(arqAgendamentosTemp,"%.2f;",agendamento.precoIngresso);
+                        fprintf(arqAgendamentosTemp,"%s\n",agendamento.cpfResponsavel);
                     }
 
                     break;
@@ -269,34 +271,34 @@ void alterarAgendamento(void){
 
                     printf("\n==============================================================================\n");
                     printf("\nAGENDAMENTO \n");
-                    printf("ID: %d\n", id);
-                    printf("Data: %s\n",data);
+                    printf("ID: %d\n", agendamento.id);
+                    printf("Data: %s\n",agendamento.data);
                     printf("Horario: %s\n",novoHorario);
-                    printf("Cidade: %s\n",cidade);
-                    printf("Capacidade: %d\n",capacidade);
-                    printf("Preço: %.2f\n",precoIngresso);
-                    printf("CPF Responsavel: %s\n",cpfResponsavel);
+                    printf("Cidade: %s\n",agendamento.cidade);
+                    printf("Capacidade: %d\n",agendamento.capacidade);
+                    printf("Preço: %.2f\n",agendamento.precoIngresso);
+                    printf("CPF Responsavel: %s\n",agendamento.cpfResponsavel);
                     printf("\n==============================================================================\n");
 
                     retorno = confirmarAlteracao();
                     
                     if(retorno == 1){
-                        strcpy(horario, novoHorario);
-                        fprintf(arqAgendamentosTemp, "%d;", id);
-                        fprintf(arqAgendamentosTemp, "%s;", data);
-                        fprintf(arqAgendamentosTemp,"%s;",horario);
-                        fprintf(arqAgendamentosTemp,"%s;",cidade);
-                        fprintf(arqAgendamentosTemp,"%d;",capacidade);
-                        fprintf(arqAgendamentosTemp,"%.2f;",precoIngresso);
-                        fprintf(arqAgendamentosTemp,"%s\n",cpfResponsavel);
+                        strcpy(agendamento.horario, novoHorario);
+                        fprintf(arqAgendamentosTemp, "%d;", agendamento.id);
+                        fprintf(arqAgendamentosTemp, "%s;", agendamento.data);
+                        fprintf(arqAgendamentosTemp,"%s;",agendamento.horario);
+                        fprintf(arqAgendamentosTemp,"%s;",agendamento.cidade);
+                        fprintf(arqAgendamentosTemp,"%d;",agendamento.capacidade);
+                        fprintf(arqAgendamentosTemp,"%.2f;",agendamento.precoIngresso);
+                        fprintf(arqAgendamentosTemp,"%s\n",agendamento.cpfResponsavel);
                     }else if(retorno == 0){
-                        fprintf(arqAgendamentosTemp, "%d;", id);
-                        fprintf(arqAgendamentosTemp, "%s;", data);
-                        fprintf(arqAgendamentosTemp,"%s;",horario);
-                        fprintf(arqAgendamentosTemp,"%s;",cidade);
-                        fprintf(arqAgendamentosTemp,"%d;",capacidade);
-                        fprintf(arqAgendamentosTemp,"%.2f;",precoIngresso);
-                        fprintf(arqAgendamentosTemp,"%s\n",cpfResponsavel);
+                        fprintf(arqAgendamentosTemp, "%d;", agendamento.id);
+                        fprintf(arqAgendamentosTemp, "%s;", agendamento.data);
+                        fprintf(arqAgendamentosTemp,"%s;",agendamento.horario);
+                        fprintf(arqAgendamentosTemp,"%s;",agendamento.cidade);
+                        fprintf(arqAgendamentosTemp,"%d;",agendamento.capacidade);
+                        fprintf(arqAgendamentosTemp,"%.2f;",agendamento.precoIngresso);
+                        fprintf(arqAgendamentosTemp,"%s\n",agendamento.cpfResponsavel);
                     }
                     break;
 
@@ -308,34 +310,34 @@ void alterarAgendamento(void){
 
                     printf("\n==============================================================================\n");
                     printf("\nAGENDAMENTO \n");
-                    printf("ID: %d\n", id);
-                    printf("Data: %s\n",data);
-                    printf("Horario: %s\n",horario);
-                    printf("Cidade: %s\n",cidade);
+                    printf("ID: %d\n", agendamento.id);
+                    printf("Data: %s\n",agendamento.data);
+                    printf("Horario: %s\n",agendamento.horario);
+                    printf("Cidade: %s\n",agendamento.cidade);
                     printf("Capacidade: %d\n",novaCapacidade);
-                    printf("Preço: %.2f\n",precoIngresso);
-                    printf("CPF Responsavel: %s\n",cpfResponsavel);
+                    printf("Preço: %.2f\n",agendamento.precoIngresso);
+                    printf("CPF Responsavel: %s\n",agendamento.cpfResponsavel);
                     printf("\n==============================================================================\n");
 
                     retorno = confirmarAlteracao();
                     
                     if(retorno == 1){
-                        capacidade = novaCapacidade;
-                        fprintf(arqAgendamentosTemp, "%d;", id);
-                        fprintf(arqAgendamentosTemp, "%s;", data);
-                        fprintf(arqAgendamentosTemp,"%s;",horario);
-                        fprintf(arqAgendamentosTemp,"%s;",cidade);
-                        fprintf(arqAgendamentosTemp,"%d;",capacidade);
-                        fprintf(arqAgendamentosTemp,"%.2f;",precoIngresso);
-                        fprintf(arqAgendamentosTemp,"%s\n",cpfResponsavel);
+                        agendamento.capacidade = novaCapacidade;
+                        fprintf(arqAgendamentosTemp, "%d;", agendamento.id);
+                        fprintf(arqAgendamentosTemp, "%s;", agendamento.data);
+                        fprintf(arqAgendamentosTemp,"%s;",agendamento.horario);
+                        fprintf(arqAgendamentosTemp,"%s;",agendamento.cidade);
+                        fprintf(arqAgendamentosTemp,"%d;",agendamento.capacidade);
+                        fprintf(arqAgendamentosTemp,"%.2f;",agendamento.precoIngresso);
+                        fprintf(arqAgendamentosTemp,"%s\n",agendamento.cpfResponsavel);
                     }else if(retorno == 0){
-                        fprintf(arqAgendamentosTemp, "%d;", id);
-                        fprintf(arqAgendamentosTemp, "%s;", data);
-                        fprintf(arqAgendamentosTemp,"%s;",horario);
-                        fprintf(arqAgendamentosTemp,"%s;",cidade);
-                        fprintf(arqAgendamentosTemp,"%d;",capacidade);
-                        fprintf(arqAgendamentosTemp,"%.2f;",precoIngresso);
-                        fprintf(arqAgendamentosTemp,"%s\n",cpfResponsavel);
+                        fprintf(arqAgendamentosTemp, "%d;", agendamento.id);
+                        fprintf(arqAgendamentosTemp, "%s;", agendamento.data);
+                        fprintf(arqAgendamentosTemp,"%s;",agendamento.horario);
+                        fprintf(arqAgendamentosTemp,"%s;",agendamento.cidade);
+                        fprintf(arqAgendamentosTemp,"%d;",agendamento.capacidade);
+                        fprintf(arqAgendamentosTemp,"%.2f;",agendamento.precoIngresso);
+                        fprintf(arqAgendamentosTemp,"%s\n",agendamento.cpfResponsavel);
                     }
 
                     break;
@@ -348,34 +350,34 @@ void alterarAgendamento(void){
 
                     printf("\n==============================================================================\n");
                     printf("\nAGENDAMENTO \n");
-                    printf("ID: %d\n", id);
-                    printf("Data: %s\n",data);
-                    printf("Horario: %s\n",horario);
-                    printf("Cidade: %s\n",cidade);
-                    printf("Capacidade: %d\n",capacidade);
+                    printf("ID: %d\n", agendamento.id);
+                    printf("Data: %s\n",agendamento.data);
+                    printf("Horario: %s\n",agendamento.horario);
+                    printf("Cidade: %s\n",agendamento.cidade);
+                    printf("Capacidade: %d\n",agendamento.capacidade);
                     printf("Preço: %.2f\n",novoPreco);
-                    printf("CPF Responsavel: %s\n",cpfResponsavel);
+                    printf("CPF Responsavel: %s\n",agendamento.cpfResponsavel);
                     printf("\n==============================================================================\n");
 
                     retorno = confirmarAlteracao();
                     
                     if(retorno == 1){
-                        precoIngresso = novoPreco;
-                        fprintf(arqAgendamentosTemp, "%d;", id);
-                        fprintf(arqAgendamentosTemp, "%s;", data);
-                        fprintf(arqAgendamentosTemp,"%s;",horario);
-                        fprintf(arqAgendamentosTemp,"%s;",cidade);
-                        fprintf(arqAgendamentosTemp,"%d;",capacidade);
-                        fprintf(arqAgendamentosTemp,"%.2f;",precoIngresso);
-                        fprintf(arqAgendamentosTemp,"%s\n",cpfResponsavel);
+                        agendamento.precoIngresso = novoPreco;
+                        fprintf(arqAgendamentosTemp, "%d;", agendamento.id);
+                        fprintf(arqAgendamentosTemp, "%s;", agendamento.data);
+                        fprintf(arqAgendamentosTemp,"%s;",agendamento.horario);
+                        fprintf(arqAgendamentosTemp,"%s;",agendamento.cidade);
+                        fprintf(arqAgendamentosTemp,"%d;",agendamento.capacidade);
+                        fprintf(arqAgendamentosTemp,"%.2f;",agendamento.precoIngresso);
+                        fprintf(arqAgendamentosTemp,"%s\n",agendamento.cpfResponsavel);
                     }else if(retorno == 0){
-                        fprintf(arqAgendamentosTemp, "%d;", id);
-                        fprintf(arqAgendamentosTemp, "%s;", data);
-                        fprintf(arqAgendamentosTemp,"%s;",horario);
-                        fprintf(arqAgendamentosTemp,"%s;",cidade);
-                        fprintf(arqAgendamentosTemp,"%d;",capacidade);
-                        fprintf(arqAgendamentosTemp,"%.2f;",precoIngresso);
-                        fprintf(arqAgendamentosTemp,"%s\n",cpfResponsavel);
+                        fprintf(arqAgendamentosTemp, "%d;", agendamento.id);
+                        fprintf(arqAgendamentosTemp, "%s;", agendamento.data);
+                        fprintf(arqAgendamentosTemp,"%s;",agendamento.horario);
+                        fprintf(arqAgendamentosTemp,"%s;",agendamento.cidade);
+                        fprintf(arqAgendamentosTemp,"%d;",agendamento.capacidade);
+                        fprintf(arqAgendamentosTemp,"%.2f;",agendamento.precoIngresso);
+                        fprintf(arqAgendamentosTemp,"%s\n",agendamento.cpfResponsavel);
                     }
 
                     break;
@@ -387,13 +389,13 @@ void alterarAgendamento(void){
 
             }
         }else{
-            fprintf(arqAgendamentosTemp, "%d;", id);
-            fprintf(arqAgendamentosTemp, "%s;", data);
-            fprintf(arqAgendamentosTemp,"%s;",horario);
-            fprintf(arqAgendamentosTemp,"%s;",cidade);
-            fprintf(arqAgendamentosTemp,"%d;",capacidade);
-            fprintf(arqAgendamentosTemp,"%.2f;",precoIngresso);
-            fprintf(arqAgendamentosTemp,"%s\n",cpfResponsavel);
+            fprintf(arqAgendamentosTemp, "%d;", agendamento.id);
+            fprintf(arqAgendamentosTemp, "%s;", agendamento.data);
+            fprintf(arqAgendamentosTemp,"%s;",agendamento.horario);
+            fprintf(arqAgendamentosTemp,"%s;",agendamento.cidade);
+            fprintf(arqAgendamentosTemp,"%d;",agendamento.capacidade);
+            fprintf(arqAgendamentosTemp,"%.2f;",agendamento.precoIngresso);
+            fprintf(arqAgendamentosTemp,"%s\n",agendamento.cpfResponsavel);
         }
     }
 
@@ -413,10 +415,10 @@ void alterarAgendamento(void){
 void excluirAgendamento(void){
     limparTela();
 
-    int codAgendamento, id, capacidade, retorno, encontrado;
-    char cpf_busca[20], data[12], cpfResponsavel[20], cidade[50], horario[7], linha[255];
+    int codAgendamento, retorno, encontrado;
+    char cpf_busca[20],linha[255];
     FILE *arqAgendamentos, *arqAgendamentosTemp;
-    float precoIngresso;
+    Agendamento agendamento;
 
 
     printf("\n");
@@ -444,9 +446,9 @@ void excluirAgendamento(void){
     printf("\nID    | Data         | Hora     | Cidade          | Capacidade | Preço      | CPF Responsável\n");
     printf("-----------------------------------------------------------------------------------------------\n");
     while (fgets(linha, 255, arqAgendamentos)) {
-        sscanf(linha, "%d;%[^;];%[^;];%[^;];%d;%f;%[^\n]", &id,data, horario, cidade, &capacidade, &precoIngresso, cpfResponsavel);
-        if(strcmp(cpfResponsavel, cpf_busca)==0){
-            printf("%-5d | %-12s | %-8s | %-15s | %-10d | %-11.2f | %-15s\n",id, data, horario, cidade, capacidade, precoIngresso, cpfResponsavel);
+        sscanf(linha, "%d;%[^;];%[^;];%[^;];%d;%f;%[^\n]", &agendamento.id,agendamento.data, agendamento.horario, agendamento.cidade, &agendamento.capacidade, &agendamento.precoIngresso, agendamento.cpfResponsavel);
+        if(strcmp(agendamento.cpfResponsavel, cpf_busca)==0){
+            printf("%-5d | %-12s | %-8s | %-15s | %-10d | %-11.2f | %-15s\n",agendamento.id, agendamento.data, agendamento.horario, agendamento.cidade, agendamento.capacidade, agendamento.precoIngresso, agendamento.cpfResponsavel);
         }
     }
 
@@ -467,41 +469,41 @@ void excluirAgendamento(void){
 
     while(fgets(linha, 255, arqAgendamentos)){
 
-        sscanf(linha, "%d;%[^;];%[^;];%[^;];%d;%f;%[^\n]", &id,data, horario, cidade, &capacidade, &precoIngresso, cpfResponsavel);
+        sscanf(linha, "%d;%[^;];%[^;];%[^;];%d;%f;%[^\n]", &agendamento.id, agendamento.data, agendamento.horario, agendamento.cidade, &agendamento.capacidade, &agendamento.precoIngresso, agendamento.cpfResponsavel);
 
 
-        if(id != codAgendamento){
-            fprintf(arqAgendamentosTemp,"%d;",id);
-            fprintf(arqAgendamentosTemp,"%s;",data);
-            fprintf(arqAgendamentosTemp,"%s;",horario);
-            fprintf(arqAgendamentosTemp,"%s;",cidade);
-            fprintf(arqAgendamentosTemp,"%d;",capacidade);
-            fprintf(arqAgendamentosTemp,"%.2f;",precoIngresso);
-            fprintf(arqAgendamentosTemp,"%s\n",cpfResponsavel);
+        if(agendamento.id != codAgendamento){
+            fprintf(arqAgendamentosTemp,"%d;",agendamento.id);
+            fprintf(arqAgendamentosTemp,"%s;",agendamento.data);
+            fprintf(arqAgendamentosTemp,"%s;",agendamento.horario);
+            fprintf(arqAgendamentosTemp,"%s;",agendamento.cidade);
+            fprintf(arqAgendamentosTemp,"%d;",agendamento.capacidade);
+            fprintf(arqAgendamentosTemp,"%.2f;",agendamento.precoIngresso);
+            fprintf(arqAgendamentosTemp,"%s\n",agendamento.cpfResponsavel);
         }else{
 
             encontrado = 1;
 
             printf("\n==============================================================================\n");
             printf("\nAGENDAMENTO \n");
-            printf("ID: %d\n", id);
-            printf("Data: %s\n",data);
-            printf("Horario: %s\n",horario);
-            printf("Cidade: %s\n",cidade);
-            printf("Capacidade: %d\n",capacidade);
-            printf("Preço: %.2f\n",precoIngresso);
-            printf("CPF Responsavel: %s\n",cpfResponsavel);
+            printf("ID: %d\n", agendamento.id);
+            printf("Data: %s\n",agendamento.data);
+            printf("Horario: %s\n",agendamento.horario);
+            printf("Cidade: %s\n",agendamento.cidade);
+            printf("Capacidade: %d\n",agendamento.capacidade);
+            printf("Preço: %.2f\n",agendamento.precoIngresso);
+            printf("CPF Responsavel: %s\n",agendamento.cpfResponsavel);
             printf("\n==============================================================================\n");
 
             retorno = confirmarExclusao("Agendamento");
             if(retorno == 0){
-                fprintf(arqAgendamentosTemp,"%d;",id);
-                fprintf(arqAgendamentosTemp,"%s;",data);
-                fprintf(arqAgendamentosTemp,"%s;",horario);
-                fprintf(arqAgendamentosTemp,"%s;",cidade);
-                fprintf(arqAgendamentosTemp,"%d;",capacidade);
-                fprintf(arqAgendamentosTemp,"%.2f;",precoIngresso);
-                fprintf(arqAgendamentosTemp,"%s\n",cpfResponsavel);
+                fprintf(arqAgendamentosTemp,"%d;",agendamento.id);
+                fprintf(arqAgendamentosTemp,"%s;",agendamento.data);
+                fprintf(arqAgendamentosTemp,"%s;",agendamento.horario);
+                fprintf(arqAgendamentosTemp,"%s;",agendamento.cidade);
+                fprintf(arqAgendamentosTemp,"%d;",agendamento.capacidade);
+                fprintf(arqAgendamentosTemp,"%.2f;",agendamento.precoIngresso);
+                fprintf(arqAgendamentosTemp,"%s\n",agendamento.cpfResponsavel);
             }
         }
     }
@@ -555,11 +557,10 @@ void consultarAgendamento(void){
 
     int escolha;
     FILE *arq_agendamentos;
-    char data[12], cpfResponsavel[20], cidade[50], horario[7], dataLida[12], cpfLido[20];
-    int capacidadeMax, id;
-    float precoIngresso;
+    char cpfLido[20], dataLida[12];
     char linha[255];
     char resto[255];
+    Agendamento agendamento;
 
     printf("\n");
     printf("==============================================================================\n");
@@ -597,29 +598,29 @@ void consultarAgendamento(void){
             
             fgetc(arq_agendamentos);
 
-            sscanf(linha, "%d;%[^\n]", &id, resto);
+            sscanf(linha, "%d;%[^\n]", &agendamento.id, resto);
 
-            sscanf(resto, "%[^;];%[^\n]", data, resto);
+            sscanf(resto, "%[^;];%[^\n]", agendamento.data, resto);
 
-            sscanf(resto, "%[^;];%[^\n]", horario, resto);
+            sscanf(resto, "%[^;];%[^\n]", agendamento.horario, resto);
 
-            sscanf(resto, "%[^;];%[^\n]", cidade, resto);
+            sscanf(resto, "%[^;];%[^\n]", agendamento.cidade, resto);
 
-            sscanf(resto, "%d;%[^\n]", &capacidadeMax, resto);
+            sscanf(resto, "%d;%[^\n]", &agendamento.capacidade, resto);
 
-            sscanf(resto, "%f;%[^\n]", &precoIngresso, resto);
+            sscanf(resto, "%f;%[^\n]", &agendamento.precoIngresso, resto);
 
-            sscanf(resto, "%[^\n]", cpfResponsavel);
+            sscanf(resto, "%[^\n]", agendamento.cpfResponsavel);
 
-            if(strcmp(data,dataLida)==0){
+            if(strcmp(agendamento.data,dataLida)==0){
                 printf("\n==============================================================================\n");
-                printf("\nID: %d\n",id);
-                printf("Data: %s\n",data);
-                printf("Horário: %s\n",horario);
-                printf("Cidade: %s\n",cidade);
-                printf("Capacidade Máxima de Público: %d\n",capacidadeMax);
-                printf("Preço do Ingresso: %.2f\n",precoIngresso);
-                printf("CPF do Responsável: %s\n",cpfResponsavel);
+                printf("\nID: %d\n",agendamento.id);
+                printf("Data: %s\n",agendamento.data);
+                printf("Horário: %s\n",agendamento.horario);
+                printf("Cidade: %s\n",agendamento.cidade);
+                printf("Capacidade Máxima de Público: %d\n",agendamento.capacidade);
+                printf("Preço do Ingresso: %.2f\n",agendamento.precoIngresso);
+                printf("CPF do Responsável: %s\n",agendamento.cpfResponsavel);
                 printf("\n==============================================================================\n");
                 encontrado++;
             }
@@ -651,29 +652,29 @@ void consultarAgendamento(void){
             
             fgetc(arq_agendamentos);
 
-            sscanf(linha, "%d;%[^\n]", &id, resto);
+            sscanf(linha, "%d;%[^\n]", &agendamento.id, resto);
 
-            sscanf(resto, "%[^;];%[^\n]", data, resto);
+            sscanf(resto, "%[^;];%[^\n]", agendamento.data, resto);
 
-            sscanf(resto, "%[^;];%[^\n]", horario, resto);
+            sscanf(resto, "%[^;];%[^\n]", agendamento.horario, resto);
 
-            sscanf(resto, "%[^;];%[^\n]", cidade, resto);
+            sscanf(resto, "%[^;];%[^\n]", agendamento.cidade, resto);
 
-            sscanf(resto, "%d;%[^\n]", &capacidadeMax, resto);
+            sscanf(resto, "%d;%[^\n]", &agendamento.capacidade, resto);
 
-            sscanf(resto, "%f;%[^\n]", &precoIngresso, resto);
+            sscanf(resto, "%f;%[^\n]", &agendamento.precoIngresso, resto);
 
-            sscanf(resto, "%[^\n]", cpfResponsavel);
+            sscanf(resto, "%[^\n]", agendamento.cpfResponsavel);
 
-            if(strcmp(cpfResponsavel,cpfLido)==0){
+            if(strcmp(agendamento.cpfResponsavel,cpfLido)==0){
                 printf("\n==============================================================================\n");
-                printf("\nID: %d\n",id);
-                printf("Data: %s\n",data);
-                printf("Horário: %s\n",horario);
-                printf("Cidade: %s\n",cidade);
-                printf("Capacidade Máxima de Público: %d\n",capacidadeMax);
-                printf("Preço do Ingresso: %.2f\n",precoIngresso);
-                printf("CPF do Responsável: %s\n",cpfResponsavel);
+                printf("\nID: %d\n",agendamento.id);
+                printf("Data: %s\n",agendamento.data);
+                printf("Horário: %s\n",agendamento.horario);
+                printf("Cidade: %s\n",agendamento.cidade);
+                printf("Capacidade Máxima de Público: %d\n",agendamento.capacidade);
+                printf("Preço do Ingresso: %.2f\n", agendamento.precoIngresso);
+                printf("CPF do Responsável: %s\n",agendamento.cpfResponsavel);
                 printf("\n==============================================================================\n");
                 encontrado++;
             }
