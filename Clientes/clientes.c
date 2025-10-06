@@ -36,12 +36,8 @@ void menuCliente(void) {
 
 void telaCadastroCliente(void){
     limparTela();
-    char nome[50];
-    char dataNascimento[20];
-    char email[100];
-    char cpf[20];
 
-    FILE *arq_cliente;
+    Cliente cliente;
 
     printf("\n");
     printf("==============================================================================\n");
@@ -52,46 +48,20 @@ void telaCadastroCliente(void){
     printf("||               Developed by @lucascsantos07 -- since Aug, 2025            ||\n"); 
     printf("==============================================================================\n");
     
-    printf("\n   CPF: ");
-    fgets(cpf, 20, stdin);
-    cpf[strcspn(cpf, "\n")] = '\0';
-    printf("\n   Nome Completo: ");
-    fgets(nome, 50, stdin);
-    nome[strcspn(nome, "\n")] = '\0';
-    printf("\n   Email: ");
-    fgets(email, 100, stdin);
-    email[strcspn(email, "\n")] = '\0';
-    printf("\n   Data de Nascimento: ");
-    fgets(dataNascimento, 20, stdin);
-    dataNascimento[strcspn(dataNascimento, "\n")] = '\0';
+    cliente = coletarDadosCliente();
 
-    arq_cliente = fopen("Clientes/clientes.csv","at");
+    exibirCliente(&cliente);
 
-    if (arq_cliente == NULL){
-        printf("Erro na criacao do arquivo\n!");
-        exit(1);
-    }
-    
-    fprintf(arq_cliente,"%s;",cpf);
-    fprintf(arq_cliente,"%s;",nome);
-    fprintf(arq_cliente,"%s;",email);
-    fprintf(arq_cliente,"%s\n",dataNascimento);
-    fclose(arq_cliente);
-
-    printf("\n==============================================================================\n");
-    printf("||                             Cadastro concluído                           ||\n");
-    printf("==============================================================================\n");
+    confirmacaoCadastroCliente(&cliente);
 
 }
 
 
 void listarDadosCliente(void){
     limparTela();
-    char cpf[20];
-    char nome[50];
-    char dataNascimento[20];
-    char email[100];
-    
+
+    Cliente cliente;
+
     char cpf_lido[20];
     FILE *arq_cliente;
 
@@ -116,27 +86,22 @@ void listarDadosCliente(void){
     }
 
     while(!feof(arq_cliente)){
-        fscanf(arq_cliente, "%[^;]",cpf);
+        fscanf(arq_cliente, "%[^;]",cliente.cpf);
         fgetc(arq_cliente);
-        fscanf(arq_cliente, "%[^;]",nome);
+        fscanf(arq_cliente, "%[^;]",cliente.nome);
         fgetc(arq_cliente);
-        fscanf(arq_cliente, "%[^;]",email);
+        fscanf(arq_cliente, "%[^;]",cliente.email);
         fgetc(arq_cliente);
-        fscanf(arq_cliente, "%[^\n]",dataNascimento);
+        fscanf(arq_cliente, "%[^\n]",cliente.dataNascimento);
         fgetc(arq_cliente);
-        if(strcmp(cpf,cpf_lido)==0){
-            printf("\n==============================================================================\n");
-            printf("\nCPF: %s\n",cpf);
-            printf("Nome: %s\n",nome);
-            printf("Email: %s\n",email);
-            printf("Data de Nascimento: %s",dataNascimento);
-            printf("\n==============================================================================\n");
+        if(strcmp(cliente.cpf,cpf_lido)==0){
+            exibirCliente(&cliente);
             fclose(arq_cliente);
             return;
         }
     }
     fclose(arq_cliente);
-    printf("Cliente não encontrado");
+    printf("\nCliente não encontrado\n");
 }
 
 
@@ -145,17 +110,16 @@ void editarDadoscliente(void){
     limparTela();
 
     char cpf_busca[20];
-    char novoNome[50], nome[50];
-    char novaDataNascimento[20], dataNascimento[20];
-    char novoEmail[100], email[100];
-    char novoCpf[20], cpf[20];
+
+    Cliente cliente;
+    char novoNome[50], novaDataNascimento[20], novoEmail[100], novoCpf[20];
 
     FILE *arqCliente;
     FILE *arqClienteTemp;
 
     char opcao;
 
-    int retorno;
+    int retorno, encontrado;
 
     printf("\n");
     printf("==============================================================================\n");
@@ -183,16 +147,20 @@ void editarDadoscliente(void){
         exit(1);
     }
 
-    while(fscanf(arqCliente, "%[^;]",cpf) == 1){
+    encontrado = 0;
+
+    while(fscanf(arqCliente, "%[^;]",cliente.cpf) == 1){
         fgetc(arqCliente);
-        fscanf(arqCliente, "%[^;]",nome);
+        fscanf(arqCliente, "%[^;]",cliente.nome);
         fgetc(arqCliente);
-        fscanf(arqCliente, "%[^;]",email);
+        fscanf(arqCliente, "%[^;]",cliente.email);
         fgetc(arqCliente);
-        fscanf(arqCliente, "%[^\n]",dataNascimento);
+        fscanf(arqCliente, "%[^\n]",cliente.dataNascimento);
         fgetc(arqCliente);
 
-        if(strcmp(cpf,cpf_busca)==0){
+        if(strcmp(cliente.cpf,cpf_busca)==0){
+
+            encontrado = 1;
 
             printf("\nQual dado deseja alterar: \n");
             printf("\n1 - CPF");
@@ -214,28 +182,23 @@ void editarDadoscliente(void){
 
                     printf("\n==============================================================================\n");
                     printf("\nSeus Dados: \n");
-                    printf("\nNome Completo: %s\n", nome);
-                    printf("Data de Nascimento: %s\n", dataNascimento);
-                    printf("Email: %s\n", email);
+                    printf("\nNome Completo: %s\n", cliente.nome);
+                    printf("Data de Nascimento: %s\n", cliente.dataNascimento);
+                    printf("Email: %s\n", cliente.email);
                     printf("CPF: %s\n", novoCpf);
                     printf("\n==============================================================================\n");
 
                     retorno = confirmarAlteracao();
                     
                     if(retorno == 1){
-                        fprintf(arqClienteTemp,"%s;",novoCpf);
-                        fprintf(arqClienteTemp,"%s;",nome);
-                        fprintf(arqClienteTemp,"%s;",email);
-                        fprintf(arqClienteTemp,"%s\n",dataNascimento);
+                        strcpy(cliente.cpf, novoCpf);
+                        salvarCliente(arqClienteTemp, &cliente);
+
                     }else if(retorno == 0){
-                        fprintf(arqClienteTemp,"%s;",cpf);
-                        fprintf(arqClienteTemp,"%s;",nome);
-                        fprintf(arqClienteTemp,"%s;",email);
-                        fprintf(arqClienteTemp,"%s\n",dataNascimento);
+                        salvarCliente(arqClienteTemp, &cliente);
                     }
 
                     break;
-            
 
                 case '2':
         
@@ -246,23 +209,18 @@ void editarDadoscliente(void){
                     printf("\n==============================================================================\n");
                     printf("\nSeus Dados: \n");
                     printf("\nNome Completo: %s\n", novoNome);
-                    printf("Data de Nascimento: %s\n", dataNascimento);
-                    printf("Email: %s\n", email);
-                    printf("CPF: %s\n", cpf);
+                    printf("Data de Nascimento: %s\n", cliente.dataNascimento);
+                    printf("Email: %s\n", cliente.email);
+                    printf("CPF: %s\n", cliente.cpf);
                     printf("\n==============================================================================\n");
 
                     retorno = confirmarAlteracao();
                     
                     if(retorno == 1){
-                        fprintf(arqClienteTemp,"%s;",cpf);
-                        fprintf(arqClienteTemp,"%s;",novoNome);
-                        fprintf(arqClienteTemp,"%s;",email);
-                        fprintf(arqClienteTemp,"%s\n",dataNascimento);
+                        strcpy(cliente.nome, novoNome);
+                        salvarCliente(arqClienteTemp, &cliente);
                     }else if(retorno == 0){
-                        fprintf(arqClienteTemp,"%s;",cpf);
-                        fprintf(arqClienteTemp,"%s;",nome);
-                        fprintf(arqClienteTemp,"%s;",email);
-                        fprintf(arqClienteTemp,"%s\n",dataNascimento);
+                        salvarCliente(arqClienteTemp, &cliente);
                     }
                     break;
 
@@ -274,24 +232,19 @@ void editarDadoscliente(void){
 
                     printf("\n==============================================================================\n");
                     printf("\nSeus Dados: \n");
-                    printf("\nNome Completo: %s\n", nome);
-                    printf("Data de Nascimento: %s\n", dataNascimento);
+                    printf("\nNome Completo: %s\n", cliente.nome);
+                    printf("Data de Nascimento: %s\n", cliente.dataNascimento);
                     printf("Email: %s\n", novoEmail);
-                    printf("CPF: %s\n", cpf);
+                    printf("CPF: %s\n", cliente.cpf);
                     printf("\n==============================================================================\n");
 
                     retorno = confirmarAlteracao();
                     
                     if(retorno == 1){
-                        fprintf(arqClienteTemp,"%s;",cpf);
-                        fprintf(arqClienteTemp,"%s;",nome);
-                        fprintf(arqClienteTemp,"%s;",novoEmail);
-                        fprintf(arqClienteTemp,"%s\n",dataNascimento);
+                        strcpy(cliente.email, novoEmail);
+                        salvarCliente(arqClienteTemp, &cliente);
                     }else if(retorno == 0){
-                        fprintf(arqClienteTemp,"%s;",cpf);
-                        fprintf(arqClienteTemp,"%s;",nome);
-                        fprintf(arqClienteTemp,"%s;",email);
-                        fprintf(arqClienteTemp,"%s\n",dataNascimento);
+                        salvarCliente(arqClienteTemp, &cliente);
                     }
 
                     break;
@@ -304,24 +257,19 @@ void editarDadoscliente(void){
 
                     printf("\n==============================================================================\n");
                     printf("\nSeus Dados: \n");
-                    printf("\nNome Completo: %s\n", nome);
+                    printf("\nNome Completo: %s\n", cliente.nome);
                     printf("Data de Nascimento: %s\n", novaDataNascimento);
-                    printf("Email: %s\n", email);
-                    printf("CPF: %s\n", cpf);
+                    printf("Email: %s\n", cliente.email);
+                    printf("CPF: %s\n", cliente.cpf);
                     printf("\n==============================================================================\n");
 
                     retorno = confirmarAlteracao();
                     
                     if(retorno == 1){
-                        fprintf(arqClienteTemp,"%s;",cpf);
-                        fprintf(arqClienteTemp,"%s;",nome);
-                        fprintf(arqClienteTemp,"%s;",email);
-                        fprintf(arqClienteTemp,"%s\n",novaDataNascimento);
+                        strcpy(cliente.dataNascimento, novaDataNascimento);
+                        salvarCliente(arqClienteTemp, &cliente);
                     }else if(retorno == 0){
-                        fprintf(arqClienteTemp,"%s;",cpf);
-                        fprintf(arqClienteTemp,"%s;",nome);
-                        fprintf(arqClienteTemp,"%s;",email);
-                        fprintf(arqClienteTemp,"%s\n",dataNascimento);
+                        salvarCliente(arqClienteTemp, &cliente);
                     }
 
                     break;
@@ -335,11 +283,12 @@ void editarDadoscliente(void){
 
 
         }else{
-            fprintf(arqClienteTemp,"%s;",cpf);
-            fprintf(arqClienteTemp,"%s;",nome);
-            fprintf(arqClienteTemp,"%s;",email);
-            fprintf(arqClienteTemp,"%s\n",dataNascimento);
+            salvarCliente(arqClienteTemp, &cliente);
         }
+    }
+
+    if(encontrado == 0){
+        printf("\nCliente não encontrado\n");
     }
 
     fclose(arqCliente);
@@ -355,19 +304,8 @@ void excluirContacliente(void){
     limparTela();
 
     char cpf_busca[20];
-
-    char cpf[20];
-    char nome[50];
-    char dataNascimento[20];
-    char email[100];
-
-    char cpfDel[20];
-    char nomeDel[50];
-    char dataNascimentoDel[20];
-    char emailDel[100];
-
-    int retorno;
-
+    Cliente cliente;
+    int retorno, encontrado;
     FILE *arqCliente;
     FILE *arqClienteTemp;
 
@@ -397,38 +335,46 @@ void excluirContacliente(void){
         exit(1);
     }
 
-    while(fscanf(arqCliente, "%[^;]",cpf) == 1){
+    encontrado = 0;
+
+    while(fscanf(arqCliente, "%[^;]",cliente.cpf) == 1){
         fgetc(arqCliente);
-        fscanf(arqCliente, "%[^;]",nome);
+        fscanf(arqCliente, "%[^;]",cliente.nome);
         fgetc(arqCliente);
-        fscanf(arqCliente, "%[^;]",email);
+        fscanf(arqCliente, "%[^;]",cliente.email);
         fgetc(arqCliente);
-        fscanf(arqCliente, "%[^\n]",dataNascimento);
+        fscanf(arqCliente, "%[^\n]",cliente.dataNascimento);
         fgetc(arqCliente);
 
-        if(strcmp(cpf,cpf_busca)!=0){
-            fprintf(arqClienteTemp,"%s;",cpf);
-            fprintf(arqClienteTemp,"%s;",nome);
-            fprintf(arqClienteTemp,"%s;",email);
-            fprintf(arqClienteTemp,"%s\n",dataNascimento);
+        if(strcmp(cliente.cpf,cpf_busca)!=0){
+            fprintf(arqClienteTemp,"%s;",cliente.cpf);
+            fprintf(arqClienteTemp,"%s;",cliente.nome);
+            fprintf(arqClienteTemp,"%s;",cliente.email);
+            fprintf(arqClienteTemp,"%s\n",cliente.dataNascimento);
         }else{
+
+            encontrado = 1;
 
             printf("\n==============================================================================\n");
             printf("\nSeus Dados Cadastrados: \n");
-            printf("\nNome Completo: %s\n", nome);
-            printf("Data de Nascimento: %s\n", dataNascimento);
-            printf("Email: %s\n", email);
-            printf("CPF: %s\n", cpf);
+            printf("\nNome Completo: %s\n", cliente.nome);
+            printf("Data de Nascimento: %s\n", cliente.dataNascimento);
+            printf("Email: %s\n", cliente.email);
+            printf("CPF: %s\n", cliente.cpf);
             printf("\n==============================================================================\n");
 
             retorno = confirmarExclusao("Cliente");
             if(retorno == 0){
-                fprintf(arqClienteTemp,"%s;",cpf);
-                fprintf(arqClienteTemp,"%s;",nome);
-                fprintf(arqClienteTemp,"%s;",email);
-                fprintf(arqClienteTemp,"%s\n",dataNascimento);
+                fprintf(arqClienteTemp,"%s;",cliente.cpf);
+                fprintf(arqClienteTemp,"%s;",cliente.nome);
+                fprintf(arqClienteTemp,"%s;",cliente.email);
+                fprintf(arqClienteTemp,"%s\n",cliente.dataNascimento);
             }
         }
+    }
+
+    if(encontrado == 0){
+        printf("\nCliente não encontrado\n");
     }
 
     fclose(arqCliente);
@@ -465,4 +411,74 @@ void exibirModuloClientes(void){
         }
 
     }while(opcaoCliente != '0');
+}
+
+Cliente coletarDadosCliente(void){
+    Cliente cliente;
+    printf("\n   CPF: ");
+    fgets(cliente.cpf, 20, stdin);
+    cliente.cpf[strcspn(cliente.cpf, "\n")] = '\0';
+    printf("\n   Nome Completo: ");
+    fgets(cliente.nome, 50, stdin);
+    cliente.nome[strcspn(cliente.nome, "\n")] = '\0';
+    printf("\n   Email: ");
+    fgets(cliente.email, 100, stdin);
+    cliente.email[strcspn(cliente.email, "\n")] = '\0';
+    printf("\n   Data de Nascimento: ");
+    fgets(cliente.dataNascimento, 20, stdin);
+    cliente.dataNascimento[strcspn(cliente.dataNascimento, "\n")] = '\0';
+    return cliente;
+}
+
+void exibirCliente(Cliente *cliente){
+    printf("\n==============================================================================\n");
+    printf("\nSeus Dados Cadastrados: \n");
+    printf("\nNome Completo: %s\n", cliente->nome);
+    printf("Data de Nascimento: %s\n", cliente->dataNascimento);
+    printf("Email: %s\n", cliente->email);
+    printf("CPF: %s\n", cliente->cpf);
+    printf("\n==============================================================================\n");
+}
+
+void salvarCliente(FILE *arqCliente, Cliente *cliente){
+
+    fprintf(arqCliente,"%s;",cliente->cpf);
+    fprintf(arqCliente,"%s;",cliente->nome);
+    fprintf(arqCliente,"%s;",cliente->email);
+    fprintf(arqCliente,"%s\n",cliente->dataNascimento);
+
+}
+
+void confirmacaoCadastroCliente(Cliente *cliente){
+    char opcao;
+    FILE *arqCliente;
+
+    printf("\nDigite 1 para confirmar cadastro\n");
+    printf("Digite 2 para cancelar cadastro\n");
+    printf("\nOpção: ");
+    scanf("%c",&opcao);
+    getchar();
+
+    if(opcao == '1'){
+        arqCliente = fopen("Clientes/clientes.csv","at");
+
+        if (arqCliente == NULL){
+            printf("Erro na criacao do arquivo\n!");
+            exit(1);
+        }
+
+        salvarCliente(arqCliente, cliente);
+        fclose(arqCliente);
+
+        printf("\n==============================================================================\n");
+        printf("||                             Cadastro concluído                           ||\n");
+        printf("==============================================================================\n");
+    }else if(opcao == '2'){
+        printf("\n==============================================================================\n");
+        printf("||                             Cadastro cancelado                           ||\n");
+        printf("==============================================================================\n");
+    }else{
+        printf("\nOpção inválida\n");
+    }
+    
 }
