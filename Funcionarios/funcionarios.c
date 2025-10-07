@@ -36,16 +36,10 @@ void menuFuncionarios(void) {
 
 void telaCadastroFuncionario(void) {
     limparTela();
-    char nome[50];
-    char dataNascimento[20];
-    char email[100];
-    char cpf[20];
-    char sexo[12];
-    char endereco[100];
-    char telefone[15];
-    char salario[10];
-    char cargo[30];
-    char setor[30];
+
+    Funcionarios fun;
+
+    char linha[1000];
 
     FILE *arqFuncionarios;
 
@@ -59,35 +53,35 @@ void telaCadastroFuncionario(void) {
     printf("==============================================================================\n");
     
     printf("\n   Nome Completo       : ");
-    fgets(nome, 50, stdin);
-    nome[strcspn(nome, "\n")] = '\0';
+    fgets(fun.nome, 50, stdin);
+    fun.nome[strcspn(fun.nome, "\n")] = '\0';
     printf("\n   Data de Nascimento  : ");
-    fgets(dataNascimento, 20, stdin);
-    dataNascimento[strcspn(dataNascimento, "\n")] = '\0';
+    fgets(fun.dataNascimento, 20, stdin);
+    fun.dataNascimento[strcspn(fun.dataNascimento, "\n")] = '\0';
     printf("\n   Email               : ");
-    fgets(email, 100, stdin);
-    email[strcspn(email, "\n")] = '\0';
+    fgets(fun.email, 100, stdin);
+    fun.email[strcspn(fun.email, "\n")] = '\0';
     printf("\n   CPF                 : ");
-    fgets(cpf, 20, stdin);
-    cpf[strcspn(cpf, "\n")] = '\0';
+    fgets(fun.cpf, 20, stdin);
+    fun.cpf[strcspn(fun.cpf, "\n")] = '\0';
     printf("\n   Sexo (m/f)          : ");
-    fgets(sexo, 12, stdin);
-    sexo[strcspn(sexo, "\n")] = '\0';
+    fgets(fun.sexo, 12, stdin);
+    fun.sexo[strcspn(fun.sexo, "\n")] = '\0';
     printf("\n   Endereço            : ");
-    fgets(endereco, 100, stdin);
-    endereco[strcspn(endereco, "\n")] = '\0';
+    fgets(fun.endereco, 100, stdin);
+    fun.endereco[strcspn(fun.endereco, "\n")] = '\0';
     printf("\n   Telefone            : ");
-    fgets(telefone, 15, stdin);
-    telefone[strcspn(telefone, "\n")] = '\0';
+    fgets(fun.telefone, 15, stdin);
+    fun.telefone[strcspn(fun.telefone, "\n")] = '\0';
     printf("\n   Salário             : ");
-    fgets(salario, 10, stdin);
-    salario[strcspn(salario, "\n")] = '\0';
+    fgets(fun.salario, 10, stdin);
+    fun.salario[strcspn(fun.salario, "\n")] = '\0';
     printf("\n   Cargo               : ");
-    fgets(cargo, 30, stdin);
-    cargo[strcspn(cargo, "\n")] = '\0';
+    fgets(fun.cargo, 30, stdin);
+    fun.cargo[strcspn(fun.cargo, "\n")] = '\0';
     printf("\n   Setor               : ");
-    fgets(setor, 30, stdin);
-    setor[strcspn(setor, "\n")] = '\0';
+    fgets(fun.setor, 30, stdin);
+    fun.setor[strcspn(fun.setor, "\n")] = '\0';
 
     arqFuncionarios = fopen("Funcionarios/funcionarios.csv", "at");
 
@@ -96,16 +90,16 @@ void telaCadastroFuncionario(void) {
         exit(1);
     }
 
-    fprintf(arqFuncionarios, "%s;", cpf);
-    fprintf(arqFuncionarios, "%s;", nome);
-    fprintf(arqFuncionarios, "%s;", dataNascimento);
-    fprintf(arqFuncionarios, "%s;", email);
-    fprintf(arqFuncionarios, "%s;", sexo);
-    fprintf(arqFuncionarios, "%s;", endereco);
-    fprintf(arqFuncionarios, "%s;", telefone);
-    fprintf(arqFuncionarios, "%s;", salario);
-    fprintf(arqFuncionarios, "%s;", cargo);
-    fprintf(arqFuncionarios, "%s\n", setor);
+    fprintf(arqFuncionarios, "%s;", fun.cpf);
+    fprintf(arqFuncionarios, "%s;", fun.nome);
+    fprintf(arqFuncionarios, "%s;", fun.dataNascimento);
+    fprintf(arqFuncionarios, "%s;", fun.email);
+    fprintf(arqFuncionarios, "%s;", fun.sexo);
+    fprintf(arqFuncionarios, "%s;", fun.endereco);
+    fprintf(arqFuncionarios, "%s;", fun.telefone);
+    fprintf(arqFuncionarios, "%s;", fun.salario);
+    fprintf(arqFuncionarios, "%s;", fun.cargo);
+    fprintf(arqFuncionarios, "%s\n", fun.setor);
 
     fclose(arqFuncionarios);
 
@@ -118,18 +112,10 @@ void telaCadastroFuncionario(void) {
 
 void listarDadosFuncionario(void) {
     limparTela();
-    char cpf_input[20];
-    char cpf_info[20];
-    char nome[50];
-    char dataNascimento[20];
-    char email[100];
-    char sexo[12];
-    char endereco[100];
-    char telefone[15];
-    char salario[25];
-    char cargo[30];
-    char setor[30];
+
+    char cpf_input[12];
     char linha[1000];
+    Funcionarios fun;
 
     FILE *fp_funcionario;
 
@@ -154,20 +140,20 @@ void listarDadosFuncionario(void) {
 
     while (fgets(linha, sizeof(linha), fp_funcionario)) {
         sscanf(linha, "%[^;];%[^;];%[^;];%[^;];%[^;];%[^;];%[^;];%[^;];%[^;];%[^;\n]",
-               cpf_info, nome, dataNascimento, email, sexo, endereco, telefone, salario, cargo, setor);
+               fun.cpf, fun.nome, fun.dataNascimento, fun.email, fun.sexo, fun.endereco, fun.telefone, fun.salario, fun.cargo, fun.setor);
 
-        if (strcmp(cpf_input, cpf_info) == 0) {
+        if (strcmp(cpf_input, fun.cpf) == 0) {
             printf("\n==============================================================================\n");
-            printf("\nNome Completo: %s \n", nome);
-            printf("Data de Nascimento: %s \n", dataNascimento);
-            printf("Email: %s \n", email);
-            printf("CPF: %s \n", cpf_info);
-            printf("Sexo(m/f): %s \n", sexo);
-            printf("Endereço: %s \n", endereco);
-            printf("Telefone: %s \n", telefone);
-            printf("Salário: %s \n", salario);
-            printf("Cargo: %s \n", cargo);
-            printf("Setor: %s \n", setor);
+            printf("\nNome Completo: %s \n", fun.nome);
+            printf("Data de Nascimento: %s \n", fun.dataNascimento);
+            printf("Email: %s \n", fun.email);
+            printf("CPF: %s \n"), fun.cpf;
+            printf("Sexo(m/f): %s \n", fun.sexo);
+            printf("Endereço: %s \n", fun.endereco);
+            printf("Telefone: %s \n", fun.telefone);
+            printf("Salário: %s \n", fun.salario);
+            printf("Cargo: %s \n", fun.cargo);
+            printf("Setor: %s \n", fun.setor);
             printf("\n==============================================================================\n");
         }
     }
@@ -179,17 +165,7 @@ void listarDadosFuncionario(void) {
 
 void editarDadosFuncionario(void) {
     limparTela();
-    char cpf_busca[20];
-    char novoNome[50];
-    char novaDataNascimento[20];
-    char novoEmail[100];
-    char novoCpf[20];
-    char novoSexo;
-    char novoEndereco[100];
-    char novoTelefone[15];
-    char novoSalario[25];
-    char novoCargo[30];
-    char novoSetor[30];
+    Funcionarios fun;
 
     printf("\n");
     printf("==============================================================================\n");
@@ -201,29 +177,28 @@ void editarDadosFuncionario(void) {
     printf("==============================================================================\n");
 
     printf("\n   Informe o CPF do funcionário: ");
-    fgets(cpf_busca, sizeof(cpf_busca), stdin);
+    fgets(fun.cpf_busca, sizeof(fun.cpf_busca), stdin);
 
     printf("\n   Nome Completo       : ");
-    fgets(novoNome, sizeof(novoNome), stdin);
+    fgets(fun.nome, sizeof(fun.nome), stdin);
     printf("\n   Data de Nascimento  : ");
-    fgets(novaDataNascimento, sizeof(novaDataNascimento), stdin);
+    fgets(fun.dataNascimento, sizeof(fun.dataNascimento), stdin);
     printf("\n   Email               : ");
-    fgets(novoEmail, sizeof(novoEmail), stdin);
+    fgets(fun.email, sizeof(fun.email), stdin);
     printf("\n   CPF                 : ");
-    fgets(novoCpf, sizeof(novoCpf), stdin);
+    fgets(fun.cpf, sizeof(fun.cpf), stdin);
     printf("\n   Sexo (m/f)          : ");
-    scanf(" %c", &novoSexo);
-    getchar();
+    fgets(fun.sexo, sizeof(fun.sexo), stdin);
     printf("\n   Endereço            : ");
-    fgets(novoEndereco, sizeof(novoEndereco), stdin);
+    fgets(fun.endereco, sizeof(fun.endereco), stdin);
     printf("\n   Telefone            : ");
-    fgets(novoTelefone, sizeof(novoTelefone), stdin);
+    fgets(fun.telefone, sizeof(fun.telefone), stdin);
     printf("\n   Salário             : ");
-    fgets(novoSalario, sizeof(novoSalario), stdin);
+    fgets(fun.salario, sizeof(fun.salario), stdin);
     printf("\n   Cargo               : ");
-    fgets(novoCargo, sizeof(novoCargo), stdin);
+    fgets(fun.cargo, sizeof(fun.cargo), stdin);
     printf("\n   Setor               : ");
-    fgets(novoSetor, sizeof(novoSetor), stdin);
+    fgets(fun.setor, sizeof(fun.setor), stdin);
 
     confirmarAlteracao();
 }
@@ -231,6 +206,7 @@ void editarDadosFuncionario(void) {
 
 void excluirFuncionario(void) {
     limparTela();
+    Funcionarios fun;
     char cpf[20];
 
     printf("\n");
@@ -243,7 +219,7 @@ void excluirFuncionario(void) {
     printf("==============================================================================\n");
 
     printf("\n   Informe o CPF do funcionário: ");
-    fgets(cpf, sizeof(cpf), stdin);
+    fgets(fun.cpf, sizeof(fun.cpf), stdin);
 
     printf("\n==============================================================================\n");
     printf("\nNome Completo: \n");

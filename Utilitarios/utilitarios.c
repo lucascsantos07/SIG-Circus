@@ -21,11 +21,14 @@ int confirmarExclusao(const char *modulo){
     scanf(" %c", &confirma);
     getchar();
     if(confirma == 's'){
+        remove("Funcionarios/funcionarios.csv");
+        rename("Funcionarios/funcionariostemp.csv", "Funcionarios/funcionarios.csv");      
         printf("\n==============================================================================\n");
         printf("                        %s Excluido Com Sucesso                      \n", modulo);
         printf("==============================================================================\n");
         return 1;
     }else if(confirma == 'n'){
+        remove("Funcionarios/funcionariostemp.csv");
         printf("\n==============================================================================\n");
         printf("||                            Exclusao Cancelado                            ||\n");
         printf("==============================================================================\n");
