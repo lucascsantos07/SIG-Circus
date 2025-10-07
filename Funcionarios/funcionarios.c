@@ -36,6 +36,7 @@ void menuFuncionarios(void) {
 
 void telaCadastroFuncionario(void) {
     limparTela();
+
     Funcionarios fun;
 
     char linha[1000];
