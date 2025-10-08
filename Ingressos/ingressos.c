@@ -131,9 +131,9 @@ void telaCadastroVendaIngresso(void) {
 void consultarVendaIngresso(void) {
     limparTela();
 
-    char linha[1000];
+    char linha[255];
     Ingressos ing;
-    int resto;
+    char resto[255];
     float valorTotal;
 
     FILE *arqIngressos;
