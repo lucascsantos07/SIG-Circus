@@ -63,7 +63,7 @@ void telaCadastroCliente(void){
 void listarDadosCliente(void){
     limparTela();
 
-    Cliente cliente;
+    Cliente* cliente;
 
     char cpf_lido[20];
     FILE *arq_cliente;
@@ -77,36 +77,30 @@ void listarDadosCliente(void){
     printf("||               Developed by @lucascsantos07 -- since Aug, 2025            ||\n"); 
     printf("==============================================================================\n");
 
+    cliente = (Cliente*) malloc(sizeof(Cliente));
     printf("\nInforme o seu CPF: ");
     fgets(cpf_lido, 20, stdin);
     cpf_lido[strcspn(cpf_lido, "\n")] = '\0';
 
-    arq_cliente= fopen("Clientes/clientes.csv","rt");
+    arq_cliente= fopen("Clientes/clientes.dat","rb");
 
     if (arq_cliente == NULL){
         printf("Erro na criacao do arquivo\n!");
         exit(1);
     }
 
-    while(!feof(arq_cliente)){
-        fscanf(arq_cliente, "%[^;]",cliente.cpf);
-        fgetc(arq_cliente);
-        fscanf(arq_cliente, "%[^;]",cliente.nome);
-        fgetc(arq_cliente);
-        fscanf(arq_cliente, "%[^;]",cliente.email);
-        fgetc(arq_cliente);
-        fscanf(arq_cliente, "%[^\n]",cliente.dataNascimento);
-        fgetc(arq_cliente);
-        if(strcmp(cliente.cpf,cpf_lido)==0){
-            exibirCliente(&cliente);
-            fclose(arq_cliente);
+    while(fread(cliente, sizeof(Cliente),1,arq_cliente)){
+        if((cliente->status)&&(strcmp(cpf_lido,cliente->cpf)==0)){
+            exibirCliente(cliente);
             return;
         }
     }
-    fclose(arq_cliente);
-    printf("\nCliente não encontrado\n");
-}
 
+    fclose(arq_cliente);
+    free(cliente);
+    printf("\nCliente não encontrado\n");
+
+}
 
 
 void editarDadoscliente(void){
