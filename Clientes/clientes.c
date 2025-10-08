@@ -4,6 +4,9 @@
 #include "clientes.h"
 #include "../Utilitarios/utilitarios.h"
 
+#define True 1
+#define False 0
+
 void menuCliente(void) {
     limparTela();
     printf("\n");
@@ -37,7 +40,7 @@ void menuCliente(void) {
 void telaCadastroCliente(void){
     limparTela();
 
-    Cliente cliente;
+    Cliente* cliente;
 
     printf("\n");
     printf("==============================================================================\n");
@@ -50,9 +53,9 @@ void telaCadastroCliente(void){
     
     cliente = coletarDadosCliente();
 
-    exibirCliente(&cliente);
+    exibirCliente(cliente);
 
-    confirmacaoCadastroCliente(&cliente);
+    confirmacaoCadastroCliente(cliente);
 
 }
 
@@ -413,26 +416,28 @@ void exibirModuloClientes(void){
     }while(opcaoCliente != '0');
 }
 
-Cliente coletarDadosCliente(void){
-    Cliente cliente;
+Cliente* coletarDadosCliente(void){
+    Cliente* cliente;
+    cliente = (Cliente*) malloc(sizeof(Cliente));
     printf("\n   CPF: ");
-    fgets(cliente.cpf, 20, stdin);
-    cliente.cpf[strcspn(cliente.cpf, "\n")] = '\0';
+    fgets(cliente->cpf, 20, stdin);
+    cliente->cpf[strcspn(cliente->cpf, "\n")] = '\0';
     printf("\n   Nome Completo: ");
-    fgets(cliente.nome, 50, stdin);
-    cliente.nome[strcspn(cliente.nome, "\n")] = '\0';
+    fgets(cliente->nome, 50, stdin);
+    cliente->nome[strcspn(cliente->nome, "\n")] = '\0';
     printf("\n   Email: ");
-    fgets(cliente.email, 100, stdin);
-    cliente.email[strcspn(cliente.email, "\n")] = '\0';
+    fgets(cliente->email, 100, stdin);
+    cliente->email[strcspn(cliente->email, "\n")] = '\0';
     printf("\n   Data de Nascimento: ");
-    fgets(cliente.dataNascimento, 20, stdin);
-    cliente.dataNascimento[strcspn(cliente.dataNascimento, "\n")] = '\0';
+    fgets(cliente->dataNascimento, 20, stdin);
+    cliente->dataNascimento[strcspn(cliente->dataNascimento, "\n")] = '\0';
+    cliente->status=True;
     return cliente;
 }
 
 void exibirCliente(Cliente *cliente){
     printf("\n==============================================================================\n");
-    printf("\nSeus Dados Cadastrados: \n");
+    printf("\nSeus Dados: \n");
     printf("\nNome Completo: %s\n", cliente->nome);
     printf("Data de Nascimento: %s\n", cliente->dataNascimento);
     printf("Email: %s\n", cliente->email);
@@ -442,10 +447,7 @@ void exibirCliente(Cliente *cliente){
 
 void salvarCliente(FILE *arqCliente, Cliente *cliente){
 
-    fprintf(arqCliente,"%s;",cliente->cpf);
-    fprintf(arqCliente,"%s;",cliente->nome);
-    fprintf(arqCliente,"%s;",cliente->email);
-    fprintf(arqCliente,"%s\n",cliente->dataNascimento);
+    fwrite(cliente, sizeof(Cliente), 1, arqCliente);
 
 }
 
@@ -460,7 +462,7 @@ void confirmacaoCadastroCliente(Cliente *cliente){
     getchar();
 
     if(opcao == '1'){
-        arqCliente = fopen("Clientes/clientes.csv","at");
+        arqCliente = fopen("Clientes/clientes.dat","ab");
 
         if (arqCliente == NULL){
             printf("Erro na criacao do arquivo\n!");
@@ -469,6 +471,7 @@ void confirmacaoCadastroCliente(Cliente *cliente){
 
         salvarCliente(arqCliente, cliente);
         fclose(arqCliente);
+        free(cliente);
 
         printf("\n==============================================================================\n");
         printf("||                             Cadastro concluído                           ||\n");
@@ -477,6 +480,7 @@ void confirmacaoCadastroCliente(Cliente *cliente){
         printf("\n==============================================================================\n");
         printf("||                             Cadastro cancelado                           ||\n");
         printf("==============================================================================\n");
+        free(cliente);
     }else{
         printf("\nOpção inválida\n");
     }
