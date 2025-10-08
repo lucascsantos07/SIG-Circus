@@ -78,7 +78,7 @@ void listarDadosCliente(void){
     printf("==============================================================================\n");
 
     cliente = (Cliente*) malloc(sizeof(Cliente));
-    printf("\nInforme o seu CPF: ");
+    printf("\n  Informe o seu CPF: ");
     fgets(cpf_lido, 20, stdin);
     cpf_lido[strcspn(cpf_lido, "\n")] = '\0';
 
@@ -98,7 +98,7 @@ void listarDadosCliente(void){
 
     fclose(arq_cliente);
     free(cliente);
-    printf("\nCliente não encontrado\n");
+    printf("\n  Cliente não encontrado\n");
 
 }
 
@@ -300,11 +300,10 @@ void editarDadoscliente(void){
 void excluirContacliente(void){
     limparTela();
 
-    char cpf_busca[20];
-    Cliente cliente;
+    char cpfBusca[20];
+    Cliente* cliente;
     int retorno, encontrado;
-    FILE *arqCliente;
-    FILE *arqClienteTemp;
+    FILE* arqCliente;
 
     printf("\n");
     printf("==============================================================================\n");
@@ -315,70 +314,39 @@ void excluirContacliente(void){
     printf("||               Developed by @lucascsantos07 -- since Aug, 2025            ||\n"); 
     printf("==============================================================================\n");
 
-    printf("\n   Informe o seu CPF: ");
-    fgets(cpf_busca, 20, stdin);
-    cpf_busca[strcspn(cpf_busca, "\n")] = '\0';
+    cliente = (Cliente*) malloc(sizeof(Cliente)); 
 
-    arqCliente= fopen("Clientes/clientes.csv","rt");
-    arqClienteTemp = fopen("Clientes/clientesTemp.csv","wt");
+    printf("\n  Informe o seu CPF: ");
+    fgets(cpfBusca, 20, stdin);
+    cpfBusca[strcspn(cpfBusca, "\n")] = '\0';
+
+    arqCliente= fopen("Clientes/clientes.dat","r+b");
 
     if (arqCliente == NULL){
         printf("Erro na criacao do arquivo\n!");
         exit(1);
     }
 
-    if (arqClienteTemp == NULL){
-        printf("Erro na criacao do arquivo\n!");
-        exit(1);
-    }
+    encontrado = False;
 
-    encontrado = 0;
-
-    while(fscanf(arqCliente, "%[^;]",cliente.cpf) == 1){
-        fgetc(arqCliente);
-        fscanf(arqCliente, "%[^;]",cliente.nome);
-        fgetc(arqCliente);
-        fscanf(arqCliente, "%[^;]",cliente.email);
-        fgetc(arqCliente);
-        fscanf(arqCliente, "%[^\n]",cliente.dataNascimento);
-        fgetc(arqCliente);
-
-        if(strcmp(cliente.cpf,cpf_busca)!=0){
-            fprintf(arqClienteTemp,"%s;",cliente.cpf);
-            fprintf(arqClienteTemp,"%s;",cliente.nome);
-            fprintf(arqClienteTemp,"%s;",cliente.email);
-            fprintf(arqClienteTemp,"%s\n",cliente.dataNascimento);
-        }else{
-
-            encontrado = 1;
-
-            printf("\n==============================================================================\n");
-            printf("\nSeus Dados Cadastrados: \n");
-            printf("\nNome Completo: %s\n", cliente.nome);
-            printf("Data de Nascimento: %s\n", cliente.dataNascimento);
-            printf("Email: %s\n", cliente.email);
-            printf("CPF: %s\n", cliente.cpf);
-            printf("\n==============================================================================\n");
-
+    while(fread(cliente, sizeof(Cliente),1,arqCliente)&&(!encontrado)){
+        if((strcmp(cpfBusca,cliente->cpf)==0) && (cliente->status)){
+            encontrado=True;
+            exibirCliente(cliente);
             retorno = confirmarExclusao("Cliente");
-            if(retorno == 0){
-                fprintf(arqClienteTemp,"%s;",cliente.cpf);
-                fprintf(arqClienteTemp,"%s;",cliente.nome);
-                fprintf(arqClienteTemp,"%s;",cliente.email);
-                fprintf(arqClienteTemp,"%s\n",cliente.dataNascimento);
+            if(retorno==1){
+                cliente->status = False;
+                fseek(arqCliente,(-1)*sizeof(Cliente), SEEK_CUR);
+                fwrite(cliente,sizeof(Cliente),1,arqCliente);
             }
         }
     }
 
-    if(encontrado == 0){
-        printf("\nCliente não encontrado\n");
-    }
-
     fclose(arqCliente);
-    fclose(arqClienteTemp);
-    
-    remove("Clientes/clientes.csv");
-    rename("Clientes/clientesTemp.csv", "Clientes/clientes.csv");
+    free(cliente);
+    if(!encontrado){
+        printf("\n  Cliente não encontrado\n");
+    }
 
 }
 
@@ -430,12 +398,14 @@ Cliente* coletarDadosCliente(void){
 }
 
 void exibirCliente(Cliente *cliente){
+
     printf("\n==============================================================================\n");
     printf("\nSeus Dados: \n");
     printf("\nNome Completo: %s\n", cliente->nome);
     printf("Data de Nascimento: %s\n", cliente->dataNascimento);
     printf("Email: %s\n", cliente->email);
     printf("CPF: %s\n", cliente->cpf);
+    printf("Status: %d\n", cliente->status);
     printf("\n==============================================================================\n");
 }
 
