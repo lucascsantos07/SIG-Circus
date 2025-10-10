@@ -94,7 +94,7 @@ void alterarAgendamento(void){
 
     int codAgendamento, retorno, encontrado, novaCapacidade;
     float novoPreco;
-    char cpf_busca[20], linha[255];
+    char cpf_busca[20];
     char novaData[12], novoHorario[7];
     char opcao;
     Agendamento* agendamento;
@@ -173,8 +173,6 @@ void alterarAgendamento(void){
                     retorno = confirmarAlteracao();
                     if(retorno==1){
                         strcpy(agendamento->data,novaData);
-                        fseek(arqAgendamentos,(-1)*sizeof(Agendamento), SEEK_CUR);
-                        fwrite(agendamento,sizeof(Agendamento),1,arqAgendamentos);
                     }
 
                     break;
@@ -187,8 +185,6 @@ void alterarAgendamento(void){
                     retorno = confirmarAlteracao();
                     if(retorno==1){
                         strcpy(agendamento->horario,novoHorario);
-                        fseek(arqAgendamentos,(-1)*sizeof(Agendamento), SEEK_CUR);
-                        fwrite(agendamento,sizeof(Agendamento),1,arqAgendamentos);
                     }
 
                     break;
@@ -201,8 +197,6 @@ void alterarAgendamento(void){
                     retorno = confirmarAlteracao();
                     if(retorno==1){
                         agendamento->capacidade=novaCapacidade;
-                        fseek(arqAgendamentos,(-1)*sizeof(Agendamento), SEEK_CUR);
-                        fwrite(agendamento,sizeof(Agendamento),1,arqAgendamentos);
                     }
 
                     break;
@@ -216,8 +210,6 @@ void alterarAgendamento(void){
                     retorno = confirmarAlteracao();
                     if(retorno==1){
                         agendamento->precoIngresso=novoPreco;
-                        fseek(arqAgendamentos,(-1)*sizeof(Agendamento), SEEK_CUR);
-                        fwrite(agendamento,sizeof(Agendamento),1,arqAgendamentos);
                     }
 
                     break;
@@ -225,6 +217,12 @@ void alterarAgendamento(void){
                 default:
                     printf("\n  Opção Inválida\n");
                     break;
+            }
+            if (retorno == 1) {
+                fseek(arqAgendamentos, -sizeof(Agendamento), SEEK_CUR);
+                fwrite(agendamento, sizeof(Agendamento), 1, arqAgendamentos);
+                fflush(arqAgendamentos);
+                return;
             }
         }
     }
@@ -474,19 +472,18 @@ Agendamento* coletarDadosAgendamentos(void){
     fgets(agendamento->cpfResponsavel, 20, stdin);
     agendamento->cpfResponsavel[strcspn(agendamento->cpfResponsavel, "\n")] = 0;
 
-    agendamento->id=0;
+    agendamento->id=1;
     maiorID=0;
     arqAgendamento = fopen("Agendamentos/agendamento.dat", "rb");
     if (arqAgendamento != NULL) {
-        while (fread(&temp, sizeof(Agendamento),1,arqAgendamento) != NULL) {
+        while (fread(&temp, sizeof(Agendamento),1,arqAgendamento) == 1) {
+            printf("%d",temp.id);
             if (temp.id > maiorID) {
                 maiorID = temp.id;
             }
         }
         agendamento->id = maiorID + 1;
         fclose(arqAgendamento);
-    }else{
-        agendamento->id = 1;
     }
 
     agendamento->status = True;
