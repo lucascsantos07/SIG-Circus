@@ -136,7 +136,7 @@ void alterarAgendamento(void){
     }
     fclose(arqAgendamentos);
 
-    printf("\nDigite o código do Agendamento que deseja Alterar: ");
+    printf("\n  Digite o código do Agendamento que deseja Alterar: ");
     scanf("%d", &codAgendamento);
     getchar();
 
@@ -154,13 +154,13 @@ void alterarAgendamento(void){
             encontrado = True;
             exibirAgendamento(agendamento);
 
-            printf("\nQual dado deseja alterar: \n");
-            printf("\n1 - Data");
-            printf("\n2 - Horário");
-            printf("\n3 - Quantidade de Ingressos");
-            printf("\n4 - Preço\n");
+            printf("\n  Qual dado deseja alterar: \n");
+            printf("\n  1 - Data");
+            printf("\n  2 - Horário");
+            printf("\n  3 - Quantidade de Ingressos");
+            printf("\n  4 - Preço\n");
 
-            printf("\nDigite seu opção: ");
+            printf("\n  Digite seu opção: ");
             scanf("%c", &opcao);
             getchar();
 
@@ -221,7 +221,7 @@ void alterarAgendamento(void){
             if (retorno == 1) {
                 fseek(arqAgendamentos, -sizeof(Agendamento), SEEK_CUR);
                 fwrite(agendamento, sizeof(Agendamento), 1, arqAgendamentos);
-                fflush(arqAgendamentos);
+                fclose(arqAgendamentos);
                 return;
             }
         }
@@ -256,11 +256,11 @@ void excluirAgendamento(void){
         exit(1);
     }
 
-    printf("\nInforme CPF do Responsável pelo Agendamento: ");
+    printf("\n  Informe CPF do Responsável pelo Agendamento: ");
     fgets(cpf_busca, 20, stdin);
     cpf_busca[strcspn(cpf_busca, "\n")] = '\0';
 
-    printf("\nLista dos Agendamentos do Responsável Informado: \n");
+    printf("\n  Lista dos Agendamentos do Responsável Informado: \n");
 
     arqAgendamentos = fopen("Agendamentos/agendamento.dat", "rb");
     if (arqAgendamentos == NULL){
@@ -280,7 +280,7 @@ void excluirAgendamento(void){
     }
     fclose(arqAgendamentos);
 
-    printf("\nDigite o código do Agendamento que deseja excluir: ");
+    printf("\n  Digite o código do Agendamento que deseja excluir: ");
     scanf("%d", &codAgendamento);
     getchar();
 
@@ -311,7 +311,7 @@ void excluirAgendamento(void){
     free(agendamento);
 
     if(!encontrado){
-        printf("\nAgendamento não encontrado\n");
+        printf("\n  Agendamento não encontrado\n");
     }
 }
 
@@ -477,7 +477,6 @@ Agendamento* coletarDadosAgendamentos(void){
     arqAgendamento = fopen("Agendamentos/agendamento.dat", "rb");
     if (arqAgendamento != NULL) {
         while (fread(&temp, sizeof(Agendamento),1,arqAgendamento) == 1) {
-            printf("%d",temp.id);
             if (temp.id > maiorID) {
                 maiorID = temp.id;
             }
@@ -506,9 +505,9 @@ void confirmarCadastroAgendamento(Agendamento* agendamento){
     char opcao;
     FILE *arqAgendamento;
 
-    printf("\nDigite 1 para confirmar cadastro\n");
-    printf("Digite 2 para cancelar cadastro\n");
-    printf("\nOpção: ");
+    printf("\n  Digite 1 para confirmar cadastro\n");
+    printf("  Digite 2 para cancelar cadastro\n");
+    printf("\n  Opção: ");
     scanf("%c",&opcao);
     getchar();
 

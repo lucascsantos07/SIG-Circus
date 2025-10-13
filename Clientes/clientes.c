@@ -124,7 +124,7 @@ void editarDadoscliente(void){
 
     cliente = (Cliente*) malloc(sizeof(Cliente)); 
 
-    printf("\n   Informe o seu CPF: ");
+    printf("\n  Informe o seu CPF: ");
     fgets(cpfBusca, 20, stdin);
     cpfBusca[strcspn(cpfBusca, "\n")] = '\0';
 
@@ -142,13 +142,13 @@ void editarDadoscliente(void){
             encontrado=True;
             exibirCliente(cliente);
 
-            printf("\nQual dado deseja alterar: \n");
-            printf("\n1 - CPF");
-            printf("\n2 - Nome");
-            printf("\n3 - Email");
-            printf("\n4 - Data de Nascimento\n");
+            printf("\n  Qual dado deseja alterar: \n");
+            printf("\n  1 - CPF");
+            printf("\n  2 - Nome");
+            printf("\n  3 - Email");
+            printf("\n  4 - Data de Nascimento\n");
 
-            printf("\nDigite seu opção: ");
+            printf("\n  Digite seu opção: ");
             scanf("%c", &opcao);
             getchar();
 
@@ -347,9 +347,9 @@ void confirmacaoCadastroCliente(Cliente *cliente){
     char opcao;
     FILE *arqCliente;
 
-    printf("\nDigite 1 para confirmar cadastro\n");
-    printf("Digite 2 para cancelar cadastro\n");
-    printf("\nOpção: ");
+    printf("\n  Digite 1 para confirmar cadastro\n");
+    printf("  Digite 2 para cancelar cadastro\n");
+    printf("\n  Opção: ");
     scanf("%c",&opcao);
     getchar();
 
