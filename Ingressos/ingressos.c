@@ -196,7 +196,7 @@ void ExibirTodosAgendamentos(void) {
 
     agendamento = (Agendamento*)malloc(sizeof(Agendamento));
 
-    fp_agendamentos = fopen("Agendamentos/agendamentos.dat", "rb+");
+    fp_agendamentos = fopen("Agendamentos/agendamento.dat", "rb");
 
     if (fp_agendamentos == NULL) {
         printf("\n\n\n\nERROR\n\n\n\n");
@@ -205,8 +205,10 @@ void ExibirTodosAgendamentos(void) {
 
     
 
-    while (fread(agendamento, sizeof(Agendamento), 1, fp_agendamentos) && agendamento->status) {
-        exibirAgendamento(agendamento);
+    while (fread(agendamento, sizeof(Agendamento), 1, fp_agendamentos) == 1) {
+        if (agendamento->status) {
+            exibirAgendamento(agendamento);
+        }
     }
 
     fclose(fp_agendamentos);
@@ -233,12 +235,12 @@ Ingressos* ColetarDadosIngressos(void) {
     getchar();
     ingresso->id = IngressoMaiorID() + 1;
     ingresso->status = 1;
-    fp_agendamentos = fopen("Agendamentos/agendamentos.dat", "rb");
+    fp_agendamentos = fopen("Agendamentos/agendamento.dat", "rb");
     while (fread(agendamento, sizeof(Agendamento), 1, fp_agendamentos)) {
         if (ingresso->idEspetaculo == agendamento->id && agendamento->status) {
             encontrado = 1;
             precoDoIngresso = agendamento->precoIngresso;
-            printf("Preco do Ingresso: %f", precoDoIngresso);
+            printf("Preco do Ingresso: %.2f\n", precoDoIngresso);
         }
     }
     if (encontrado) {
@@ -246,7 +248,7 @@ Ingressos* ColetarDadosIngressos(void) {
         scanf(" %d", &ingresso->quantidadeIngressos);
         getchar();
         ingresso->valorTotal = precoDoIngresso * ingresso->quantidadeIngressos;
-        printf("\nValor Total: %f", ingresso->valorTotal);
+        printf("\nValor Total: %.2f", ingresso->valorTotal);
         printf("\nForma de pagamento: \n1 - PIX\n2 - Dinheiro");
         scanf(" %d", &ingresso->formaPag);
         getchar();
