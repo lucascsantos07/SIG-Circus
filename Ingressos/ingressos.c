@@ -2,7 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include "ingressos.h"
+#include "../Agendamentos/agendamentos.h"
 #include "../Utilitarios/utilitarios.h"
+
+#define True 1
+#define False 0
 
 
 void menuVendasIngressos(void) {
@@ -37,17 +41,8 @@ void menuVendasIngressos(void) {
 
 void telaCadastroVendaIngresso(void) {
     limparTela();
-    char linha[1000];
-    int id;
-    float valorTotal;
-
-    Ingressos ing;
-
-    FILE *arqIngressos;
-
-    FILE *arqAgendamentos;
-
-    id = 0;
+    
+    Ingressos* ingresso;
 
     printf("\n");
     printf("==============================================================================\n");
@@ -58,72 +53,11 @@ void telaCadastroVendaIngresso(void) {
     printf("||               Developed by @ViniciusL07 -- since Aug, 2025               ||\n");
     printf("==============================================================================\n");
     
-    printf("\n   CPF do Cliente        : ");
-    fgets(ing.cpfCliente,20, stdin);
-    ing.cpfCliente[strcspn(ing.cpfCliente, "\n")] = 0;
-    printf("\n   Lista de Espetáculos:  \n ");
-    printf("\n--------------------------------------------------------------------------------------------------------------------------------------------\n");
+    ingresso = ColetarDadosIngressos();
 
+    ExibirIngresso(ingresso);
 
-    arqAgendamentos = fopen("Agendamentos/agendamentos.csv", "rt");
-    
-    while (fgets(linha, sizeof(linha), arqAgendamentos)) {
-        id++;
-        sscanf(linha, "%[^;];%[^;];%[^;];%d;%f;%[^\n]", ing.data, ing.horario, ing.cidade, &ing.capacidadeMax, &ing.precoIngresso, ing.cpfResponsavel);
-        printf("%d - Data: %s, Horário: %s, Cidade: %s, Quantidade de Ingressos Disponível: %d, Preço do Ingresso: %.2f, CPF do responsável: %s", id, ing.data, ing.horario, ing.cidade, ing.capacidadeMax, ing.precoIngresso, ing.cpfResponsavel);
-        printf("\n--------------------------------------------------------------------------------------------------------------------------------------------\n");
-    }
-
-    fclose(arqAgendamentos);
-
-    id = 0;
-
-    arqAgendamentos = fopen("Agendamentos/agendamentos.csv", "rt");
-
-    printf("\n\n   Digite o id do espetáculo: ");
-    scanf(" %d", &ing.idEspetaculo);
-    getchar();
-    while (fgets(linha, sizeof(linha), arqAgendamentos)) {
-        id++;
-        if (id == ing.idEspetaculo) {
-            sscanf(linha, "%[^;];%[^;];%[^;];%d;%f;%[^\n]", ing.data, ing.horario, ing.cidade, &ing.capacidadeMax, &ing.precoIngresso, ing.cpfResponsavel);
-            break;
-        }
-    }
-
-    fclose(arqAgendamentos);
-    printf("\n   Valor do ingresso: R$ %.2f", ing.precoIngresso);
-    printf("\n\n   Digite a Quantidade de Ingressos: ");
-    scanf(" %d", &ing.quantidadeIngressos);
-    getchar();
-    valorTotal = ing.quantidadeIngressos * ing.precoIngresso;
-    printf("\n   Valor Total: R$ %.2f", valorTotal);
-
-    printf("\n\n   Forma de Pagamento: \n");
-    printf("\n      1 - PIX ");
-    printf("\n      2 - Cartão de Crédito \n");
-    printf("\n   Digite sua opcao: ");
-    scanf(" %d", &ing.escolha);
-    getchar();
-
-    arqIngressos = fopen("Ingressos/ingressos.csv", "at");
-
-    fprintf(arqIngressos, "%s;", ing.cpfCliente);
-    fprintf(arqIngressos, "%d;", ing.idEspetaculo);
-    fprintf(arqIngressos, "%d;", ing.quantidadeIngressos);
-    fprintf(arqIngressos, "%.2f;", valorTotal);
-
-    if(ing.escolha==1){
-        fprintf(arqIngressos, "%s\n", "PIX");
-    }else if(ing.escolha==2){
-        fprintf(arqIngressos, "%s\n", "Cartão de Crédito");
-    }
-
-    fclose(arqIngressos);
-
-    printf("\n==============================================================================\n");
-    printf("||                           Venda concluída                                ||\n");
-    printf("==============================================================================\n");
+    ConfirmarCadastroIngresso(ingresso);
 
 }
 
@@ -131,13 +65,11 @@ void telaCadastroVendaIngresso(void) {
 void consultarVendaIngresso(void) {
     limparTela();
 
-    char linha[255];
-    Ingressos ing;
-    char resto[255];
-    float valorTotal;
+    char cpfInput[20];
+    int encontrado = 0;
 
-    FILE *arqIngressos;
-
+    FILE* fp_ingresso;
+    Ingressos* ingresso;
 
     printf("\n");
     printf("==============================================================================\n");
@@ -148,61 +80,42 @@ void consultarVendaIngresso(void) {
     printf("||                   Developed by @ViniciusL07 -- since Aug, 2025           ||\n");
     printf("==============================================================================\n");
 
-    printf("\nInforme o seu CPF: ");
-    fgets(ing.cpfCliente, 20, stdin);
-    ing.cpfCliente[strcspn(ing.cpfCliente, "\n")] = '\0';
+    ingresso = (Ingressos*)malloc(sizeof(Ingressos));
+    printf("\nInforme o CPF do Cliente: ");
+    fgets(cpfInput, sizeof(cpfInput), stdin);
+    cpfInput[strcspn(cpfInput, "\n")] = 0;
 
-    arqIngressos = fopen("Ingressos/ingressos.csv","rt");
-
-    if (arqIngressos == NULL){
-        printf("Erro na criacao do arquivo\n!");
+    fp_ingresso = fopen("Ingressos/ingressos.dat", "r+b");
+    if (fp_ingresso == NULL) {
+        printf("ERROR!");
         exit(1);
     }
 
-    int encontrado = 0;
+    encontrado = 0;
 
-    printf("\nLista de ingressos encontrados do cliente %s:\n", ing.cpfCliente);
-
-    while(fscanf(arqIngressos,"%[^\n]",linha) == 1){
-        
-        fgetc(arqIngressos);
-
-        sscanf(linha, "%[^;];%[^\n]", ing.cpfCliente, resto);
-
-        sscanf(resto, "%d;%[^\n]", &ing.idEspetaculo, resto);
-
-        sscanf(resto, "%d;%[^\n]", &ing.quantidadeIngressos, resto);
-
-        sscanf(resto, "%f;%[^\n]", &valorTotal, resto);
-
-        sscanf(resto, "%[^\n]", &ing.formaPag);
-
-        if(strcmp(ing.cpfCliente,ing.cpfCliente)==0){
-            printf("\n==============================================================================\n");
-            printf("\nCPF do Cliente: %s\n",ing.cpfCliente);
-            printf("ID do Espetáculo: %d\n",ing.idEspetaculo);
-            printf("Quantidade de Ingressos Comprados: %d\n",ing.quantidadeIngressos);
-            printf("Valor Total: %.2f\n",valorTotal);
-            printf("Forma de Pagamento: %d\n", ing.formaPag);
-            printf("\n==============================================================================\n");
-            encontrado++;
+    while (fread(ingresso, sizeof(Ingressos), 1, fp_ingresso)) {
+        printf("%s %s - %d\n", ingresso->cpfCliente, cpfInput, strcmp(ingresso->cpfCliente, cpfInput));
+        if (strcmp(ingresso->cpfCliente, cpfInput) == 0 && ingresso->status) {
+            encontrado = 1;
+            ExibirIngresso(ingresso);
         }
     }
 
-    if(encontrado==0){
-        printf("\nNenhuma Venda para este Usuário\n");
+    fclose(fp_ingresso);
+    free(ingresso);
+    if (!encontrado) {
+        printf("Ingresso nao encontrado...");
     }
-
-    fclose(arqIngressos);
-
+    return;
 }
 
 
 void reembolsarVendaIngresso(void){
     limparTela();
-    char cpf_busca[20];
-    char justificativa[200];
+    Ingressos* ingresso;
+    FILE* fp_ingresso;
     char confirma;
+    int encontrado;
     int idVenda;
 
     printf("\n");
@@ -214,27 +127,40 @@ void reembolsarVendaIngresso(void){
     printf("||               Developed by @ViniciusL07 -- since Aug, 2025               ||\n");
     printf("==============================================================================\n");
 
-    printf("\n   Informe seu CPF: ");
-    fgets(cpf_busca, sizeof(cpf_busca), stdin);
-    printf("\n   Lista seus Ingressos:\n");
+    ingresso = (Ingressos*)malloc(sizeof(Ingressos));
 
     printf("\n   Informe o ID da Venda que deseja reembolsar: ");
     scanf("%d", &idVenda);
     getchar();
 
-    printf("\n   Justificativa do reembolso: ");
-    fgets(justificativa, sizeof(justificativa), stdin);
+    fp_ingresso = fopen("Ingressos/ingressos.dat", "r+b");
 
-    printf("\n   Confirma o reembolso da venda %d? (S/N): ", idVenda);
-    scanf(" %c", &confirma);
-    getchar();
-
-    if (confirma == 'S' || confirma == 's') {
-        printf("\n   Reembolso realizado com sucesso!\n");
-        printf("   Motivo: %s\n", justificativa);
-    } else {
-        printf("\n   Reembolso cancelado.\n");
+    if (fp_ingresso == NULL) {
+        printf("\n\nERROR!\n\n");
+        exit(1);
     }
+
+    encontrado = 0;
+
+    while (fread(ingresso, sizeof(Ingressos), 1, fp_ingresso)) {
+        if ((ingresso->id == idVenda) && ingresso->status) {
+            encontrado = True;
+            ExibirIngresso(ingresso);
+            confirma = confirmarExclusao("Ingresso");
+            if (confirma) {
+                ingresso->status = 0;
+                fseek(fp_ingresso,(-1)*sizeof(Ingressos), SEEK_CUR);
+                fwrite(ingresso,sizeof(Ingressos),1,fp_ingresso);
+            }
+        }
+    }
+
+    fclose(fp_ingresso);
+    free(ingresso);
+    if(!encontrado){
+        printf("\n  Cliente não encontrado\n");
+    }
+
 }
 
 
@@ -262,4 +188,138 @@ void exibirModuloVendasIngressos(void){
         }
 
     }while(opcaoVendaIngresso != '0');
+}
+
+void ExibirTodosAgendamentos(void) {
+    FILE* fp_agendamentos;
+    Agendamento* agendamento;
+
+    agendamento = (Agendamento*)malloc(sizeof(Agendamento));
+
+    fp_agendamentos = fopen("Agendamentos/agendamentos.dat", "rb+");
+
+    if (fp_agendamentos == NULL) {
+        printf("\n\n\n\nERROR\n\n\n\n");
+        exit(1);
+    }
+
+    
+
+    while (fread(agendamento, sizeof(Agendamento), 1, fp_agendamentos) && agendamento->status) {
+        exibirAgendamento(agendamento);
+    }
+
+    fclose(fp_agendamentos);
+    free(agendamento);
+
+    return;
+} 
+
+Ingressos* ColetarDadosIngressos(void) {
+    int encontrado = 0;
+    float precoDoIngresso = 0;
+    Ingressos* ingresso;
+    ingresso = (Ingressos*)malloc(sizeof(Ingressos));
+    FILE* fp_agendamentos;
+    Agendamento* agendamento;
+    agendamento = (Agendamento*)malloc(sizeof(Agendamento));
+    printf("CPF do cliente: ");
+    fgets(ingresso->cpfCliente, sizeof(ingresso->cpfCliente), stdin);
+    ingresso->cpfCliente[strcspn(ingresso->cpfCliente, "\n")] = '\0';
+    printf("\nAgendamentos Ativos\n");
+    ExibirTodosAgendamentos();
+    printf("\nSelecione o ID do espetáculo: ");
+    scanf(" %d", &ingresso->idEspetaculo);
+    getchar();
+    ingresso->id = IngressoMaiorID() + 1;
+    ingresso->status = 1;
+    fp_agendamentos = fopen("Agendamentos/agendamentos.dat", "rb");
+    while (fread(agendamento, sizeof(Agendamento), 1, fp_agendamentos)) {
+        if (ingresso->idEspetaculo == agendamento->id && agendamento->status) {
+            encontrado = 1;
+            precoDoIngresso = agendamento->precoIngresso;
+            printf("Preco do Ingresso: %f", precoDoIngresso);
+        }
+    }
+    if (encontrado) {
+        printf("Quantidade de ingressos que deseja comprar: ");
+        scanf(" %d", &ingresso->quantidadeIngressos);
+        getchar();
+        ingresso->valorTotal = precoDoIngresso * ingresso->quantidadeIngressos;
+        printf("\nValor Total: %f", ingresso->valorTotal);
+        printf("\nForma de pagamento: \n1 - PIX\n2 - Dinheiro");
+        scanf(" %d", &ingresso->formaPag);
+        getchar();
+    } else {
+        printf("Espetáculo nao localizado.");
+    }
+
+    free(agendamento);
+    fclose(fp_agendamentos);
+    return ingresso;
+}
+
+void ExibirIngresso(Ingressos* ingresso) {
+    printf("\n==============================================================================\n");
+    printf("\nDados do Ingresso: \n");
+    printf("\nCPF do Cliente: %s\n", ingresso->cpfCliente);
+    printf("\nQuantidade de Ingressos: %d\n", ingresso->quantidadeIngressos);
+    printf("\nID do Espetáculo: %d\n", ingresso->idEspetaculo);
+    printf("\nID do Ingresso: %d\n", ingresso->id);
+    printf("\nValor Total: %f\n", ingresso->valorTotal);
+    printf("\n==============================================================================\n");
+}
+
+int IngressoMaiorID(void) {
+    FILE* fp_ingresso;
+    Ingressos temp;
+    int maiorID;
+    fp_ingresso = fopen("Ingressos/ingressos.dat", "rb");
+    if (fp_ingresso == NULL) {
+        printf("ËRROR!");
+        exit(1);
+    }
+    maiorID = 0;
+    while (fread(&temp, sizeof(Ingressos), 1, fp_ingresso) == True) {
+        if (temp.id > maiorID) {
+            maiorID = temp.id;
+        }
+    }
+    fclose(fp_ingresso);
+    return maiorID;
+}
+
+void ConfirmarCadastroIngresso(Ingressos* ingresso) {
+    int opcao;
+    FILE* fp_ingresso;
+
+    printf("\nConfirmar cadastro (1)\nRecusar Cadastro(0)\n ");
+    scanf( "%d", &opcao);
+    getchar();
+
+    switch (opcao) {
+        case 0:
+            printf("Cadastro Cancelado!");
+            free(ingresso);
+            break;
+        case 1:
+            fp_ingresso = fopen("Ingressos/ingressos.dat", "ab");
+
+            if (fp_ingresso == NULL) {
+                printf("\n\nERROR!\n\n");
+                exit(1);
+            }
+
+            SalvarIngresso(fp_ingresso, ingresso);
+            free(ingresso);
+            fclose(fp_ingresso);
+            printf("Cadastro Concluído!");
+            break;
+        
+    }
+
+}
+
+void SalvarIngresso(FILE* fp_ingresso, Ingressos* ingresso) {
+    fwrite(ingresso, sizeof(Ingressos), 1, fp_ingresso);
 }
