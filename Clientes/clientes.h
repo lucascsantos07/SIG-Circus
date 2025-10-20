@@ -16,9 +16,10 @@ struct cliente{
     char dataNascimento[20];
     char email[100];
     char cpf[20];
+    int status;
 };
 
-Cliente coletarDadosCliente(void);
+Cliente* coletarDadosCliente(void);
 void exibirCliente(Cliente *cliente);
 void confirmacaoCadastroCliente(Cliente *cliente);
 void salvarCliente(FILE *arqCliente, Cliente *cliente);

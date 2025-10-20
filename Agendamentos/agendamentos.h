@@ -18,4 +18,9 @@ struct agendamento{
     int capacidade;
     float precoIngresso;
     int id;
+    int status;
 };
+
+Agendamento* coletarDadosAgendamentos(void);
+void confirmarCadastroAgendamento(Agendamento *agendamento);
+void exibirAgendamento(Agendamento* agendamento);
