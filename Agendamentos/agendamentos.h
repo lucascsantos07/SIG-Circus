@@ -19,6 +19,7 @@ struct agendamento{
     float precoIngresso;
     int id;
     int status;
+    int quantIngressosVend;
 };
 
 Agendamento* coletarDadosAgendamentos(void);

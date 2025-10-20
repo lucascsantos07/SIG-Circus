@@ -126,13 +126,13 @@ void alterarAgendamento(void){
         exit(1);
     }
 
-    printf("\nID    | Data         | Hora     | Cidade               | Capacidade | Preço    | CPF Responsável\n");
-    printf("---------------------------------------------------------------------------------------------------\n");
+    printf("\nID    | Data         | Hora     | Cidade               | Capacidade | Preço   | Ingressos Vendidos | CPF Responsável\n");
+    printf("---------------------------------------------------------------------------------------------------------------------------\n");
     while(fread(&temp, sizeof(Agendamento), 1, arqAgendamentos) == 1){
         if(temp.status && strcmp(temp.cpfResponsavel, cpf_busca) == 0){
-            printf("%-5d | %-12s | %-8s | %-20s | %-10d | %-9.2f | %-15s\n",
+            printf("%-5d | %-12s | %-8s | %-20s | %-10d | %-9.2f| %-19d| %-15s\n",
                    temp.id, temp.data, temp.horario, temp.cidade,
-                   temp.capacidade, temp.precoIngresso, temp.cpfResponsavel);
+                   temp.capacidade, temp.precoIngresso,temp.quantIngressosVend, temp.cpfResponsavel);
         }
     }
     fclose(arqAgendamentos);
@@ -270,13 +270,13 @@ void cancelarAgendamento(void){
         exit(1);
     }
 
-    printf("\nID    | Data         | Hora     | Cidade               | Capacidade | Preço    | CPF Responsável\n");
-    printf("---------------------------------------------------------------------------------------------------\n");
+    printf("\nID    | Data         | Hora     | Cidade               | Capacidade | Preço   | Ingressos Vendidos | CPF Responsável\n");
+    printf("---------------------------------------------------------------------------------------------------------------------------\n");
     while(fread(&temp, sizeof(Agendamento), 1, arqAgendamentos) == 1){
         if(temp.status && strcmp(temp.cpfResponsavel, cpf_busca) == 0){
-            printf("%-5d | %-12s | %-8s | %-20s | %-10d | %-9.2f | %-15s\n",
+            printf("%-5d | %-12s | %-8s | %-20s | %-10d | %-9.2f| %-19d| %-15s\n",
                    temp.id, temp.data, temp.horario, temp.cidade,
-                   temp.capacidade, temp.precoIngresso, temp.cpfResponsavel);
+                   temp.capacidade, temp.precoIngresso,temp.quantIngressosVend, temp.cpfResponsavel);
         }
     }
     fclose(arqAgendamentos);
@@ -355,13 +355,13 @@ void excluirPermanenteAgendamento(void) {
         exit(1);
     }
 
-    printf("\nID    | Data         | Hora     | Cidade               | Capacidade | Preço    | CPF Responsável\n");
-    printf("---------------------------------------------------------------------------------------------------\n");
-    while (fread(&temp, sizeof(Agendamento), 1, arqAgendamentos) == 1) {
-        if (temp.status && strcmp(temp.cpfResponsavel, cpf_busca) == 0) {
-            printf("%-5d | %-12s | %-8s | %-20s | %-10d | %-9.2f | %-15s\n",
+    printf("\nID    | Data         | Hora     | Cidade               | Capacidade | Preço   | Ingressos Vendidos | CPF Responsável\n");
+    printf("---------------------------------------------------------------------------------------------------------------------------\n");
+    while(fread(&temp, sizeof(Agendamento), 1, arqAgendamentos) == 1){
+        if(temp.status && strcmp(temp.cpfResponsavel, cpf_busca) == 0){
+            printf("%-5d | %-12s | %-8s | %-20s | %-10d | %-9.2f| %-19d| %-15s\n",
                    temp.id, temp.data, temp.horario, temp.cidade,
-                   temp.capacidade, temp.precoIngresso, temp.cpfResponsavel);
+                   temp.capacidade, temp.precoIngresso,temp.quantIngressosVend, temp.cpfResponsavel);
         }
     }
     fclose(arqAgendamentos);
@@ -407,20 +407,6 @@ void excluirPermanenteAgendamento(void) {
         if (deveGravar) {
             fwrite(agendamento, sizeof(Agendamento), 1, arqTemp);
         }
-    }
-
-
-    fclose(arqAgendamentos);
-
-    arqAgendamentos = fopen("Agendamentos/agendamento.dat", "rb");
-    if (arqAgendamentos == NULL) {
-        printf("Erro ao abrir arquivo original.\n");
-        free(agendamento);
-        return;
-    }
-
-    while(fread(agendamento,sizeof(Agendamento),1,arqAgendamentos)==1){
-        exibirAgendamento(agendamento);
     }
 
     fclose(arqAgendamentos);
@@ -574,6 +560,7 @@ Agendamento* coletarDadosAgendamentos(void){
         fclose(arqAgendamento);
     }
 
+    agendamento->quantIngressosVend = 0;
     agendamento->status = True;
     return agendamento;
 }
@@ -586,6 +573,7 @@ void exibirAgendamento(Agendamento* agendamento){
     printf("Horario: %s\n", agendamento->horario);
     printf("Quantidade de Ingressos Disponíveis: %d\n", agendamento->capacidade);
     printf("Preço do Ingresso: %.2f\n", agendamento->precoIngresso);
+    printf("Quantidade de Ingressos Vendidos: %d\n", agendamento->quantIngressosVend);
     printf("CPF do Responsável: %s\n", agendamento->cpfResponsavel);
     printf("\n==============================================================================\n");
 }
@@ -626,6 +614,7 @@ void confirmarCadastroAgendamento(Agendamento* agendamento){
     
 }
 
+// Créditos: GPT-5
 int compararDataComHoje(const char *dataAgendamento) {
     int dia, mes, ano;
     sscanf(dataAgendamento, "%d/%d/%d", &dia, &mes, &ano);
