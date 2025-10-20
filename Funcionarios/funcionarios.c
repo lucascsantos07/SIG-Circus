@@ -4,6 +4,9 @@
 #include "funcionarios.h"
 #include "../Utilitarios/utilitarios.h"
 
+#define True 1
+#define False 0
+
 
 void menuFuncionarios(void) {
     limparTela();
@@ -37,9 +40,7 @@ void menuFuncionarios(void) {
 void telaCadastroFuncionario(void) {
     limparTela();
 
-    Funcionarios fun;
-
-    char linha[1000];
+    Funcionarios* funcionarios;
 
     FILE *arqFuncionarios;
 
@@ -52,73 +53,21 @@ void telaCadastroFuncionario(void) {
     printf("||               Developed by @ViniciusL07 -- since Aug, 2025               ||\n");
     printf("==============================================================================\n");
     
-    printf("\n   Nome Completo       : ");
-    fgets(fun.nome, 50, stdin);
-    fun.nome[strcspn(fun.nome, "\n")] = '\0';
-    printf("\n   Data de Nascimento  : ");
-    fgets(fun.dataNascimento, 20, stdin);
-    fun.dataNascimento[strcspn(fun.dataNascimento, "\n")] = '\0';
-    printf("\n   Email               : ");
-    fgets(fun.email, 100, stdin);
-    fun.email[strcspn(fun.email, "\n")] = '\0';
-    printf("\n   CPF                 : ");
-    fgets(fun.cpf, 20, stdin);
-    fun.cpf[strcspn(fun.cpf, "\n")] = '\0';
-    printf("\n   Sexo (m/f)          : ");
-    fgets(fun.sexo, 12, stdin);
-    fun.sexo[strcspn(fun.sexo, "\n")] = '\0';
-    printf("\n   Endereço            : ");
-    fgets(fun.endereco, 100, stdin);
-    fun.endereco[strcspn(fun.endereco, "\n")] = '\0';
-    printf("\n   Telefone            : ");
-    fgets(fun.telefone, 15, stdin);
-    fun.telefone[strcspn(fun.telefone, "\n")] = '\0';
-    printf("\n   Salário             : ");
-    fgets(fun.salario, 10, stdin);
-    fun.salario[strcspn(fun.salario, "\n")] = '\0';
-    printf("\n   Cargo               : ");
-    fgets(fun.cargo, 30, stdin);
-    fun.cargo[strcspn(fun.cargo, "\n")] = '\0';
-    printf("\n   Setor               : ");
-    fgets(fun.setor, 30, stdin);
-    fun.setor[strcspn(fun.setor, "\n")] = '\0';
+    funcionarios = ColetarDadosFuncionario();
+    ExibirFuncionario(funcionarios);
+    ConfirmarCadastroFuncionario(funcionarios);
 
-    arqFuncionarios = fopen("Funcionarios/funcionarios.csv", "at");
-
-    if (arqFuncionarios == NULL) {
-        printf("FAIL");
-        exit(1);
-    }
-
-    fprintf(arqFuncionarios, "%s;", fun.cpf);
-    fprintf(arqFuncionarios, "%s;", fun.nome);
-    fprintf(arqFuncionarios, "%s;", fun.dataNascimento);
-    fprintf(arqFuncionarios, "%s;", fun.email);
-    fprintf(arqFuncionarios, "%s;", fun.sexo);
-    fprintf(arqFuncionarios, "%s;", fun.endereco);
-    fprintf(arqFuncionarios, "%s;", fun.telefone);
-    fprintf(arqFuncionarios, "%s;", fun.salario);
-    fprintf(arqFuncionarios, "%s;", fun.cargo);
-    fprintf(arqFuncionarios, "%s\n", fun.setor);
-
-    fclose(arqFuncionarios);
-
-    printf("\n================================================================================\n");
-    printf("||                             Cadastro concluído                             ||\n");
-    printf("================================================================================\n");
-
+    
 }
 
 
 void listarDadosFuncionario(void) {
     limparTela();
 
-    char cpf_input[12];
-    char linha[1000];
-    Funcionarios fun;
+    Funcionarios* funcionario;
+    char cpfInput[13];
 
     FILE *fp_funcionario;
-
     printf("\n");
     printf("==============================================================================\n");
     printf("||                                                                          ||\n");
@@ -128,44 +77,48 @@ void listarDadosFuncionario(void) {
     printf("||               Developed by @ViniciusL07 -- since Aug, 2025               ||\n");
     printf("==============================================================================\n");
 
-    printf("\nInforme o CPF do funcionário: ");
-    fgets(cpf_input, sizeof(cpf_input), stdin);
-    cpf_input[strcspn(cpf_input, "\n")] = 0;
+    funcionario = (Funcionarios*)malloc(sizeof(Funcionarios));
 
-    fp_funcionario = fopen("Funcionarios/funcionarios.csv", "rt");
+    printf("\nInforme o CPF do funcionário: ");
+    fgets(cpfInput, sizeof(cpfInput), stdin);
+    cpfInput[strcspn(cpfInput, "\n")] = 0;
+
+    fp_funcionario = fopen("Funcionarios/funcionarios.dat", "rb");
     if (fp_funcionario == NULL) {
         printf("Erro ao abrir arquivo!\n");
         exit(1);
     }
 
-    while (fgets(linha, sizeof(linha), fp_funcionario)) {
-        sscanf(linha, "%[^;];%[^;];%[^;];%[^;];%[^;];%[^;];%[^;];%[^;];%[^;];%[^;\n]",
-               fun.cpf, fun.nome, fun.dataNascimento, fun.email, fun.sexo, fun.endereco, fun.telefone, fun.salario, fun.cargo, fun.setor);
-
-        if (strcmp(cpf_input, fun.cpf) == 0) {
-            printf("\n==============================================================================\n");
-            printf("\nNome Completo: %s \n", fun.nome);
-            printf("Data de Nascimento: %s \n", fun.dataNascimento);
-            printf("Email: %s \n", fun.email);
-            printf("CPF: %s \n"), fun.cpf;
-            printf("Sexo(m/f): %s \n", fun.sexo);
-            printf("Endereço: %s \n", fun.endereco);
-            printf("Telefone: %s \n", fun.telefone);
-            printf("Salário: %s \n", fun.salario);
-            printf("Cargo: %s \n", fun.cargo);
-            printf("Setor: %s \n", fun.setor);
-            printf("\n==============================================================================\n");
+    while (fread(funcionario, sizeof(Funcionarios), 1, fp_funcionario)) {
+        if (strcmp(funcionario->cpf, cpfInput) == 0 && funcionario->status) {
+            ExibirFuncionario(funcionario);
+            return;
         }
     }
 
     fclose(fp_funcionario);
+    free(funcionario);
+    printf("Funcionario nao encontrado...");
 }
 
 
 
 void editarDadosFuncionario(void) {
     limparTela();
-    Funcionarios fun;
+    Funcionarios* funcionario;
+    char nome_busca[20];
+    char novoCpf[20];
+    char novoDataNascimento[20];
+    char novoEmail[100];
+    char novoNome[50];
+    char novoSexo[12];
+    char novoEndereco[100];
+    char novoTelefone[15];
+    char novoSalario[20];
+    char novoCargo[30];
+    char novoSetor[30];
+    FILE* fp_funcionario;
+    int opcao, retorno, encontrado;
 
     printf("\n");
     printf("==============================================================================\n");
@@ -176,38 +129,208 @@ void editarDadosFuncionario(void) {
     printf("||               Developed by @ViniciusL07 -- since Aug, 2025               ||\n");
     printf("==============================================================================\n");
 
-    printf("\n   Informe o CPF do funcionário: ");
-    fgets(fun.cpf_busca, sizeof(fun.cpf_busca), stdin);
+    funcionario = (Funcionarios*)malloc(sizeof(Funcionarios));
 
-    printf("\n   Nome Completo       : ");
-    fgets(fun.nome, sizeof(fun.nome), stdin);
-    printf("\n   Data de Nascimento  : ");
-    fgets(fun.dataNascimento, sizeof(fun.dataNascimento), stdin);
-    printf("\n   Email               : ");
-    fgets(fun.email, sizeof(fun.email), stdin);
-    printf("\n   CPF                 : ");
-    fgets(fun.cpf, sizeof(fun.cpf), stdin);
-    printf("\n   Sexo (m/f)          : ");
-    fgets(fun.sexo, sizeof(fun.sexo), stdin);
-    printf("\n   Endereço            : ");
-    fgets(fun.endereco, sizeof(fun.endereco), stdin);
-    printf("\n   Telefone            : ");
-    fgets(fun.telefone, sizeof(fun.telefone), stdin);
-    printf("\n   Salário             : ");
-    fgets(fun.salario, sizeof(fun.salario), stdin);
-    printf("\n   Cargo               : ");
-    fgets(fun.cargo, sizeof(fun.cargo), stdin);
-    printf("\n   Setor               : ");
-    fgets(fun.setor, sizeof(fun.setor), stdin);
+    printf("\n   Informe o Nome do funcionário: ");
+    fgets(nome_busca, sizeof(nome_busca), stdin);
+    nome_busca[strcspn(nome_busca, "\n")] = 0;
 
-    confirmarAlteracao();
+    fp_funcionario = fopen("Funcionarios/funcionarios.dat", "r+b");
+
+    if (fp_funcionario == NULL) {
+        printf("Erro ao abrir arquivo.");
+        exit(1);
+    }
+
+    encontrado = False;
+
+    while (fread(funcionario, sizeof(Funcionarios), 1, fp_funcionario) && (encontrado==0)) {
+        if (strcmp(nome_busca, funcionario->nome) == 0 && funcionario->status) {
+            encontrado = True;
+            ExibirFuncionario(funcionario);
+
+            printf("\n  Qual dado deseja alterar: \n");
+            printf("\n  1 - Nome");
+            printf("\n  2 - Data de Nascimento\n");
+            printf("\n  3 - Email");
+            printf("\n  4 - CPF");
+            printf("\n  5 - Sexo");
+            printf("\n  6 - Endereço");
+            printf("\n  7 - Telefone");
+            printf("\n  8 - Salário");
+            printf("\n  9 - Cargo");
+            printf("\n  10 - Setor\n");
+
+            printf("\n  Digite seu opção: ");
+            scanf(" %d", &opcao);
+            getchar();
+
+            switch (opcao) {
+                case 1:
+                    printf("Novo Nome: ");
+                    fgets(novoNome, 50, stdin);
+                    novoNome[strcspn(novoNome, "\n")] = '\0';
+
+                    retorno = confirmarAlteracao();
+
+                    if (retorno) {
+                        strcpy(funcionario->nome, novoNome);
+                        fseek(fp_funcionario, (-1)*sizeof(Funcionarios), SEEK_CUR);
+                        fwrite(funcionario, sizeof(Funcionarios), 1, fp_funcionario);
+                    }
+
+                    break;
+                case 2:
+                    printf("Nova Data de Nascimento: ");
+                    fgets(novoDataNascimento, 20, stdin);
+                    novoDataNascimento[strcspn(novoDataNascimento, "\n")] = '\0';
+
+                    retorno = confirmarAlteracao();
+
+                    if (retorno) {
+                        strcpy(funcionario->dataNascimento, novoDataNascimento);
+                        fseek(fp_funcionario, (-1)*sizeof(Funcionarios), SEEK_CUR);
+                        fwrite(funcionario, sizeof(Funcionarios), 1, fp_funcionario);
+                    }
+
+                    break;
+                case 4:
+                    printf("Novo CPF: ");
+                    fgets(novoCpf, 20, stdin);
+                    novoCpf[strcspn(novoCpf, "\n")] = '\0';
+
+                    retorno = confirmarAlteracao();
+
+                    if (retorno) {
+                        strcpy(funcionario->cpf, novoCpf);
+                        fseek(fp_funcionario, (-1)*sizeof(Funcionarios), SEEK_CUR);
+                        fwrite(funcionario, sizeof(Funcionarios), 1, fp_funcionario);
+                    }
+
+                    break;
+                case 3:
+                    printf("Novo Email: ");
+                    fgets(novoEmail, 100, stdin);
+                    novoEmail[strcspn(novoEmail, "\n")] = '\0';
+
+                    retorno = confirmarAlteracao();
+
+                    if (retorno) {
+                        strcpy(funcionario->email, novoEmail);
+                        fseek(fp_funcionario, (-1)*sizeof(Funcionarios), SEEK_CUR);
+                        fwrite(funcionario, sizeof(Funcionarios), 1, fp_funcionario);
+                    }
+
+                    break;
+                case 5:
+                    printf("Novo Sexo: ");
+                    fgets(novoSexo, 12, stdin);
+                    novoSexo[strcspn(novoSexo, "\n")] = '\0';
+
+                    retorno = confirmarAlteracao();
+
+                    if (retorno) {
+                        strcpy(funcionario->sexo, novoSexo);
+                        fseek(fp_funcionario, (-1)*sizeof(Funcionarios), SEEK_CUR);
+                        fwrite(funcionario, sizeof(Funcionarios), 1, fp_funcionario);
+                    }
+
+                    break;
+                case 6:
+                    printf("Novo Endereco: ");
+                    fgets(novoEndereco, 100, stdin);
+                    novoEndereco[strcspn(novoEndereco, "\n")] = '\0';
+
+                    retorno = confirmarAlteracao();
+
+                    if (retorno) {
+                        strcpy(funcionario->endereco, novoEndereco);
+                        fseek(fp_funcionario, (-1)*sizeof(Funcionarios), SEEK_CUR);
+                        fwrite(funcionario, sizeof(Funcionarios), 1, fp_funcionario);
+                    }
+
+                    break;
+                case 7:
+                    printf("Novo Telefone: ");
+                    fgets(novoTelefone, 15, stdin);
+                    novoTelefone[strcspn(novoTelefone, "\n")] = '\0';
+
+                    retorno = confirmarAlteracao();
+
+                    if (retorno) {
+                        strcpy(funcionario->telefone, novoTelefone);
+                        fseek(fp_funcionario, (-1)*sizeof(Funcionarios), SEEK_CUR);
+                        fwrite(funcionario, sizeof(Funcionarios), 1, fp_funcionario);
+                    }
+
+                    break;
+                case 8:
+                    printf("Novo Salario: ");
+                    scanf(" %s", novoSalario);
+                    getchar();
+
+                    retorno = confirmarAlteracao();
+
+                    if (retorno) {
+                        strcpy(funcionario->salario, novoSalario);
+                        fseek(fp_funcionario, (-1)*sizeof(Funcionarios), SEEK_CUR);
+                        fwrite(funcionario, sizeof(Funcionarios), 1, fp_funcionario);
+                    }
+
+                    break;
+                case 9:
+                    printf("Novo Cargo: ");
+                    fgets(novoCargo, 30, stdin);
+                    novoCargo[strcspn(novoCargo, "\n")] = '\0';
+
+                    retorno = confirmarAlteracao();
+
+                    if (retorno) {
+                        strcpy(funcionario->cargo, novoCargo);
+                        fseek(fp_funcionario, (-1)*sizeof(Funcionarios), SEEK_CUR);
+                        fwrite(funcionario, sizeof(Funcionarios), 1, fp_funcionario);
+                    }
+
+                    break;
+                case 10:
+                    printf("Novo Setor: ");
+                    fgets(novoSetor, 30, stdin);
+                    novoSetor[strcspn(novoSetor, "\n")] = '\0';
+
+                    retorno = confirmarAlteracao();
+
+                    if (retorno) {
+                        strcpy(funcionario->setor, novoSetor);
+                        fseek(fp_funcionario, (-1)*sizeof(Funcionarios), SEEK_CUR);
+                        fwrite(funcionario, sizeof(Funcionarios), 1, fp_funcionario);
+                    }
+
+                    break;
+                default:
+                    printf("Opcao Inválida!\n");
+                    break;
+            }
+
+            fclose(fp_funcionario);
+            free(funcionario);
+
+            if (encontrado == 0) {
+                printf("Nao Encontrado...");
+            }
+
+            return;
+            
+        }
+    }
+
 }
 
 
 void excluirFuncionario(void) {
-    limparTela();
-    Funcionarios fun;
-    char cpf[20];
+    FILE* fp_funcionario;
+    Funcionarios* funcionario;
+    int retorno, encontrado;
+    char cpfBusca[20];
 
     printf("\n");
     printf("==============================================================================\n");
@@ -215,26 +338,44 @@ void excluirFuncionario(void) {
     printf("||                     ~ ~ ~ Excluir Funcionário ~ ~ ~                      ||\n");
     printf("||                                                                          ||\n");
     printf("==============================================================================\n");
-    printf("||               Developed by @ViniciusL07 -- since Aug, 2025               ||\n");
+    printf("||               Developed by @lucascsantos07 -- since Aug, 2025            ||\n"); 
     printf("==============================================================================\n");
 
-    printf("\n   Informe o CPF do funcionário: ");
-    fgets(fun.cpf, sizeof(fun.cpf), stdin);
+    funcionario = (Funcionarios*)malloc(sizeof(Funcionarios));
 
-    printf("\n==============================================================================\n");
-    printf("\nNome Completo: \n");
-    printf("Data de Nascimento: \n");
-    printf("Email: \n");
-    printf("CPF: \n");
-    printf("Sexo(m/f): \n");
-    printf("Endereço: \n");
-    printf("Telefone: \n");
-    printf("Salário: \n");
-    printf("Cargo: \n");
-    printf("Setor: \n");
-    printf("\n==============================================================================\n");
+    printf("\nSelecione o CPF do Funcionário que deseja excluir: ");
+    scanf(" %s", cpfBusca);
+    getchar();
 
-    confirmarExclusao("Funcionário");
+    fp_funcionario = fopen("Funcionarios/funcionarios.dat", "r+b");
+
+    if (fp_funcionario == NULL) {
+        printf("ERROR!");
+        exit(1);
+    }
+
+    encontrado = False;
+
+    while (fread(funcionario, sizeof(Funcionarios), 1, fp_funcionario) && encontrado == 0) {
+        if (strcmp(funcionario->cpf, cpfBusca) == 0 && funcionario->status) {
+            encontrado = True;
+            ExibirFuncionario(funcionario);
+            retorno = confirmarExclusao("Funcionário");
+
+            if (retorno == 1) {
+                funcionario->status = False;
+                fseek(fp_funcionario,(-1)*sizeof(Funcionarios), SEEK_CUR);
+                fwrite(funcionario,sizeof(Funcionarios),1,fp_funcionario);
+            }
+        }
+    }
+
+    fclose(fp_funcionario);
+    free(funcionario);
+    if(!encontrado){
+        printf("\n  Funcionário não encontrado\n");
+    }
+
 }
 
 
@@ -263,4 +404,112 @@ void exibirModuloFuncionarios(void){
         }
 
     }while(opcaoFuncionario != '0');
+}
+
+Funcionarios* ColetarDadosFuncionario(void) {
+    Funcionarios* funcionarios;
+    funcionarios = (Funcionarios*)malloc(sizeof(Funcionarios));
+    printf("Nome: ");
+    fgets(funcionarios->nome, sizeof(funcionarios->nome), stdin);
+    funcionarios->nome[strcspn(funcionarios->nome, "\n")] = 0;
+    printf("Data de nascimento: ");
+    fgets(funcionarios->dataNascimento, sizeof(funcionarios->dataNascimento), stdin);
+    funcionarios->dataNascimento[strcspn(funcionarios->dataNascimento, "\n")] = 0;
+    printf("Email: ");
+    fgets(funcionarios->email, sizeof(funcionarios->email), stdin);
+    funcionarios->email[strcspn(funcionarios->email, "\n")] = 0;
+    printf("CPF: ");
+    fgets(funcionarios->cpf, 20, stdin);
+    funcionarios->cpf[strcspn(funcionarios->cpf, "\n")] = 0;
+    printf("Sexo: ");
+    fgets(funcionarios->sexo, 12, stdin);
+    funcionarios->sexo[strcspn(funcionarios->sexo, "\n")] = 0;
+    printf("Endereço: ");
+    fgets(funcionarios->endereco, 100, stdin);
+    funcionarios->endereco[strcspn(funcionarios->endereco, "\n")] = 0;
+    printf("Telefone: ");
+    fgets(funcionarios->telefone, 15, stdin);
+    funcionarios->telefone[strcspn(funcionarios->telefone, "\n")] = 0;
+    printf("Salário: ");
+    scanf(" %s", funcionarios->salario);
+    getchar();
+    printf("Cargo: ");
+    fgets(funcionarios->cargo, 30, stdin);
+    funcionarios->cargo[strcspn(funcionarios->cargo, "\n")] = 0;
+    printf("Setor: ");
+    fgets(funcionarios->setor, 30, stdin);
+    funcionarios->setor[strcspn(funcionarios->setor, "\n")] = 0;
+
+    funcionarios->id = FuncionarioMaiorID() + 1;
+    printf("a");
+    funcionarios->status = True;
+    printf("c");
+    return funcionarios;
+}   
+
+void SalvarFuncionario(FILE* fp_funcionario, Funcionarios* funcionario) {
+    fwrite(funcionario, sizeof(Funcionarios), 1, fp_funcionario);   
+}
+
+void ConfirmarCadastroFuncionario(Funcionarios* funcionario) {
+    int escolha;
+    FILE* fp_funcionario;
+    
+    printf("Confirmar registro (1) ou recusar registro (0)? ");
+    scanf(" %d", &escolha);
+    getchar();
+
+    switch (escolha) {
+        case 1:
+            fp_funcionario = fopen("Funcionarios/funcionarios.dat", "ab");
+            if (fp_funcionario == NULL) {
+                printf("ERROR!");
+                exit(1);
+            }
+            SalvarFuncionario(fp_funcionario, funcionario);
+            fclose(fp_funcionario);
+            free(funcionario);
+
+            printf("Cadastro Concluido!");
+            break;
+        case 0:
+            free(funcionario);
+            printf("Cadastro Cancelado.");
+    }
+}
+
+int FuncionarioMaiorID(void) {
+    FILE* fp_funcionario;
+    Funcionarios temp;
+    int maiorID;
+    fp_funcionario = fopen("Funcionarios/funcionarios.dat", "rb");
+    if (fp_funcionario == NULL) {
+        printf("ËRROR!");
+        exit(1);
+    }
+    maiorID = 0;
+    while (fread(&temp, sizeof(Funcionarios), 1, fp_funcionario) == True) {
+        if (temp.id > maiorID) {
+            maiorID = temp.id;
+        }
+    }
+    fclose(fp_funcionario);
+    return maiorID;
+}
+
+void ExibirFuncionario(Funcionarios* funcionario) {
+        printf("\n==============================================================================\n");
+    printf("\nSeus Dados: \n");
+    printf("Nome: %s\n", funcionario->nome);
+    printf("Data de Nascimento: %s\n", funcionario->dataNascimento);
+    printf("Email: %s\n", funcionario->email);
+    printf("CPF: %s\n", funcionario->cpf);
+    printf("Sexo: %s\n", funcionario->sexo);
+    printf("Endereco: %s\n", funcionario->endereco);
+    printf("Telefone: %s\n", funcionario->telefone);
+    printf("Salário: %s\n", funcionario->salario);
+    printf("Cargo: %s\n", funcionario->cargo);
+    printf("Setor: %s\n", funcionario->setor);
+    printf("ID: %d\n", funcionario->id);
+    printf("\n==============================================================================\n");
 }
