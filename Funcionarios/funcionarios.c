@@ -29,7 +29,8 @@ void menuFuncionarios(void) {
     printf("||             1. Cadastrar funcionário                                     ||\n");
     printf("||             2. Listar dados do funcionário                               ||\n");
     printf("||             3. Editar dados do funcionário                               ||\n");
-    printf("||             4. Excluir funcionário                                       ||\n");
+    printf("||             4. Deletar Funcionário Permanentemente                       ||\n");
+    printf("||             5. Excluir funcionário                                       ||\n");
     printf("||             0. Voltar ao menu principal                                  ||\n");
     printf("||                                                                          ||\n");
     printf("==============================================================================\n");
@@ -393,6 +394,8 @@ void exibirModuloFuncionarios(void){
         }else if(opcaoFuncionario == '3'){
             editarDadosFuncionario();
         }else if(opcaoFuncionario == '4'){
+            deletarFuncionarioPermanentemente();
+        }else if(opcaoFuncionario == '5'){
             excluirFuncionario();
         }else if(opcaoFuncionario != '0'){
             printf("\nOpção inválida! Tente novamente.\n");
@@ -512,4 +515,62 @@ void ExibirFuncionario(Funcionarios* funcionario) {
     printf("Setor: %s\n", funcionario->setor);
     printf("ID: %d\n", funcionario->id);
     printf("\n==============================================================================\n");
+}
+
+void deletarFuncionarioPermanentemente(void){
+    limparTela();
+    FILE* fp_funcionario;
+    FILE* fp_temp;
+    Funcionarios* funcionario;
+    char confirma;
+    int encontrado;
+    char cpfBusca[20];
+
+    printf("\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||               ~ ~ ~ Deletar Funcionário Permanentemente ~ ~ ~           ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("||               Developed by @ViniciusL07 -- since Aug, 2025               ||\n");
+    printf("==============================================================================\n");
+
+    funcionario = (Funcionarios*)malloc(sizeof(Funcionarios));
+
+    printf("\n   Informe o CPF do Funcionário que deseja deletar permanentemente: ");
+    scanf(" %s", cpfBusca);
+    getchar();
+
+    fp_funcionario = fopen("Funcionarios/funcionarios.dat", "rb");
+    fp_temp = fopen("Funcionarios/temp.dat", "wb");
+
+    if (fp_funcionario == NULL || fp_temp == NULL) {
+        printf("\n\n\nERROR!\n\n\n");
+        exit(1);
+    }
+
+    encontrado = 0;
+
+    while (fread(funcionario, sizeof(Funcionarios), 1, fp_funcionario)) {
+        if (strcmp(funcionario->cpf, cpfBusca) == 0) {
+            encontrado = True;
+            ExibirFuncionario(funcionario);
+            confirma = confirmarExclusao("Funcionário Permanentemente");
+            if (confirma == False) {
+                fwrite(funcionario, sizeof(Funcionarios), 1, fp_temp);
+            }
+        } else {
+            fwrite(funcionario, sizeof(Funcionarios), 1, fp_temp);
+        }
+    }
+
+    fclose(fp_funcionario);
+    fclose(fp_temp);
+    remove("Funcionarios/funcionarios.dat");
+    rename("Funcionarios/temp.dat", "Funcionarios/funcionarios.dat");
+    free(funcionario);
+    if (!encontrado) {
+        printf("Funcionário nao encontrado...");
+    }
+    return;
 }

@@ -21,6 +21,7 @@ void menuFuncionarios(void);
 void telaCadastroFuncionario(void);
 void listarDadosFuncionario(void);
 void editarDadosFuncionario(void);
+void deletarFuncionarioPermanentemente(void);
 void excluirFuncionario(void);
 void exibirModuloFuncionarios(void);
 
