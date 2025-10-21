@@ -95,7 +95,6 @@ void consultarVendaIngresso(void) {
     encontrado = 0;
 
     while (fread(ingresso, sizeof(Ingressos), 1, fp_ingresso)) {
-        printf("%s %s - %d\n", ingresso->cpfCliente, cpfInput, strcmp(ingresso->cpfCliente, cpfInput));
         if (strcmp(ingresso->cpfCliente, cpfInput) == 0 && ingresso->status) {
             encontrado = 1;
             ExibirIngresso(ingresso);
@@ -161,7 +160,6 @@ void reembolsarVendaIngresso(void){
     if(!encontrado){
         printf("\n  Cliente não encontrado\n");
     }
-
 }
 
 

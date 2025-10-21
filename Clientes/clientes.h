@@ -23,3 +23,4 @@ Cliente* coletarDadosCliente(void);
 void exibirCliente(Cliente *cliente);
 void confirmacaoCadastroCliente(Cliente *cliente);
 void salvarCliente(FILE *arqCliente, Cliente *cliente);
+void excluirClientePermanente(void);

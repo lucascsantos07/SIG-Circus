@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "clientes.h"
+#include "../Ingressos/ingressos.h"
 #include "../Utilitarios/utilitarios.h"
 
 #define True 1
@@ -29,6 +30,7 @@ void menuCliente(void) {
     printf("||             2. Listar dados pessoais                                     ||\n");
     printf("||             3. Editar dados pessoais                                     ||\n");
     printf("||             4. Excluir conta                                             ||\n");
+    printf("||             5. Excluir conta Permanentemente                             ||\n");
     printf("||             0. Voltar Menu Principal                                     ||\n");
     printf("||                                                                          ||\n");
     printf("==============================================================================\n");
@@ -278,6 +280,100 @@ void excluirContacliente(void){
 
 }
 
+void excluirClientePermanente(void) {
+    limparTela();
+
+    char cpfBusca[20];
+    Cliente* cliente;
+    Ingressos* ingresso;
+    int encontrado = False;
+    int temIngresso = False;
+    int retorno;
+
+    FILE* arqCliente;
+    FILE* arqTemp;
+    FILE* arqIngressos;
+
+    printf("\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||                ~ ~ ~ Excluir Cliente Permanentemente ~ ~ ~               ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("||               Developed by @lucascsantos07 -- since Aug, 2025            ||\n");
+    printf("==============================================================================\n");
+
+    cliente = (Cliente*) malloc(sizeof(Cliente));
+    ingresso = (Ingressos*) malloc(sizeof(Ingressos));
+    if (cliente == NULL || ingresso == NULL) {
+        printf("Erro de memória!\n");
+        exit(1);
+    }
+
+    printf("\n  Informe o CPF do cliente: ");
+    fgets(cpfBusca, 20, stdin);
+    cpfBusca[strcspn(cpfBusca, "\n")] = '\0';
+
+    arqIngressos = fopen("Ingressos/ingressos.dat", "rb");
+    if (arqIngressos != NULL) {
+        while (fread(ingresso, sizeof(Ingressos), 1, arqIngressos) == 1) {
+            if (strcmp(cpfBusca, ingresso->cpfCliente) == 0 && ingresso->status == 1) {
+                temIngresso = True;
+                break;
+            }
+        }
+        fclose(arqIngressos);
+    }
+
+    if (temIngresso) {
+        printf("\n  Exclusão não permitida: o cliente possui ingressos comprados.\n");
+        free(cliente);
+        free(ingresso);
+        return;
+    }
+
+    arqCliente = fopen("Clientes/clientes.dat", "rb");
+    arqTemp = fopen("Clientes/temp.dat", "wb");
+
+    if (arqCliente == NULL || arqTemp == NULL) {
+        printf("Erro na abertura dos arquivos!\n");
+        free(cliente);
+        free(ingresso);
+        exit(1);
+    }
+
+    while (fread(cliente, sizeof(Cliente), 1, arqCliente) == 1) {
+        int deveGravar = True;
+        if (strcmp(cliente->cpf, cpfBusca) == 0 && cliente->status == 1) {
+            encontrado = True;
+            exibirCliente(cliente);
+            retorno = confirmarExclusao("Cliente");
+
+            if (retorno == 1) {
+                deveGravar = False;
+            }
+        }
+
+        if(deveGravar){
+            fwrite(cliente, sizeof(Cliente), 1, arqTemp);
+        }
+    }
+
+    fclose(arqCliente);
+    fclose(arqTemp);
+    free(cliente);
+    free(ingresso);
+
+    if (encontrado) {
+        remove("Clientes/clientes.dat");
+        rename("Clientes/temp.dat", "Clientes/clientes.dat");
+    } else {
+        remove("Clientes/temp.dat");
+        printf("\n  Cliente não encontrado.\n");
+    }
+}
+
+
 void exibirModuloClientes(void){
     char opcaoCliente;
     do{
@@ -293,6 +389,8 @@ void exibirModuloClientes(void){
             editarDadoscliente();
         }else if(opcaoCliente == '4'){
             excluirContacliente();
+        }else if(opcaoCliente == '5'){
+            excluirClientePermanente();
         }else if(opcaoCliente != '0'){
             printf("\nOpção inválida! Tente novamente.\n");
         }
