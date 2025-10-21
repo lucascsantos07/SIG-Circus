@@ -17,6 +17,7 @@ void menuVendasIngressos(void);
 void telaCadastroVendaIngresso(void);
 void consultarVendaIngresso(void);
 void reembolsarVendaIngresso(void);
+void deletarIngressoPermanentemente(void);
 void exibirModuloVendasIngressos(void);
 
 Ingressos* ColetarDadosIngressos(void);

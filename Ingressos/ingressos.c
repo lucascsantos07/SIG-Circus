@@ -32,6 +32,7 @@ void menuVendasIngressos(void) {
     printf("||             1. Cadastrar Venda de Ingresso                               ||\n");
     printf("||             2. Consultar Venda de Ingresso                               ||\n");
     printf("||             3. Reembolsar Venda de Ingresso                              ||\n");
+    printf("||             4. Deletar Venda de Ingresso Permanentemente                 ||\n");
     printf("||             0. Voltar Menu Principal                                     ||\n");
     printf("||                                                                          ||\n");
     printf("==============================================================================\n");
@@ -178,6 +179,8 @@ void exibirModuloVendasIngressos(void){
             consultarVendaIngresso();
         }else if(opcaoVendaIngresso == '3'){
             reembolsarVendaIngresso();
+        }else if(opcaoVendaIngresso == '4'){
+            deletarIngressoPermanentemente();
         }else if(opcaoVendaIngresso != '0'){
             printf("\nOpção inválida! Tente novamente.\n");
         }
@@ -324,4 +327,64 @@ void ConfirmarCadastroIngresso(Ingressos* ingresso) {
 
 void SalvarIngresso(FILE* fp_ingresso, Ingressos* ingresso) {
     fwrite(ingresso, sizeof(Ingressos), 1, fp_ingresso);
+}
+
+void deletarIngressoPermanentemente(void){
+    limparTela();
+    Ingressos* ingresso;
+    FILE* fp_ingresso;
+    FILE* fp_temp;
+    char confirma;
+    int encontrado;
+    int idVenda;
+
+    printf("\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||             ~ ~ ~ Deletar Venda de Ingressos Permanentemente ~ ~ ~       ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("||               Developed by @ViniciusL07 -- since Aug, 2025               ||\n");
+    printf("==============================================================================\n");
+
+    ingresso = (Ingressos*)malloc(sizeof(Ingressos));
+
+    printf("\n   Informe o ID da Venda que deseja deletar permanentemente: ");
+    scanf("%d", &idVenda);
+    getchar();
+
+    fp_ingresso = fopen("Ingressos/ingressos.dat", "rb");
+    fp_temp = fopen("Ingressos/temp.dat", "wb");
+
+    if (fp_ingresso == NULL || fp_temp == NULL) {
+        printf("\n\nERROR!\n\n");
+        exit(1);
+    }
+
+    encontrado = 0;
+
+    while (fread(ingresso, sizeof(Ingressos), 1, fp_ingresso)) {
+        if ((ingresso->id == idVenda)) {
+            encontrado = True;
+            ExibirIngresso(ingresso);
+            confirma = confirmarExclusao("Ingresso Permanentemente");
+            if (confirma == False) {
+                fwrite(ingresso, sizeof(Ingressos), 1, fp_temp);
+            }
+        } else {
+            fwrite(ingresso, sizeof(Ingressos), 1, fp_temp);
+        }
+    }
+
+    fclose(fp_ingresso);
+    fclose(fp_temp);
+    free(ingresso);
+
+    remove("Ingressos/ingressos.dat");
+    rename("Ingressos/temp.dat", "Ingressos/ingressos.dat");
+
+    if(!encontrado){
+        printf("\n  Ingresso não encontrado\n");
+    }
+
 }
