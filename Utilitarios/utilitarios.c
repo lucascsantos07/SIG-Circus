@@ -13,31 +13,34 @@ void limparTela(void) {
     #endif
 }
 
-int confirmarExclusao(const char *modulo){
-
+int confirmarExclusao(const char *modulo) {
     char confirma;
+    int c;
 
-    printf("\nDeseja Realmente Excluir este dado do Sistema? s - sim ou n - não: ");
-    scanf(" %c", &confirma);
-    getchar();
-    if(confirma == 's'){
-        remove("Funcionarios/funcionarios.csv");
-        rename("Funcionarios/funcionariostemp.csv", "Funcionarios/funcionarios.csv");      
-        printf("\n==============================================================================\n");
-        printf("                        %s Excluido Com Sucesso                      \n", modulo);
-        printf("==============================================================================\n");
-        return 1;
-    }else if(confirma == 'n'){
-        remove("Funcionarios/funcionariostemp.csv");
-        printf("\n==============================================================================\n");
-        printf("||                            Exclusao Cancelado                            ||\n");
-        printf("==============================================================================\n");
-        return 0;
-    }else{
-        printf("\nOpção inválida! Tente novamente.\n");
+    while (1) {
+        printf("\nDeseja realmente excluir este dado do sistema? (s/n): ");
+        confirma = getchar();
+
+        while ((c = getchar()) != '\n' && c != EOF);
+
+        if (confirma == 's' || confirma == 'S') {
+            printf("\n==============================================================================\n");
+            printf("                        %s Excluído com sucesso                      \n", modulo);
+            printf("==============================================================================\n");
+            return 1;
+        } 
+        else if (confirma == 'n' || confirma == 'N') {
+            printf("\n==============================================================================\n");
+            printf("||                            Exclusão cancelada                            ||\n");
+            printf("==============================================================================\n");
+            return 0;
+        } 
+        else {
+            printf("\nOpção inválida! Digite apenas 's' ou 'n'.\n");
+        }
     }
-
 }
+
 
 int confirmarAlteracao(){
 

@@ -247,9 +247,7 @@ void excluirContacliente(void){
 
     cliente = (Cliente*) malloc(sizeof(Cliente)); 
 
-    printf("\n  Informe o seu CPF: ");
-    fgets(cpfBusca, 20, stdin);
-    cpfBusca[strcspn(cpfBusca, "\n")] = '\0';
+    lerCPF(cpfBusca, 20);
 
     arqCliente= fopen("Clientes/clientes.dat","r+b");
 
@@ -276,7 +274,7 @@ void excluirContacliente(void){
     fclose(arqCliente);
     free(cliente);
     if(!encontrado){
-        printf("\n  Cliente não encontrado\n");
+        printf("\n   Cliente não encontrado\n");
     }
 
 }
@@ -305,15 +303,14 @@ void excluirClientePermanente(void) {
     printf("==============================================================================\n");
 
     cliente = (Cliente*) malloc(sizeof(Cliente));
+    
     ingresso = (Ingressos*) malloc(sizeof(Ingressos));
     if (cliente == NULL || ingresso == NULL) {
         printf("Erro de memória!\n");
         exit(1);
     }
 
-    printf("\n  Informe o CPF do cliente: ");
-    fgets(cpfBusca, 20, stdin);
-    cpfBusca[strcspn(cpfBusca, "\n")] = '\0';
+    lerCPF(cpfBusca,20);
 
     arqIngressos = fopen("Ingressos/ingressos.dat", "rb");
     if (arqIngressos != NULL) {
