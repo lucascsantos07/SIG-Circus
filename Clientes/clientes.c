@@ -4,6 +4,7 @@
 #include "clientes.h"
 #include "../Ingressos/ingressos.h"
 #include "../Utilitarios/utilitarios.h"
+#include "../Validacao/validacao.h"
 
 #define True 1
 #define False 0
@@ -406,31 +407,30 @@ void exibirModuloClientes(void){
 
 Cliente* coletarDadosCliente(void){
     Cliente* cliente;
+    
     cliente = (Cliente*) malloc(sizeof(Cliente));
-    printf("\n   CPF: ");
-    fgets(cliente->cpf, 20, stdin);
-    cliente->cpf[strcspn(cliente->cpf, "\n")] = '\0';
-    printf("\n   Nome Completo: ");
-    fgets(cliente->nome, 50, stdin);
-    cliente->nome[strcspn(cliente->nome, "\n")] = '\0';
-    printf("\n   Email: ");
-    fgets(cliente->email, 100, stdin);
-    cliente->email[strcspn(cliente->email, "\n")] = '\0';
-    printf("\n   Data de Nascimento: ");
-    fgets(cliente->dataNascimento, 20, stdin);
-    cliente->dataNascimento[strcspn(cliente->dataNascimento, "\n")] = '\0';
+
+    lerCPF(cliente->cpf, 20);
+
+    lerNome(cliente->nome, 50);
+
+    lerEmail(cliente->email,50);
+
+    lerData(cliente->dataNascimento,20);
+
     cliente->status=True;
+
     return cliente;
 }
 
 void exibirCliente(Cliente *cliente){
 
     printf("\n==============================================================================\n");
-    printf("\nSeus Dados: \n");
-    printf("\nNome Completo: %s\n", cliente->nome);
-    printf("Data de Nascimento: %s\n", cliente->dataNascimento);
-    printf("Email: %s\n", cliente->email);
-    printf("CPF: %s\n", cliente->cpf);
+    printf("\n  Seus Dados: \n");
+    printf("\n  Nome Completo: %s\n", cliente->nome);
+    printf("  Data de Nascimento: %s\n", cliente->dataNascimento);
+    printf("  Email: %s\n", cliente->email);
+    printf("  CPF: %s\n", cliente->cpf);
     printf("\n==============================================================================\n");
     
 }
@@ -445,8 +445,8 @@ void confirmacaoCadastroCliente(Cliente *cliente){
     char opcao;
     FILE *arqCliente;
 
-    printf("\n  Digite 1 para confirmar cadastro\n");
-    printf("  Digite 2 para cancelar cadastro\n");
+    printf("\n   <-------------  Digite 1 para confirmar cadastro --------------------->\n");
+    printf("   <-------------  Digite 2 para cancelar cadastro  --------------------->\n");
     printf("\n  Opção: ");
     scanf("%c",&opcao);
     getchar();
@@ -472,7 +472,7 @@ void confirmacaoCadastroCliente(Cliente *cliente){
         printf("==============================================================================\n");
         free(cliente);
     }else{
-        printf("\nOpção inválida\n");
+        printf("\n  Opção inválida\n");
     }
     
 }
