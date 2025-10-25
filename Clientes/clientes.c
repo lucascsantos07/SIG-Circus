@@ -4,6 +4,7 @@
 #include "clientes.h"
 #include "../Ingressos/ingressos.h"
 #include "../Utilitarios/utilitarios.h"
+#include "../Validacao/validacao.h"
 
 #define True 1
 #define False 0
@@ -246,9 +247,7 @@ void excluirContacliente(void){
 
     cliente = (Cliente*) malloc(sizeof(Cliente)); 
 
-    printf("\n  Informe o seu CPF: ");
-    fgets(cpfBusca, 20, stdin);
-    cpfBusca[strcspn(cpfBusca, "\n")] = '\0';
+    lerCPF(cpfBusca, 20);
 
     arqCliente= fopen("Clientes/clientes.dat","r+b");
 
@@ -275,7 +274,7 @@ void excluirContacliente(void){
     fclose(arqCliente);
     free(cliente);
     if(!encontrado){
-        printf("\n  Cliente não encontrado\n");
+        printf("\n   Cliente não encontrado\n");
     }
 
 }
@@ -304,15 +303,14 @@ void excluirClientePermanente(void) {
     printf("==============================================================================\n");
 
     cliente = (Cliente*) malloc(sizeof(Cliente));
+    
     ingresso = (Ingressos*) malloc(sizeof(Ingressos));
     if (cliente == NULL || ingresso == NULL) {
         printf("Erro de memória!\n");
         exit(1);
     }
 
-    printf("\n  Informe o CPF do cliente: ");
-    fgets(cpfBusca, 20, stdin);
-    cpfBusca[strcspn(cpfBusca, "\n")] = '\0';
+    lerCPF(cpfBusca,20);
 
     arqIngressos = fopen("Ingressos/ingressos.dat", "rb");
     if (arqIngressos != NULL) {
@@ -406,31 +404,30 @@ void exibirModuloClientes(void){
 
 Cliente* coletarDadosCliente(void){
     Cliente* cliente;
+    
     cliente = (Cliente*) malloc(sizeof(Cliente));
-    printf("\n   CPF: ");
-    fgets(cliente->cpf, 20, stdin);
-    cliente->cpf[strcspn(cliente->cpf, "\n")] = '\0';
-    printf("\n   Nome Completo: ");
-    fgets(cliente->nome, 50, stdin);
-    cliente->nome[strcspn(cliente->nome, "\n")] = '\0';
-    printf("\n   Email: ");
-    fgets(cliente->email, 100, stdin);
-    cliente->email[strcspn(cliente->email, "\n")] = '\0';
-    printf("\n   Data de Nascimento: ");
-    fgets(cliente->dataNascimento, 20, stdin);
-    cliente->dataNascimento[strcspn(cliente->dataNascimento, "\n")] = '\0';
+
+    lerCPF(cliente->cpf, 20);
+
+    lerNome(cliente->nome, 50);
+
+    lerEmail(cliente->email,50);
+
+    lerData(cliente->dataNascimento,20);
+
     cliente->status=True;
+
     return cliente;
 }
 
 void exibirCliente(Cliente *cliente){
 
     printf("\n==============================================================================\n");
-    printf("\nSeus Dados: \n");
-    printf("\nNome Completo: %s\n", cliente->nome);
-    printf("Data de Nascimento: %s\n", cliente->dataNascimento);
-    printf("Email: %s\n", cliente->email);
-    printf("CPF: %s\n", cliente->cpf);
+    printf("\n  Seus Dados: \n");
+    printf("\n  Nome Completo: %s\n", cliente->nome);
+    printf("  Data de Nascimento: %s\n", cliente->dataNascimento);
+    printf("  Email: %s\n", cliente->email);
+    printf("  CPF: %s\n", cliente->cpf);
     printf("\n==============================================================================\n");
     
 }
@@ -445,8 +442,8 @@ void confirmacaoCadastroCliente(Cliente *cliente){
     char opcao;
     FILE *arqCliente;
 
-    printf("\n  Digite 1 para confirmar cadastro\n");
-    printf("  Digite 2 para cancelar cadastro\n");
+    printf("\n   <-------------  Digite 1 para confirmar cadastro --------------------->\n");
+    printf("   <-------------  Digite 2 para cancelar cadastro  --------------------->\n");
     printf("\n  Opção: ");
     scanf("%c",&opcao);
     getchar();
@@ -472,7 +469,7 @@ void confirmacaoCadastroCliente(Cliente *cliente){
         printf("==============================================================================\n");
         free(cliente);
     }else{
-        printf("\nOpção inválida\n");
+        printf("\n  Opção inválida\n");
     }
     
 }
