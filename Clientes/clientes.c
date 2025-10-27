@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include "clientes.h"
 #include "../Ingressos/ingressos.h"
 #include "../Utilitarios/utilitarios.h"
@@ -68,7 +69,7 @@ void listarDadosCliente(void){
 
     Cliente* cliente;
 
-    char cpf_lido[20];
+    char cpfLido[20];
     FILE *arq_cliente;
 
     printf("\n");
@@ -81,10 +82,9 @@ void listarDadosCliente(void){
     printf("==============================================================================\n");
 
     cliente = (Cliente*) malloc(sizeof(Cliente));
-    printf("\n  Informe o seu CPF: ");
-    fgets(cpf_lido, 20, stdin);
-    cpf_lido[strcspn(cpf_lido, "\n")] = '\0';
-
+    
+    lerCPF(cpfLido,20);
+    
     arq_cliente= fopen("Clientes/clientes.dat","rb");
 
     if (arq_cliente == NULL){
@@ -93,7 +93,7 @@ void listarDadosCliente(void){
     }
 
     while(fread(cliente, sizeof(Cliente),1,arq_cliente)){
-        if((cliente->status)&&(strcmp(cpf_lido,cliente->cpf)==0)){
+        if((cliente->status)&&(strcmp(cpfLido,cliente->cpf)==0)){
             exibirCliente(cliente);
             return;
         }
@@ -111,10 +111,10 @@ void editarDadoscliente(void){
 
     char cpfBusca[20];
     Cliente* cliente;
-    char novoNome[50], novaDataNascimento[20], novoEmail[100], novoCpf[20];
+    char novoNome[50], novaDataNascimento[20], novoEmail[50], novoCpf[20];
     FILE* arqCliente;
     char opcao;
-    int retorno, encontrado;
+    int retorno, encontrado,c;
 
     printf("\n");
     printf("==============================================================================\n");
@@ -127,9 +127,7 @@ void editarDadoscliente(void){
 
     cliente = (Cliente*) malloc(sizeof(Cliente)); 
 
-    printf("\n  Informe o seu CPF: ");
-    fgets(cpfBusca, 20, stdin);
-    cpfBusca[strcspn(cpfBusca, "\n")] = '\0';
+    lerCPF(cpfBusca,20);
 
     arqCliente= fopen("Clientes/clientes.dat","r+b");
 
@@ -145,21 +143,27 @@ void editarDadoscliente(void){
             encontrado=True;
             exibirCliente(cliente);
 
-            printf("\n  Qual dado deseja alterar: \n");
-            printf("\n  1 - CPF");
-            printf("\n  2 - Nome");
-            printf("\n  3 - Email");
-            printf("\n  4 - Data de Nascimento\n");
+            do {
 
-            printf("\n  Digite seu opção: ");
-            scanf("%c", &opcao);
-            getchar();
+                printf("\n  Qual dado deseja alterar: \n");
+                printf("\n  1 - CPF");
+                printf("\n  2 - Nome");
+                printf("\n  3 - Email");
+                printf("\n  4 - Data de Nascimento\n");
+                printf("\n  Digite sua opção: ");
+                scanf(" %c", &opcao);
+                getchar();
+                
+                if (!isdigit(opcao) || opcao < '1' || opcao > '4') {
+                    printf("\n   Opção inválida! Digite um número de 1 a 4\n");
+                }
+
+            } while (!isdigit(opcao) || opcao < '1' || opcao > '4');
 
             switch (opcao){
                 case '1':
-                    printf("\n   CPF: ");
-                    fgets(novoCpf, 20, stdin);
-                    novoCpf[strcspn(novoCpf, "\n")] = '\0';
+
+                    lerCPF(novoCpf,20);
 
                     retorno = confirmarAlteracao();
                     if(retorno==1){
@@ -171,9 +175,8 @@ void editarDadoscliente(void){
                     break;
                 
                 case '2':
-                    printf("\n   Nome: ");
-                    fgets(novoNome, 20, stdin);
-                    novoNome[strcspn(novoNome, "\n")] = '\0';
+
+                    lerNome(novoNome,50);
 
                     retorno = confirmarAlteracao();
                     if(retorno==1){
@@ -185,9 +188,8 @@ void editarDadoscliente(void){
                     break;
                 
                 case '3':
-                    printf("\n   Email: ");
-                    fgets(novoEmail, 20, stdin);
-                    novoEmail[strcspn(novoEmail, "\n")] = '\0';
+
+                    lerEmail(novoEmail,50);
 
                     retorno = confirmarAlteracao();
                     if(retorno==1){
@@ -199,9 +201,8 @@ void editarDadoscliente(void){
                     break;
 
                 case '4':
-                    printf("\n   Data Nascimento: ");
-                    fgets(novaDataNascimento, 20, stdin);
-                    novaDataNascimento[strcspn(novaDataNascimento, "\n")] = '\0';
+
+                    lerData(novaDataNascimento,20); 
 
                     retorno = confirmarAlteracao();
                     if(retorno==1){
@@ -303,7 +304,7 @@ void excluirClientePermanente(void) {
     printf("==============================================================================\n");
 
     cliente = (Cliente*) malloc(sizeof(Cliente));
-    
+      
     ingresso = (Ingressos*) malloc(sizeof(Ingressos));
     if (cliente == NULL || ingresso == NULL) {
         printf("Erro de memória!\n");

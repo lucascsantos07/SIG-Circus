@@ -19,7 +19,7 @@ int confirmarExclusao(const char *modulo) {
 
     while (1) {
         printf("\nDeseja realmente excluir este dado do sistema? (s/n): ");
-        confirma = getchar();
+        scanf(" %c", &confirma);
 
         while ((c = getchar()) != '\n' && c != EOF);
 
@@ -45,23 +45,26 @@ int confirmarExclusao(const char *modulo) {
 int confirmarAlteracao(){
 
     char confirma;
+    int c;
 
-    printf("\nDeseja Realmente alterar esse(s) dado(s)? s - sim ou n - não: ");
-    scanf(" %c", &confirma);
-    getchar();
+    while(1){
+        printf("\nDeseja Realmente alterar esse(s) dado(s)? s - sim ou n - não: ");
+        scanf(" %c", &confirma);
 
-    if(confirma == 's'){
-        printf("\n==============================================================================\n");
-        printf("||                     Dado(s) Atualizado(s) com sucesso                    ||\n");
-        printf("==============================================================================\n");
-        return 1;
-    }else if(confirma == 'n'){
-        printf("\n==============================================================================\n");
-        printf("||                           Alteracao Cancelado                            ||\n");
-        printf("==============================================================================\n");
-        return 0;
-    }else{
-        printf("\nOpção inválida! Tente novamente.\n");
+        while ((c = getchar()) != '\n' && c != EOF);
+
+        if(confirma == 's' || confirma == 'S'){
+            printf("\n==============================================================================\n");
+            printf("||                     Dado(s) Atualizado(s) com sucesso                    ||\n");
+            printf("==============================================================================\n");
+            return 1;
+        }else if(confirma == 'n' || confirma == 'N'){
+            printf("\n==============================================================================\n");
+            printf("||                           Alteracao Cancelado                            ||\n");
+            printf("==============================================================================\n");
+            return 0;
+        }else{
+            printf("\nOpção inválida! Tente novamente.\n");
+        } 
     }
-
 }
