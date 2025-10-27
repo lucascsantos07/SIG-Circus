@@ -4,6 +4,8 @@
 #include <time.h>
 #include "agendamentos.h"
 #include "../Utilitarios/utilitarios.h"
+#include "../Validacao/validacao.h"
+#include "../Funcionarios/funcionarios.h"
 
 #define True 1
 #define False 0
@@ -520,32 +522,48 @@ Agendamento* coletarDadosAgendamentos(void){
     Agendamento temp;
     int maiorID;
     FILE* arqAgendamento;
+    Funcionarios* funcionario;
+    FILE *fp_funcionario;
 
     agendamento = (Agendamento*) malloc(sizeof(Agendamento));
+    funcionario = (Funcionarios*)malloc(sizeof(Funcionarios));
 
-    printf("\n   Data (DD/MM/AAAA): ");
-    fgets(agendamento->data, 12, stdin);
-    agendamento->data[strcspn(agendamento->data, "\n")] = 0;
+    lerDataEspetaculo(agendamento->data, 12);
 
-    printf("\n   Horário(HH:MM): ");
-    fgets(agendamento->horario, 7, stdin);
-    agendamento->horario[strcspn(agendamento->horario, "\n")] = 0;
+    lerHora(agendamento->horario, 7);
 
-    printf("\n   Cidade que será realizado o espetáculo: ");
-    fgets(agendamento->cidade, 50, stdin);
-    agendamento->cidade[strcspn(agendamento->cidade, "\n")] = 0;
+    lerCidade(agendamento->cidade, 50);
 
-    printf("\n   Capacidade Maxima de Publico: ");
-    scanf(" %d", &agendamento->capacidade);
-    getchar();
+    lerCapacidade(&agendamento->capacidade);
 
-    printf("\n   Preço do Ingresso: ");
-    scanf(" %f", &agendamento->precoIngresso);
-    getchar();
+    lerPreco(&agendamento->precoIngresso);
 
-    printf("\n   CPF do Responsável pelo Agendamento: ");
-    fgets(agendamento->cpfResponsavel, 20, stdin);
-    agendamento->cpfResponsavel[strcspn(agendamento->cpfResponsavel, "\n")] = 0;
+    int encontrado;
+    do{
+        lerCPF(agendamento->cpfResponsavel, 20);
+
+        encontrado = 0;
+
+        fp_funcionario = fopen("Funcionarios/funcionarios.dat", "rb");
+        if (fp_funcionario == NULL) {
+            printf("Erro ao abrir arquivo!\n");
+            exit(1);
+        }
+        
+        while (fread(funcionario, sizeof(Funcionarios), 1, fp_funcionario)) {
+            if (strcmp(funcionario->cpf, agendamento->cpfResponsavel) == 0 && funcionario->status) {
+                encontrado=1;
+                break;
+            }
+        }
+
+        fclose(fp_funcionario);
+
+        if(encontrado==0){
+            printf("\n  Funcionário não encontrado");
+        }
+
+    }while(encontrado==0);
 
     agendamento->id=1;
     maiorID=0;
@@ -567,14 +585,15 @@ Agendamento* coletarDadosAgendamentos(void){
 
 void exibirAgendamento(Agendamento* agendamento){
     printf("\n==============================================================================\n");
-    printf("\nDados do Agendamento: \n");
-    printf("\nID: %d\n", agendamento->id);
-    printf("Data: %s\n", agendamento->data);
-    printf("Horario: %s\n", agendamento->horario);
-    printf("Quantidade de Ingressos Disponíveis: %d\n", agendamento->capacidade);
-    printf("Preço do Ingresso: %.2f\n", agendamento->precoIngresso);
-    printf("Quantidade de Ingressos Vendidos: %d\n", agendamento->quantIngressosVend);
-    printf("CPF do Responsável: %s\n", agendamento->cpfResponsavel);
+    printf("\n  Dados do Agendamento: \n");
+    printf("\n  ID: %d\n", agendamento->id);
+    printf("  Data: %s\n", agendamento->data);
+    printf("  Horario: %s\n", agendamento->horario);
+    printf("  Cidade: %s\n", agendamento->cidade);
+    printf("  Quantidade de Ingressos Disponíveis: %d\n", agendamento->capacidade);
+    printf("  Preço do Ingresso: %.2f\n", agendamento->precoIngresso);
+    printf("  Quantidade de Ingressos Vendidos: %d\n", agendamento->quantIngressosVend);
+    printf("  CPF do Responsável: %s\n", agendamento->cpfResponsavel);
     printf("\n==============================================================================\n");
 }
 
@@ -582,8 +601,8 @@ void confirmarCadastroAgendamento(Agendamento* agendamento){
     char opcao;
     FILE *arqAgendamento;
 
-    printf("\n  Digite 1 para confirmar cadastro\n");
-    printf("  Digite 2 para cancelar cadastro\n");
+    printf("\n   <-------------  Digite 1 para confirmar cadastro --------------------->\n");
+    printf("   <-------------  Digite 2 para cancelar cadastro  --------------------->\n");
     printf("\n  Opção: ");
     scanf("%c",&opcao);
     getchar();

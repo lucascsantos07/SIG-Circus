@@ -3,6 +3,7 @@
 #include <string.h>
 #include <ctype.h>
 #include "validacao.h"
+#include "../Agendamentos/agendamentos.h"
 
 #define True 1
 #define False 0
@@ -163,6 +164,7 @@ void lerCPF(char cpf[], int tamanho){
 
 }
 
+//creditos: GPT-5
 int validarData(const char data[]){
     // Verifica tamanho
     if (strlen(data) != 10) return False;
@@ -220,5 +222,176 @@ void lerData(char data[], int tamanho){
         }
 
     }while(!validarData(data));
+
+}
+
+int validarDataEspetaculo(const char data[]){
+    // Verifica tamanho
+    if (strlen(data) != 10) return False;
+
+    // Verifica separadores
+    if (data[2] != '/' || data[5] != '/') return False;
+
+    // Verifica se os outros caracteres são números
+    for (int i = 0; i < 10; i++) {
+        if (i == 2 || i == 5) continue; // ignora '/'
+        if (!isdigit(data[i])) return False;
+    }
+
+    // Extrair dia, mês e ano
+    int dia = (data[0]-'0')*10 + (data[1]-'0');
+    int mes = (data[3]-'0')*10 + (data[4]-'0');
+    int ano = (data[6]-'0')*1000 + (data[7]-'0')*100 + (data[8]-'0')*10 + (data[9]-'0');
+
+    if(compararDataComHoje(data) < 0){
+        return False;
+    }
+
+    // Verifica mês
+    if (mes < 1 || mes > 12) return False;
+
+    // Dias máximos por mês
+    int maxDias;
+    switch(mes) {
+        case 1: case 3: case 5: case 7: case 8: case 10: case 12:
+            maxDias = 31; break;
+        case 4: case 6: case 9: case 11:
+            maxDias = 30; break;
+        case 2:
+            // Verifica ano bissexto
+            if ((ano % 4 == 0 && ano % 100 != 0) || (ano % 400 == 0))
+                maxDias = 29;
+            else
+                maxDias = 28;
+            break;
+        default:
+            return False;
+    }
+
+    // Verifica dia
+    if (dia < 1 || dia > maxDias) return False;
+
+    return True;
+}
+
+void lerDataEspetaculo(char data[], int tamanho){
+
+    do{
+        printf("\n   Digite a data: ");
+        fgets(data, tamanho, stdin);
+        data[strcspn(data,"\n")] = '\0';
+
+        if(!validarDataEspetaculo(data)){
+            printf("\n   Data inválido!\n");
+        }
+
+    }while(!validarDataEspetaculo(data));
+
+}
+
+//créditos: GPT-5
+int validarHora(const char hora[]) {
+    // Verifica tamanho: deve ser exatamente 5 caracteres (ex: "08:30")
+    if (strlen(hora) != 5)
+        return 0;
+
+    // Verifica se o terceiro caractere é ':'
+    if (hora[2] != ':')
+        return 0;
+
+    // Verifica se os outros são dígitos
+    if (!isdigit(hora[0]) || !isdigit(hora[1]) ||
+        !isdigit(hora[3]) || !isdigit(hora[4]))
+        return 0;
+
+    // Converte para inteiros
+    int hh = (hora[0] - '0') * 10 + (hora[1] - '0');
+    int mm = (hora[3] - '0') * 10 + (hora[4] - '0');
+
+    // Verifica faixas válidas
+    if (hh < 0 || hh > 23) return 0;
+    if (mm < 0 || mm > 59) return 0;
+
+    return 1; // válido
+}
+
+void lerHora(char hora[], int tamanho){
+
+    int ok = 0;
+
+    do{
+
+        printf("\n   Digite o horário: ");
+        fgets(hora, tamanho, stdin);
+        hora[strcspn(hora,"\n")] = '\0';
+
+        if(validarHora(hora)){
+            ok = 1;
+        }else{
+            printf("\n   Data inválido!\n");
+            if (strlen(hora) == tamanho - 1) {
+                int c;
+                while ((c = getchar()) != '\n' && c != EOF);
+            }
+        }
+
+    }while(ok == 0);
+
+}
+
+
+void lerCapacidade(int *capacidade){
+
+    int ok;
+
+    do{
+        printf("\n   Digite a quantidade de Ingressos disponível: ");
+        ok = scanf(" %d", capacidade);
+
+        if(ok != 1){
+            printf("Valor Inválido! Digite apenas números inteiros");
+
+            int c;
+            while((c = getchar()) != '\n' && c != EOF);
+        }
+
+    }while(ok!=1);
+
+}
+
+void lerCidade(char nome[], int tamanho){
+
+    do {
+
+        printf("\n   Digite nome da cidade que será realizado: ");
+        fgets(nome, tamanho, stdin);
+        nome[strcspn(nome, "\n")] = '\0';
+
+        if(!validarNome(nome)) {
+            printf("\n   Nome inválido! Apenas letras e espaços são permitidos.\n");
+        }
+
+    } while(!validarNome(nome));
+
+}
+
+void lerPreco(float *preco){
+
+    int ok;
+    int c;
+
+    do{
+        printf("\n   Digite o preço do ingresso: ");
+        ok = scanf(" %f", preco);
+
+        if(ok != 1){
+            printf("Valor Inválido! Digite apenas números inteiros");
+
+            while((c = getchar()) != '\n' && c != EOF);
+        }else{
+            while((c = getchar()) != '\n' && c != EOF);
+        }
+
+    }while(ok!=1);
 
 }
