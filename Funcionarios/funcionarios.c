@@ -3,6 +3,7 @@
 #include <string.h>
 #include "funcionarios.h"
 #include "../Utilitarios/utilitarios.h"
+#include "../Validacao/validacao.h"
 
 #define True 1
 #define False 0
@@ -410,32 +411,75 @@ void exibirModuloFuncionarios(void){
 }
 
 Funcionarios* ColetarDadosFuncionario(void) {
+    int valido = 0;
     Funcionarios* funcionarios;
     funcionarios = (Funcionarios*)malloc(sizeof(Funcionarios));
-    printf("Nome: ");
-    fgets(funcionarios->nome, sizeof(funcionarios->nome), stdin);
-    funcionarios->nome[strcspn(funcionarios->nome, "\n")] = 0;
-    printf("Data de nascimento: ");
-    fgets(funcionarios->dataNascimento, sizeof(funcionarios->dataNascimento), stdin);
-    funcionarios->dataNascimento[strcspn(funcionarios->dataNascimento, "\n")] = 0;
-    printf("Email: ");
-    fgets(funcionarios->email, sizeof(funcionarios->email), stdin);
-    funcionarios->email[strcspn(funcionarios->email, "\n")] = 0;
-    printf("CPF: ");
-    fgets(funcionarios->cpf, 20, stdin);
-    funcionarios->cpf[strcspn(funcionarios->cpf, "\n")] = 0;
+    while (!valido) {
+        printf("Nome: ");
+        fgets(funcionarios->nome, sizeof(funcionarios->nome), stdin);
+        funcionarios->nome[strcspn(funcionarios->nome, "\n")] = 0;
+        valido = validarNome(funcionarios->nome);
+        if (!valido) {
+            printf("Nome inválido. Por favor, insira um nome válido.\n");
+        }
+    }
+    valido = 0;
+    while (!valido) {
+        printf("Data de nascimento: ");
+        fgets(funcionarios->dataNascimento, sizeof(funcionarios->dataNascimento), stdin);
+        funcionarios->dataNascimento[strcspn(funcionarios->dataNascimento, "\n")] = 0;
+        valido = validarData(funcionarios->dataNascimento);
+        if (!valido) {
+            printf("Data de nascimento inválida. Por favor, insira uma data válida no formato DD/MM/AAAA.\n");
+        }
+    }
+    valido = 0;
+    while (!valido) {
+        printf("Email: ");
+        fgets(funcionarios->email, sizeof(funcionarios->email), stdin);
+        funcionarios->email[strcspn(funcionarios->email, "\n")] = 0;
+        valido = validarEmail(funcionarios->email);
+        if (!valido) {
+            printf("Email inválido. Por favor, insira um email válido.\n");
+        }
+    }
+    valido = 0;
+    while (!valido) {
+        printf("CPF: ");
+        fgets(funcionarios->cpf, sizeof(funcionarios->cpf), stdin);
+        funcionarios->cpf[strcspn(funcionarios->cpf, "\n")] = 0;
+        valido = validarCPF(funcionarios->cpf);
+        if (!valido) {
+            printf("CPF inválido. Por favor, insira um CPF válido.\n");
+        }
+    }
+    valido = 0;
     printf("Sexo: ");
     fgets(funcionarios->sexo, 12, stdin);
     funcionarios->sexo[strcspn(funcionarios->sexo, "\n")] = 0;
     printf("Endereço: ");
     fgets(funcionarios->endereco, 100, stdin);
     funcionarios->endereco[strcspn(funcionarios->endereco, "\n")] = 0;
-    printf("Telefone: ");
-    fgets(funcionarios->telefone, 15, stdin);
-    funcionarios->telefone[strcspn(funcionarios->telefone, "\n")] = 0;
-    printf("Salário: ");
-    scanf(" %s", funcionarios->salario);
-    getchar();
+    while (!valido) {
+        printf("Telefone: ");
+        fgets(funcionarios->telefone, 15, stdin);
+        funcionarios->telefone[strcspn(funcionarios->telefone, "\n")] = 0;
+        valido = verificarLetraEmString(funcionarios->telefone) * verificarTamanhoMinimoString(funcionarios->telefone, 7);
+        if (!valido) {
+            printf("Telefone inválido. Por favor, insira um telefone válido.\n");
+        }
+    }
+    valido = 0;
+    while (!valido) {
+        printf("Salário: ");
+        scanf(" %s", funcionarios->salario);
+        getchar();
+        valido = verificarLetraEmString(funcionarios->salario);
+        if (!valido) {
+            printf("Salário inválido. Por favor, insira um salário válido.\n");
+        }
+    }
+    valido = 0;
     printf("Cargo: ");
     fgets(funcionarios->cargo, 30, stdin);
     funcionarios->cargo[strcspn(funcionarios->cargo, "\n")] = 0;
@@ -444,9 +488,7 @@ Funcionarios* ColetarDadosFuncionario(void) {
     funcionarios->setor[strcspn(funcionarios->setor, "\n")] = 0;
 
     funcionarios->id = FuncionarioMaiorID() + 1;
-    printf("a");
     funcionarios->status = True;
-    printf("c");
     return funcionarios;
 }   
 

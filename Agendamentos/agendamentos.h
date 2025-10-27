@@ -3,9 +3,9 @@
 void menuAgendamentos(void);
 void telaCadastroAgendamento(void);
 void alterarAgendamento(void);
-void excluirAgendamento(void);
+void cancelarAgendamento(void);
 void consultarAgendamento(void);
-void listarTodosAgendamentos(void);
+void excluirPermanenteAgendamento(void);
 void exibirModuloAgendamentos(void);
 
 typedef struct agendamento Agendamento;
@@ -19,8 +19,11 @@ struct agendamento{
     float precoIngresso;
     int id;
     int status;
+    int quantIngressosVend;
 };
 
 Agendamento* coletarDadosAgendamentos(void);
 void confirmarCadastroAgendamento(Agendamento *agendamento);
 void exibirAgendamento(Agendamento* agendamento);
+int compararDataComHoje(const char *dataAgendamento);
+int validarQuantidadeIngressos(Agendamento* agendamento, int quantidadeSolicitada);
