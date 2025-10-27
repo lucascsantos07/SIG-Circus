@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include "clientes.h"
+#include "../Ingressos/ingressos.h"
 #include "../Utilitarios/utilitarios.h"
+#include "../Validacao/validacao.h"
 
 #define True 1
 #define False 0
@@ -29,6 +32,7 @@ void menuCliente(void) {
     printf("||             2. Listar dados pessoais                                     ||\n");
     printf("||             3. Editar dados pessoais                                     ||\n");
     printf("||             4. Excluir conta                                             ||\n");
+    printf("||             5. Excluir conta Permanentemente                             ||\n");
     printf("||             0. Voltar Menu Principal                                     ||\n");
     printf("||                                                                          ||\n");
     printf("==============================================================================\n");
@@ -65,7 +69,7 @@ void listarDadosCliente(void){
 
     Cliente* cliente;
 
-    char cpf_lido[20];
+    char cpfLido[20];
     FILE *arq_cliente;
 
     printf("\n");
@@ -78,10 +82,9 @@ void listarDadosCliente(void){
     printf("==============================================================================\n");
 
     cliente = (Cliente*) malloc(sizeof(Cliente));
-    printf("\n  Informe o seu CPF: ");
-    fgets(cpf_lido, 20, stdin);
-    cpf_lido[strcspn(cpf_lido, "\n")] = '\0';
-
+    
+    lerCPF(cpfLido,20);
+    
     arq_cliente= fopen("Clientes/clientes.dat","rb");
 
     if (arq_cliente == NULL){
@@ -90,7 +93,7 @@ void listarDadosCliente(void){
     }
 
     while(fread(cliente, sizeof(Cliente),1,arq_cliente)){
-        if((cliente->status)&&(strcmp(cpf_lido,cliente->cpf)==0)){
+        if((cliente->status)&&(strcmp(cpfLido,cliente->cpf)==0)){
             exibirCliente(cliente);
             return;
         }
@@ -108,10 +111,10 @@ void editarDadoscliente(void){
 
     char cpfBusca[20];
     Cliente* cliente;
-    char novoNome[50], novaDataNascimento[20], novoEmail[100], novoCpf[20];
+    char novoNome[50], novaDataNascimento[20], novoEmail[50], novoCpf[20];
     FILE* arqCliente;
     char opcao;
-    int retorno, encontrado;
+    int retorno, encontrado,c;
 
     printf("\n");
     printf("==============================================================================\n");
@@ -124,9 +127,7 @@ void editarDadoscliente(void){
 
     cliente = (Cliente*) malloc(sizeof(Cliente)); 
 
-    printf("\n  Informe o seu CPF: ");
-    fgets(cpfBusca, 20, stdin);
-    cpfBusca[strcspn(cpfBusca, "\n")] = '\0';
+    lerCPF(cpfBusca,20);
 
     arqCliente= fopen("Clientes/clientes.dat","r+b");
 
@@ -142,21 +143,27 @@ void editarDadoscliente(void){
             encontrado=True;
             exibirCliente(cliente);
 
-            printf("\n  Qual dado deseja alterar: \n");
-            printf("\n  1 - CPF");
-            printf("\n  2 - Nome");
-            printf("\n  3 - Email");
-            printf("\n  4 - Data de Nascimento\n");
+            do {
 
-            printf("\n  Digite seu opção: ");
-            scanf("%c", &opcao);
-            getchar();
+                printf("\n  Qual dado deseja alterar: \n");
+                printf("\n  1 - CPF");
+                printf("\n  2 - Nome");
+                printf("\n  3 - Email");
+                printf("\n  4 - Data de Nascimento\n");
+                printf("\n  Digite sua opção: ");
+                scanf(" %c", &opcao);
+                getchar();
+                
+                if (!isdigit(opcao) || opcao < '1' || opcao > '4') {
+                    printf("\n   Opção inválida! Digite um número de 1 a 4\n");
+                }
+
+            } while (!isdigit(opcao) || opcao < '1' || opcao > '4');
 
             switch (opcao){
                 case '1':
-                    printf("\n   CPF: ");
-                    fgets(novoCpf, 20, stdin);
-                    novoCpf[strcspn(novoCpf, "\n")] = '\0';
+
+                    lerCPF(novoCpf,20);
 
                     retorno = confirmarAlteracao();
                     if(retorno==1){
@@ -168,9 +175,8 @@ void editarDadoscliente(void){
                     break;
                 
                 case '2':
-                    printf("\n   Nome: ");
-                    fgets(novoNome, 20, stdin);
-                    novoNome[strcspn(novoNome, "\n")] = '\0';
+
+                    lerNome(novoNome,50);
 
                     retorno = confirmarAlteracao();
                     if(retorno==1){
@@ -182,9 +188,8 @@ void editarDadoscliente(void){
                     break;
                 
                 case '3':
-                    printf("\n   Email: ");
-                    fgets(novoEmail, 20, stdin);
-                    novoEmail[strcspn(novoEmail, "\n")] = '\0';
+
+                    lerEmail(novoEmail,50);
 
                     retorno = confirmarAlteracao();
                     if(retorno==1){
@@ -196,9 +201,8 @@ void editarDadoscliente(void){
                     break;
 
                 case '4':
-                    printf("\n   Data Nascimento: ");
-                    fgets(novaDataNascimento, 20, stdin);
-                    novaDataNascimento[strcspn(novaDataNascimento, "\n")] = '\0';
+
+                    lerData(novaDataNascimento,20); 
 
                     retorno = confirmarAlteracao();
                     if(retorno==1){
@@ -244,9 +248,7 @@ void excluirContacliente(void){
 
     cliente = (Cliente*) malloc(sizeof(Cliente)); 
 
-    printf("\n  Informe o seu CPF: ");
-    fgets(cpfBusca, 20, stdin);
-    cpfBusca[strcspn(cpfBusca, "\n")] = '\0';
+    lerCPF(cpfBusca, 20);
 
     arqCliente= fopen("Clientes/clientes.dat","r+b");
 
@@ -273,10 +275,103 @@ void excluirContacliente(void){
     fclose(arqCliente);
     free(cliente);
     if(!encontrado){
-        printf("\n  Cliente não encontrado\n");
+        printf("\n   Cliente não encontrado\n");
     }
 
 }
+
+void excluirClientePermanente(void) {
+    limparTela();
+
+    char cpfBusca[20];
+    Cliente* cliente;
+    Ingressos* ingresso;
+    int encontrado = False;
+    int temIngresso = False;
+    int retorno;
+
+    FILE* arqCliente;
+    FILE* arqTemp;
+    FILE* arqIngressos;
+
+    printf("\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||                ~ ~ ~ Excluir Cliente Permanentemente ~ ~ ~               ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("||               Developed by @lucascsantos07 -- since Aug, 2025            ||\n");
+    printf("==============================================================================\n");
+
+    cliente = (Cliente*) malloc(sizeof(Cliente));
+      
+    ingresso = (Ingressos*) malloc(sizeof(Ingressos));
+    if (cliente == NULL || ingresso == NULL) {
+        printf("Erro de memória!\n");
+        exit(1);
+    }
+
+    lerCPF(cpfBusca,20);
+
+    arqIngressos = fopen("Ingressos/ingressos.dat", "rb");
+    if (arqIngressos != NULL) {
+        while (fread(ingresso, sizeof(Ingressos), 1, arqIngressos) == 1) {
+            if (strcmp(cpfBusca, ingresso->cpfCliente) == 0 && ingresso->status == 1) {
+                temIngresso = True;
+                break;
+            }
+        }
+        fclose(arqIngressos);
+    }
+
+    if (temIngresso) {
+        printf("\n  Exclusão não permitida: o cliente possui ingressos comprados.\n");
+        free(cliente);
+        free(ingresso);
+        return;
+    }
+
+    arqCliente = fopen("Clientes/clientes.dat", "rb");
+    arqTemp = fopen("Clientes/temp.dat", "wb");
+
+    if (arqCliente == NULL || arqTemp == NULL) {
+        printf("Erro na abertura dos arquivos!\n");
+        free(cliente);
+        free(ingresso);
+        exit(1);
+    }
+
+    while (fread(cliente, sizeof(Cliente), 1, arqCliente) == 1) {
+        int deveGravar = True;
+        if (strcmp(cliente->cpf, cpfBusca) == 0 && cliente->status == 1) {
+            encontrado = True;
+            exibirCliente(cliente);
+            retorno = confirmarExclusao("Cliente");
+
+            if (retorno == 1) {
+                deveGravar = False;
+            }
+        }
+
+        if(deveGravar){
+            fwrite(cliente, sizeof(Cliente), 1, arqTemp);
+        }
+    }
+
+    fclose(arqCliente);
+    fclose(arqTemp);
+    free(cliente);
+    free(ingresso);
+
+    if (encontrado) {
+        remove("Clientes/clientes.dat");
+        rename("Clientes/temp.dat", "Clientes/clientes.dat");
+    } else {
+        remove("Clientes/temp.dat");
+        printf("\n  Cliente não encontrado.\n");
+    }
+}
+
 
 void exibirModuloClientes(void){
     char opcaoCliente;
@@ -293,6 +388,8 @@ void exibirModuloClientes(void){
             editarDadoscliente();
         }else if(opcaoCliente == '4'){
             excluirContacliente();
+        }else if(opcaoCliente == '5'){
+            excluirClientePermanente();
         }else if(opcaoCliente != '0'){
             printf("\nOpção inválida! Tente novamente.\n");
         }
@@ -308,31 +405,30 @@ void exibirModuloClientes(void){
 
 Cliente* coletarDadosCliente(void){
     Cliente* cliente;
+    
     cliente = (Cliente*) malloc(sizeof(Cliente));
-    printf("\n   CPF: ");
-    fgets(cliente->cpf, 20, stdin);
-    cliente->cpf[strcspn(cliente->cpf, "\n")] = '\0';
-    printf("\n   Nome Completo: ");
-    fgets(cliente->nome, 50, stdin);
-    cliente->nome[strcspn(cliente->nome, "\n")] = '\0';
-    printf("\n   Email: ");
-    fgets(cliente->email, 100, stdin);
-    cliente->email[strcspn(cliente->email, "\n")] = '\0';
-    printf("\n   Data de Nascimento: ");
-    fgets(cliente->dataNascimento, 20, stdin);
-    cliente->dataNascimento[strcspn(cliente->dataNascimento, "\n")] = '\0';
+
+    lerCPF(cliente->cpf, 20);
+
+    lerNome(cliente->nome, 50);
+
+    lerEmail(cliente->email,50);
+
+    lerData(cliente->dataNascimento,20);
+
     cliente->status=True;
+
     return cliente;
 }
 
 void exibirCliente(Cliente *cliente){
 
     printf("\n==============================================================================\n");
-    printf("\nSeus Dados: \n");
-    printf("\nNome Completo: %s\n", cliente->nome);
-    printf("Data de Nascimento: %s\n", cliente->dataNascimento);
-    printf("Email: %s\n", cliente->email);
-    printf("CPF: %s\n", cliente->cpf);
+    printf("\n  Seus Dados: \n");
+    printf("\n  Nome Completo: %s\n", cliente->nome);
+    printf("  Data de Nascimento: %s\n", cliente->dataNascimento);
+    printf("  Email: %s\n", cliente->email);
+    printf("  CPF: %s\n", cliente->cpf);
     printf("\n==============================================================================\n");
     
 }
@@ -347,8 +443,8 @@ void confirmacaoCadastroCliente(Cliente *cliente){
     char opcao;
     FILE *arqCliente;
 
-    printf("\n  Digite 1 para confirmar cadastro\n");
-    printf("  Digite 2 para cancelar cadastro\n");
+    printf("\n   <-------------  Digite 1 para confirmar cadastro --------------------->\n");
+    printf("   <-------------  Digite 2 para cancelar cadastro  --------------------->\n");
     printf("\n  Opção: ");
     scanf("%c",&opcao);
     getchar();
@@ -374,7 +470,7 @@ void confirmacaoCadastroCliente(Cliente *cliente){
         printf("==============================================================================\n");
         free(cliente);
     }else{
-        printf("\nOpção inválida\n");
+        printf("\n  Opção inválida\n");
     }
     
 }
