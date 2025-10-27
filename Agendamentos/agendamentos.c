@@ -102,7 +102,7 @@ void alterarAgendamento(void){
 
     int codAgendamento, retorno, encontrado, novaCapacidade;
     float novoPreco;
-    char cpf_busca[20];
+    char cpfBusca[20];
     char novaData[12], novoHorario[7];
     char opcao;
     Agendamento* agendamento;
@@ -120,33 +120,27 @@ void alterarAgendamento(void){
 
     agendamento = (Agendamento*) malloc(sizeof(Agendamento));
 
-    printf("\n   Informe CPF do Responsavel pelo Agendamento: ");
-    fgets(cpf_busca, 20, stdin);
-    cpf_busca[strcspn(cpf_busca, "\n")] = '\0';
-
-    printf("\nLista dos Agendamentos do Responsável Informado: \n");
-
-    arqAgendamentos = fopen("Agendamentos/agendamento.dat", "rb");
-    if (arqAgendamentos == NULL){
-        printf("Erro na abertura do arquivo\n");
-        free(agendamento);
-        exit(1);
+    retorno = lerCpfResponsavel(cpfBusca);
+    if(retorno == 0){
+        return;
     }
 
-    printf("\nID    | Data         | Hora     | Cidade               | Capacidade | Preço   | Ingressos Vendidos | CPF Responsável\n");
-    printf("---------------------------------------------------------------------------------------------------------------------------\n");
-    while(fread(&temp, sizeof(Agendamento), 1, arqAgendamentos) == 1){
-        if(temp.status && strcmp(temp.cpfResponsavel, cpf_busca) == 0){
-            printf("%-5d | %-12s | %-8s | %-20s | %-10d | %-9.2f| %-19d| %-15s\n",
-                   temp.id, temp.data, temp.horario, temp.cidade,
-                   temp.capacidade, temp.precoIngresso,temp.quantIngressosVend, temp.cpfResponsavel);
+    listarAgendamentosResponsavel(cpfBusca);
+
+    int leituraValida;
+    do {
+        printf("\n  Digite o código do Agendamento que deseja alterar: ");
+
+        leituraValida = scanf("%d", &codAgendamento);
+
+        if (leituraValida != 1) {
+            printf("\n  Valor inválido! Digite apenas números.\n");
+
+            int c;
+            while ((c = getchar()) != '\n' && c != EOF);
         }
-    }
-    fclose(arqAgendamentos);
 
-    printf("\n  Digite o código do Agendamento que deseja Alterar: ");
-    scanf("%d", &codAgendamento);
-    getchar();
+    } while (leituraValida != 1);
 
     arqAgendamentos = fopen("Agendamentos/agendamento.dat", "r+b");
     if (arqAgendamentos == NULL){
@@ -162,21 +156,30 @@ void alterarAgendamento(void){
             encontrado = True;
             exibirAgendamento(agendamento);
 
-            printf("\n  Qual dado deseja alterar: \n");
-            printf("\n  1 - Data");
-            printf("\n  2 - Horário");
-            printf("\n  3 - Quantidade de Ingressos");
-            printf("\n  4 - Preço\n");
+            do {
 
-            printf("\n  Digite seu opção: ");
-            scanf("%c", &opcao);
-            getchar();
+                printf("\n  Qual dado deseja alterar: \n");
+                printf("\n  1 - Data");
+                printf("\n  2 - Horário");
+                printf("\n  3 - Quantidade de Ingressos");
+                printf("\n  4 - Preço\n");
+
+                printf("\n  Digite seu opção: ");
+                scanf("%c", &opcao);
+                
+                if (!isdigit(opcao) || opcao < '1' || opcao > '4') {
+                    printf("\n   Opção inválida! Digite um número de 1 a 4\n");
+                }
+
+                int c;
+                while((c = getchar()) != '\n' && c != EOF);
+
+            } while (!isdigit(opcao) || opcao < '1' || opcao > '4');
 
             switch (opcao){
                 case '1':
-                    printf("\n   Data: ");
-                    fgets(novaData, 20, stdin);
-                    novaData[strcspn(novaData, "\n")] = '\0';
+
+                    lerDataEspetaculo(novaData,12);
 
                     retorno = confirmarAlteracao();
                     if(retorno==1){
@@ -186,9 +189,8 @@ void alterarAgendamento(void){
                     break;
                 
                 case '2':
-                    printf("\n   Horário: ");
-                    fgets(novoHorario, 20, stdin);
-                    novoHorario[strcspn(novoHorario, "\n")] = '\0';
+
+                    lerHora(novoHorario,7);
 
                     retorno = confirmarAlteracao();
                     if(retorno==1){
@@ -198,9 +200,8 @@ void alterarAgendamento(void){
                     break;
                 
                 case '3':
-                    printf("\n   Capacidade de Público: ");
-                    scanf(" %d",&novaCapacidade);
-                    getchar();
+
+                    lerCapacidade(&novaCapacidade);
 
                     retorno = confirmarAlteracao();
                     if(retorno==1){
@@ -211,9 +212,7 @@ void alterarAgendamento(void){
 
                 case '4':
 
-                    printf("\n   Preço Ingresso: ");
-                    scanf(" %f",&novoPreco);
-                    getchar();
+                    lerPreco(&novoPreco);
 
                     retorno = confirmarAlteracao();
                     if(retorno==1){
@@ -241,6 +240,8 @@ void alterarAgendamento(void){
     if(!encontrado){
         printf("\nAgendamento não encontrado\n");
     }
+
+    getchar();
 
 }
 
