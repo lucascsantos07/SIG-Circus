@@ -21,3 +21,7 @@ void lerHora(char hora[], int tamanho);
 void lerCidade(char nome[], int tamanho);
 void lerCapacidade(int *capacidade);
 void lerPreco(float *preco);
+
+int verificarLetraEmString(const char str[]);
+
+int verificarTamanhoMinimoString(const char str[], int tamanhoMinimo);

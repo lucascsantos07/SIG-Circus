@@ -18,7 +18,7 @@ int validarNome(char nome[]){
         }
 
         if (isalpha(nome[i])){
-            valido = true;
+            valido = True;
         }
 
     }
@@ -394,4 +394,20 @@ void lerPreco(float *preco){
 
     }while(ok!=1);
 
+}
+
+int verificarLetraEmString(const char str[]){
+    for (int i = 0; str[i] != '\0'; i++){
+        if (isalpha(str[i])){
+            return False;
+        }
+    }
+    return True;
+}
+
+int verificarTamanhoMinimoString(const char str[], int tamanhoMinimo){
+    if (strlen(str) < tamanhoMinimo){
+        return False;
+    }
+    return True;
 }

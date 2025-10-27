@@ -26,3 +26,4 @@ Agendamento* coletarDadosAgendamentos(void);
 void confirmarCadastroAgendamento(Agendamento *agendamento);
 void exibirAgendamento(Agendamento* agendamento);
 int compararDataComHoje(const char *dataAgendamento);
+int validarQuantidadeIngressos(Agendamento* agendamento, int quantidadeSolicitada);

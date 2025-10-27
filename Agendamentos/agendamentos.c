@@ -657,3 +657,12 @@ int compararDataComHoje(const char *dataAgendamento) {
 
     return 0; // mesma data
 }
+
+int validarQuantidadeIngressos(Agendamento* agendamento, int quantidadeSolicitada) {
+    int ingressosTotais = quantidadeSolicitada + agendamento->quantIngressosVend;
+    if (ingressosTotais > agendamento->capacidade) {
+        return False;
+} else {
+        return True;
+    }
+}
