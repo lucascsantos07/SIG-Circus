@@ -27,3 +27,6 @@ void confirmarCadastroAgendamento(Agendamento *agendamento);
 void exibirAgendamento(Agendamento* agendamento);
 int compararDataComHoje(const char *dataAgendamento);
 int validarQuantidadeIngressos(Agendamento* agendamento, int quantidadeSolicitada);
+int lerCpfResponsavel(char cpf[20]);
+int gerarIdAgendamento(void);
+void listarAgendamentosResponsavel(char cpf[20]);

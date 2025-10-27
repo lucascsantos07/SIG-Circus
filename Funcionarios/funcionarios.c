@@ -67,7 +67,7 @@ void listarDadosFuncionario(void) {
     limparTela();
 
     Funcionarios* funcionario;
-    char cpfInput[13];
+    char cpfInput[20];
 
     FILE *fp_funcionario;
     printf("\n");
