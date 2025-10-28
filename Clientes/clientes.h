@@ -2,7 +2,7 @@
 
 // Assinaturas da Funções do Clientes
 
-void menuCliente(void);
+char menuCliente(void);
 void telaCadastroCliente(void);
 void listarDadosCliente(void);
 void editarDadoscliente(void);

@@ -15,13 +15,12 @@ void limparTela(void) {
 
 int confirmarExclusao(const char *modulo) {
     char confirma;
-    int c;
 
     while (1) {
         printf("\nDeseja realmente excluir este dado do sistema? (s/n): ");
         scanf(" %c", &confirma);
 
-        while ((c = getchar()) != '\n' && c != EOF);
+        limparBuffer();
 
         if (confirma == 's' || confirma == 'S') {
             printf("\n==============================================================================\n");
@@ -45,13 +44,12 @@ int confirmarExclusao(const char *modulo) {
 int confirmarAlteracao(){
 
     char confirma;
-    int c;
 
     while(1){
         printf("\nDeseja Realmente alterar esse(s) dado(s)? s - sim ou n - não: ");
         scanf(" %c", &confirma);
 
-        while ((c = getchar()) != '\n' && c != EOF);
+        limparBuffer();
 
         if(confirma == 's' || confirma == 'S'){
             printf("\n==============================================================================\n");
@@ -67,4 +65,9 @@ int confirmarAlteracao(){
             printf("\nOpção inválida! Tente novamente.\n");
         } 
     }
+}
+
+void limparBuffer(void){
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
 }

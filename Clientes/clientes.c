@@ -10,8 +10,9 @@
 #define True 1
 #define False 0
 
-void menuCliente(void) {
+char menuCliente(void) {
     limparTela();
+    char opcaoCliente;
     printf("\n");
     printf("==============================================================================\n");
     printf("||                                                                          ||\n");
@@ -37,6 +38,9 @@ void menuCliente(void) {
     printf("||                                                                          ||\n");
     printf("==============================================================================\n");
     printf("\nDigite sua opção: ");
+    scanf("%c", &opcaoCliente);
+    getchar();
+    return opcaoCliente;
 }
 
 
@@ -68,7 +72,6 @@ void listarDadosCliente(void){
     limparTela();
 
     Cliente* cliente;
-
     char cpfLido[20];
     FILE *arq_cliente;
 
@@ -377,9 +380,10 @@ void exibirModuloClientes(void){
     char opcaoCliente;
     do{
 
-        menuCliente();
-        scanf(" %c", &opcaoCliente);
-        getchar();
+        opcaoCliente = menuCliente();
+
+        limparBuffer();
+
         if(opcaoCliente == '1'){
             telaCadastroCliente();
         }else if (opcaoCliente == '2'){
