@@ -25,3 +25,21 @@ void lerPreco(float *preco);
 int verificarLetraEmString(const char str[]);
 
 int verificarTamanhoMinimoString(const char str[], int tamanhoMinimo);
+
+void lerTelefone(char telefone[], int tamanho);
+
+void lerSalario(char salario[]);
+
+int validarSexo(char sexo[]);
+
+void lerSexo(char sexo[], int tamanho);
+
+void lerEndereco(char endereco[], int tamanho);
+
+void lerCargo(char cargo[], int tamanho);
+
+void lerSetor(char setor[], int tamanho);
+
+int validarFormaDePagamento(int pagamento);
+
+void lerFormaDePagamento(int pagamento);

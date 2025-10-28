@@ -2,13 +2,17 @@
 
 ##  Desenvolvedores
 
-- **Lucas da Costa Santos**  
+* **Lucas da Costa Santos**  
   📧 [lucascsparelhas@gmail.com](mailto:lucascsparelhas@gmail.com)  
   🔗 [GitHub](https://github.com/lucascsantos07)
 
-- **Vinícius Linhares Queiroz**  
+* **Vinícius Linhares Queiroz**  
   📧 [vinicius.linhares.702@ufrn.edu.br](mailto:vinicius.linhares.702@ufrn.edu.br)  
   🔗 [GitHub](https://github.com/ViniciusL07) 
+
+* **Ícaro Nonato de Freitas**  
+  📧 [icaro.freitas.113@ufrn.edu.br](mailto:icaro.freitas.113@ufrn.edu.br)  
+  🔗 [GitHub](https://github.com/Icaro-Nonato) 
 
 ---
 
