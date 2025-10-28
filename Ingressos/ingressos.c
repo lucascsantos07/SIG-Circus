@@ -70,7 +70,7 @@ void consultarVendaIngresso(void) {
     char cpfInput[20];
     int encontrado = 0;
 
-    FILE* fp_ingresso;
+    FILE* arqIngressos;
     Ingressos* ingresso;
 
     printf("\n");
@@ -87,22 +87,22 @@ void consultarVendaIngresso(void) {
     fgets(cpfInput, sizeof(cpfInput), stdin);
     cpfInput[strcspn(cpfInput, "\n")] = 0;
 
-    fp_ingresso = fopen("Ingressos/ingressos.dat", "r+b");
-    if (fp_ingresso == NULL) {
+    arqIngressos = fopen("Ingressos/ingressos.dat", "r+b");
+    if (arqIngressos == NULL) {
         printf("ERROR!");
         exit(1);
     }
 
     encontrado = 0;
 
-    while (fread(ingresso, sizeof(Ingressos), 1, fp_ingresso)) {
+    while (fread(ingresso, sizeof(Ingressos), 1, arqIngressos)) {
         if (strcmp(ingresso->cpfCliente, cpfInput) == 0 && ingresso->status) {
             encontrado = 1;
             ExibirIngresso(ingresso);
         }
     }
 
-    fclose(fp_ingresso);
+    fclose(arqIngressos);
     free(ingresso);
     if (!encontrado) {
         printf("Ingresso nao encontrado...");
@@ -114,7 +114,7 @@ void consultarVendaIngresso(void) {
 void reembolsarVendaIngresso(void){
     limparTela();
     Ingressos* ingresso;
-    FILE* fp_ingresso;
+    FILE* arqIngressos;
     char confirma;
     int encontrado;
     int idVenda;
@@ -134,29 +134,29 @@ void reembolsarVendaIngresso(void){
     scanf("%d", &idVenda);
     getchar();
 
-    fp_ingresso = fopen("Ingressos/ingressos.dat", "r+b");
+    arqIngressos = fopen("Ingressos/ingressos.dat", "r+b");
 
-    if (fp_ingresso == NULL) {
+    if (arqIngressos == NULL) {
         printf("\n\nERROR!\n\n");
         exit(1);
     }
 
     encontrado = 0;
 
-    while (fread(ingresso, sizeof(Ingressos), 1, fp_ingresso)) {
+    while (fread(ingresso, sizeof(Ingressos), 1, arqIngressos)) {
         if ((ingresso->id == idVenda) && ingresso->status) {
             encontrado = True;
             ExibirIngresso(ingresso);
             confirma = confirmarExclusao("Ingresso");
             if (confirma) {
                 ingresso->status = 0;
-                fseek(fp_ingresso,(-1)*sizeof(Ingressos), SEEK_CUR);
-                fwrite(ingresso,sizeof(Ingressos),1,fp_ingresso);
+                fseek(arqIngressos,(-1)*sizeof(Ingressos), SEEK_CUR);
+                fwrite(ingresso,sizeof(Ingressos),1,arqIngressos);
             }
         }
     }
 
-    fclose(fp_ingresso);
+    fclose(arqIngressos);
     free(ingresso);
     if(!encontrado){
         printf("\n  Cliente não encontrado\n");
@@ -193,27 +193,27 @@ void exibirModuloVendasIngressos(void){
 }
 
 void ExibirTodosAgendamentos(void) {
-    FILE* fp_agendamentos;
+    FILE* arqAgendamentos;
     Agendamento* agendamento;
 
     agendamento = (Agendamento*)malloc(sizeof(Agendamento));
 
-    fp_agendamentos = fopen("Agendamentos/agendamento.dat", "rb");
+    arqAgendamentos = fopen("Agendamentos/agendamento.dat", "rb");
 
-    if (fp_agendamentos == NULL) {
+    if (arqAgendamentos == NULL) {
         printf("\n\n\n\nERROR\n\n\n\n");
         exit(1);
     }
 
     
 
-    while (fread(agendamento, sizeof(Agendamento), 1, fp_agendamentos) == 1) {
+    while (fread(agendamento, sizeof(Agendamento), 1, arqAgendamentos) == 1) {
         if (agendamento->status) {
             exibirAgendamento(agendamento);
         }
     }
 
-    fclose(fp_agendamentos);
+    fclose(arqAgendamentos);
     free(agendamento);
 
     return;
@@ -227,18 +227,10 @@ Ingressos* ColetarDadosIngressos(void) {
     float precoDoIngresso = 0;
     Ingressos* ingresso;
     ingresso = (Ingressos*)malloc(sizeof(Ingressos));
-    FILE* fp_agendamentos;
+    FILE* arqAgendamentos;
     Agendamento* agendamento;
     agendamento = (Agendamento*)malloc(sizeof(Agendamento));
-    while (!valido) {
-        printf("\n   CPF do Cliente: ");
-        fgets(ingresso->cpfCliente, sizeof(ingresso->cpfCliente), stdin);
-        ingresso->cpfCliente[strcspn(ingresso->cpfCliente, "\n")] = '\0';
-        valido = validarCPF(ingresso->cpfCliente);
-        if (!valido) {
-            printf("CPF inválido. Tente novamente.\n");
-        }
-    }
+    lerCPF(ingresso->cpfCliente, 12);
     valido = 0;
     printf("\nAgendamentos Ativos\n");
     ExibirTodosAgendamentos();
@@ -246,13 +238,13 @@ Ingressos* ColetarDadosIngressos(void) {
         printf("\nSelecione o ID do espetáculo: ");
         scanf(" %d", &ingresso->idEspetaculo);
         getchar();
-        fp_agendamentos = fopen("Agendamentos/agendamento.dat", "r+b");
-        while (fread(agendamento, sizeof(Agendamento), 1, fp_agendamentos)) {
+        arqAgendamentos = fopen("Agendamentos/agendamento.dat", "r+b");
+        while (fread(agendamento, sizeof(Agendamento), 1, arqAgendamentos)) {
             if (ingresso->idEspetaculo == agendamento->id && agendamento->status) {
                 valido = 1;
             }
         }
-        fclose(fp_agendamentos);
+        fclose(arqAgendamentos);
         if (!valido) {
             printf("ID inválido. Tente novamente.\n");
         }
@@ -260,8 +252,8 @@ Ingressos* ColetarDadosIngressos(void) {
     ingresso->id = IngressoMaiorID() + 1;
     ingresso->status = 1;
     ingresso->quantidadeIngressos = 0;
-    fp_agendamentos = fopen("Agendamentos/agendamento.dat", "r+b");
-    while (fread(agendamento, sizeof(Agendamento), 1, fp_agendamentos)) {
+    arqAgendamentos = fopen("Agendamentos/agendamento.dat", "r+b");
+    while (fread(agendamento, sizeof(Agendamento), 1, arqAgendamentos)) {
         if (ingresso->idEspetaculo == agendamento->id && agendamento->status) {
             encontrado = 1;
             precoDoIngresso = agendamento->precoIngresso;
@@ -277,23 +269,21 @@ Ingressos* ColetarDadosIngressos(void) {
                 quantidadeIngressosValidado = 1;
                 ingresso->quantidadeIngressos = quantidadeSolicitada;
                 agendamento->quantIngressosVend += ingresso->quantidadeIngressos;
-                fseek(fp_agendamentos, (-1) * sizeof(Agendamento), SEEK_CUR);
-                fwrite(agendamento, sizeof(Agendamento), 1, fp_agendamentos);
+                fseek(arqAgendamentos, (-1) * sizeof(Agendamento), SEEK_CUR);
+                fwrite(agendamento, sizeof(Agendamento), 1, arqAgendamentos);
             } else {
                 printf("Quantidade solicitada excede a capacidade disponível. Tente novamente.\n");
             }
         }
         ingresso->valorTotal = precoDoIngresso * ingresso->quantidadeIngressos;
         printf("\nValor Total: %.2f", ingresso->valorTotal);
-        printf("\nForma de pagamento: \n1 - PIX\n2 - Dinheiro");
-        scanf(" %d", &ingresso->formaPag);
-        getchar();
+        lerFormaDePagamento(ingresso->formaPag);
     } else {
         printf("Espetáculo nao localizado.");
     }
 
     free(agendamento);
-    fclose(fp_agendamentos);
+    fclose(arqAgendamentos);
     return ingresso;
 }
 
@@ -309,27 +299,27 @@ void ExibirIngresso(Ingressos* ingresso) {
 }
 
 int IngressoMaiorID(void) {
-    FILE* fp_ingresso;
+    FILE* arqIngressos;
     Ingressos temp;
     int maiorID;
-    fp_ingresso = fopen("Ingressos/ingressos.dat", "rb");
-    if (fp_ingresso == NULL) {
+    arqIngressos = fopen("Ingressos/ingressos.dat", "rb");
+    if (arqIngressos == NULL) {
         printf("ËRROR!");
         exit(1);
     }
     maiorID = 0;
-    while (fread(&temp, sizeof(Ingressos), 1, fp_ingresso) == True) {
+    while (fread(&temp, sizeof(Ingressos), 1, arqIngressos) == True) {
         if (temp.id > maiorID) {
             maiorID = temp.id;
         }
     }
-    fclose(fp_ingresso);
+    fclose(arqIngressos);
     return maiorID;
 }
 
 void ConfirmarCadastroIngresso(Ingressos* ingresso) {
     int opcao;
-    FILE* fp_ingresso;
+    FILE* arqIngressos;
 
     printf("\nConfirmar cadastro (1)\nRecusar Cadastro(0)\n ");
     scanf( "%d", &opcao);
@@ -341,16 +331,16 @@ void ConfirmarCadastroIngresso(Ingressos* ingresso) {
             free(ingresso);
             break;
         case 1:
-            fp_ingresso = fopen("Ingressos/ingressos.dat", "ab");
+            arqIngressos = fopen("Ingressos/ingressos.dat", "ab");
 
-            if (fp_ingresso == NULL) {
+            if (arqIngressos == NULL) {
                 printf("\n\nERROR!\n\n");
                 exit(1);
             }
 
-            SalvarIngresso(fp_ingresso, ingresso);
+            SalvarIngresso(arqIngressos, ingresso);
             free(ingresso);
-            fclose(fp_ingresso);
+            fclose(arqIngressos);
             printf("Cadastro Concluído!");
             break;
         
@@ -358,16 +348,16 @@ void ConfirmarCadastroIngresso(Ingressos* ingresso) {
 
 }
 
-void SalvarIngresso(FILE* fp_ingresso, Ingressos* ingresso) {
-    fwrite(ingresso, sizeof(Ingressos), 1, fp_ingresso);
+void SalvarIngresso(FILE* arqIngressos, Ingressos* ingresso) {
+    fwrite(ingresso, sizeof(Ingressos), 1, arqIngressos);
 }
 
 void deletarIngressoPermanentemente(void){
     limparTela();
     Ingressos* ingresso;
-    FILE* fp_ingresso;
-    FILE* fp_temp;
-    FILE* fp_agendamentos;
+    FILE* arqIngressos;
+    FILE* arqTemp;
+    FILE* arqAgendamentos;
     char confirma;
     int encontrado;
     int idVenda;
@@ -387,44 +377,44 @@ void deletarIngressoPermanentemente(void){
     scanf("%d", &idVenda);
     getchar();
 
-    fp_ingresso = fopen("Ingressos/ingressos.dat", "rb");
-    fp_temp = fopen("Ingressos/temp.dat", "wb");
+    arqIngressos = fopen("Ingressos/ingressos.dat", "rb");
+    arqTemp = fopen("Ingressos/temp.dat", "wb");
 
-    if (fp_ingresso == NULL || fp_temp == NULL) {
+    if (arqIngressos == NULL || arqTemp == NULL) {
         printf("\n\nERROR!\n\n");
         exit(1);
     }
 
     encontrado = 0;
 
-    while (fread(ingresso, sizeof(Ingressos), 1, fp_ingresso)) {
+    while (fread(ingresso, sizeof(Ingressos), 1, arqIngressos)) {
         if ((ingresso->id == idVenda)) {
             encontrado = True;
             ExibirIngresso(ingresso);
             confirma = confirmarExclusao("Ingresso Permanentemente");
             if (confirma == False) {
-                fwrite(ingresso, sizeof(Ingressos), 1, fp_temp);
+                fwrite(ingresso, sizeof(Ingressos), 1, arqTemp);
             } else {
-                fp_agendamentos = fopen("Agendamentos/agendamento.dat", "r+b");
+                arqAgendamentos = fopen("Agendamentos/agendamento.dat", "r+b");
                 Agendamento* agendamento;
                 agendamento = (Agendamento*)malloc(sizeof(Agendamento));
-                while (fread(agendamento, sizeof(Agendamento), 1, fp_agendamentos)) {
+                while (fread(agendamento, sizeof(Agendamento), 1, arqAgendamentos)) {
                     if (ingresso->idEspetaculo == agendamento->id && agendamento->status) {
                         agendamento->quantIngressosVend -= ingresso->quantidadeIngressos;
-                        fseek(fp_agendamentos, (-1) * sizeof(Agendamento), SEEK_CUR);
-                        fwrite(agendamento, sizeof(Agendamento), 1, fp_agendamentos);
+                        fseek(arqAgendamentos, (-1) * sizeof(Agendamento), SEEK_CUR);
+                        fwrite(agendamento, sizeof(Agendamento), 1, arqAgendamentos);
                     }
                 }
                 free(agendamento);
-                fclose(fp_agendamentos);
+                fclose(arqAgendamentos);
             }
         } else {
-            fwrite(ingresso, sizeof(Ingressos), 1, fp_temp);
+            fwrite(ingresso, sizeof(Ingressos), 1, arqTemp);
         }
     }
 
-    fclose(fp_ingresso);
-    fclose(fp_temp);
+    fclose(arqIngressos);
+    fclose(arqTemp);
     free(ingresso);
 
     remove("Ingressos/ingressos.dat");

@@ -411,3 +411,95 @@ int verificarTamanhoMinimoString(const char str[], int tamanhoMinimo){
     }
     return True;
 }
+
+void lerTelefone(char telefone[], int tamanho) {
+    int valido;
+    printf("\n   Digite seu telefone: ");
+    fgets(telefone, tamanho, stdin);
+    telefone[strcspn(telefone, "\n")] = 0;
+    valido = verificarLetraEmString(telefone) * verificarTamanhoMinimoString(telefone, 7);
+    if (!valido) {
+        printf("\nTelefone inválido. Por favor, insira um telefone válido.\n");
+    }
+}
+
+void lerSalario(char salario[]) {
+    int valido;
+    printf("\n   Digite seu salário: ");
+    scanf(" %s", salario);
+    getchar();
+    valido = verificarLetraEmString(salario);
+    if (!valido) {
+        printf("Salário inválido. Por favor, insira um salário válido.\n");
+    }
+}
+
+int validarSexo(char sexo[]) {
+
+    for (int i = 0; sexo[i]; i++) {
+        sexo[i] = toupper(sexo[i]);
+    }
+
+    if (strcmp(sexo, "MASCULINO") == 0 || strcmp(sexo, "FEMININO") == 0 || strcmp(sexo, "M") == 0 || strcmp(sexo, "F") == 0) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+void lerSexo(char sexo[], int tamanho) {
+    int valido;
+    valido = 0;
+    while (!valido) {
+        printf("\n   Digite seu sexo: ");
+        fgets(sexo, tamanho, stdin);
+        sexo[strcspn(sexo, "\n")] = 0;
+        valido = validarSexo(sexo);
+        if (!valido) {
+            printf("O sexo só pode ser masculino ou feminino, tente novamente...");
+        }
+    }
+
+}
+
+void lerEndereco(char endereco[], int tamanho) {
+    printf("\n   Digite seu endereço: ");
+    fgets(endereco, tamanho, stdin);
+    endereco[strcspn(endereco, "\n")] = 0;
+}
+
+void lerCargo(char cargo[], int tamanho) {
+    printf("\n   Digite seu cargo: ");
+    fgets(cargo, tamanho, stdin);
+    cargo[strcspn(cargo, "\n")] = 0;
+}
+
+void lerSetor(char setor[], int tamanho) {
+    printf("\n   Digite seu setor: ");
+    fgets(setor, tamanho, stdin);
+    setor[strcspn(setor, "\n")] = 0;
+}
+
+int validarFormaDePagamento(int pagamento) {
+    if (!(pagamento == 1 || pagamento == 2)) {
+        return 0;
+    } else {
+        return 1;
+    }
+}
+
+void lerFormaDePagamento(int pagamento) {
+    int valido;
+    valido = 0;
+    while (!valido) {
+        printf("\nForma de pagamento: \n1 - PIX\n2 - Dinheiro\n");
+        scanf(" %d", &pagamento);
+        getchar();
+        valido = validarFormaDePagamento(pagamento);
+        if (!valido) {
+            printf("Forma de Pagamento Inválida.\n");
+        }
+    }
+    
+
+}
