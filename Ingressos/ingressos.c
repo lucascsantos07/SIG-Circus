@@ -159,7 +159,7 @@ void reembolsarVendaIngresso(void){
     fclose(arqIngressos);
     free(ingresso);
     if(!encontrado){
-        printf("\n  Cliente não encontrado\n");
+        printf("\n   Venda não encontrado\n");
     }
 }
 
@@ -182,6 +182,7 @@ void exibirModuloVendasIngressos(void){
             deletarIngressoPermanentemente();
         }else if(opcaoVendaIngresso != '0'){
             printf("\nOpção inválida! Tente novamente.\n");
+            getchar();
         }
 
         if (opcaoVendaIngresso != '0') {
@@ -374,7 +375,7 @@ void deletarIngressoPermanentemente(void){
     ingresso = (Ingressos*)malloc(sizeof(Ingressos));
 
     printf("\n   Informe o ID da Venda que deseja deletar permanentemente: ");
-    scanf("%d", &idVenda);
+    scanf(" %d", &idVenda);
     getchar();
 
     arqIngressos = fopen("Ingressos/ingressos.dat", "rb");
