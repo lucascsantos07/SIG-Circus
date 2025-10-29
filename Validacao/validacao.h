@@ -43,3 +43,5 @@ void lerSetor(char setor[], int tamanho);
 int validarFormaDePagamento(int pagamento);
 
 void lerFormaDePagamento(int pagamento);
+
+int lerIdEspetaculo();

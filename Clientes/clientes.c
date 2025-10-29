@@ -217,14 +217,12 @@ void excluirClientePermanente(void) {
 
     char cpfBusca[20];
     Cliente* cliente;
-    Ingressos* ingresso;
     int encontrado = False;
-    int temIngresso = False;
+    int temIngresso;
     int retorno;
 
     FILE* arqCliente;
     FILE* arqTemp;
-    FILE* arqIngressos;
 
     printf("\n");
     printf("==============================================================================\n");
@@ -236,30 +234,12 @@ void excluirClientePermanente(void) {
     printf("==============================================================================\n");
 
     cliente = (Cliente*) malloc(sizeof(Cliente));
-      
-    ingresso = (Ingressos*) malloc(sizeof(Ingressos));
-    if (cliente == NULL || ingresso == NULL) {
-        printf("Erro de memória!\n");
-        exit(1);
-    }
 
     lerCPF(cpfBusca,20);
 
-    arqIngressos = fopen("Ingressos/ingressos.dat", "rb");
-    if (arqIngressos != NULL) {
-        while (fread(ingresso, sizeof(Ingressos), 1, arqIngressos) == 1) {
-            if (strcmp(cpfBusca, ingresso->cpfCliente) == 0 && ingresso->status == 1) {
-                temIngresso = True;
-                break;
-            }
-        }
-        fclose(arqIngressos);
-    }
+    temIngresso = verificarTemIngresso(cpfBusca);
 
-    if (temIngresso) {
-        printf("\n  Exclusão não permitida: o cliente possui ingressos comprados.\n");
-        free(cliente);
-        free(ingresso);
+    if(temIngresso){
         return;
     }
 
@@ -269,7 +249,6 @@ void excluirClientePermanente(void) {
     if (arqCliente == NULL || arqTemp == NULL) {
         printf("Erro na abertura dos arquivos!\n");
         free(cliente);
-        free(ingresso);
         exit(1);
     }
 
@@ -293,7 +272,6 @@ void excluirClientePermanente(void) {
     fclose(arqCliente);
     fclose(arqTemp);
     free(cliente);
-    free(ingresso);
 
     if (encontrado) {
         remove("Clientes/clientes.dat");
@@ -492,4 +470,36 @@ char escolherDado(void){
 
     } while (!isdigit(opcao) || opcao < '1' || opcao > '5');
     return opcao;
+}
+
+int verificarTemIngresso(char cpf[]){
+
+    Ingressos* ingresso;
+    FILE* arqIngressos;
+    int temIngresso = False;
+    ingresso = (Ingressos*) malloc(sizeof(Ingressos));
+
+    if (ingresso == NULL) {
+        printf("Erro de memória!\n");
+        exit(1);
+    }
+
+    arqIngressos = fopen("Ingressos/ingressos.dat", "rb");
+    if (arqIngressos != NULL) {
+        while (fread(ingresso, sizeof(Ingressos), 1, arqIngressos) == 1) {
+            if (strcmp(cpf, ingresso->cpfCliente) == 0 && ingresso->status == 1) {
+                temIngresso = True;
+                break;
+            }
+        }
+        fclose(arqIngressos);
+    }
+
+    if (temIngresso) {
+        printf("\n  Exclusão não permitida: o cliente possui ingressos comprados.\n");
+        free(ingresso);
+        return 1;
+    }else{
+        return 0;
+    }
 }
