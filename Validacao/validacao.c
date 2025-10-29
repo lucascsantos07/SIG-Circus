@@ -4,6 +4,7 @@
 #include <ctype.h>
 #include "validacao.h"
 #include "../Agendamentos/agendamentos.h"
+#include "../Ingressos/ingressos.h"
 
 #define True 1
 #define False 0
@@ -502,4 +503,41 @@ void lerFormaDePagamento(int pagamento) {
     }
     
 
+}
+
+int lerIdEspetaculo(){
+
+    int valido = 0;
+    int idEspetaculo;
+    FILE* arqAgendamentos;
+    Agendamento* agendamento;
+    agendamento = (Agendamento*)malloc(sizeof(Agendamento));
+
+    arqAgendamentos = fopen("Agendamentos/agendamento.dat", "rb");
+    if (!arqAgendamentos) {
+        printf("Erro ao abrir o arquivo de agendamentos.\n");
+        return -1;
+    }
+
+    while (!valido) {
+        printf("\nSelecione o ID do espetáculo: ");
+        scanf(" %d", &idEspetaculo);
+        getchar();
+
+        rewind(arqAgendamentos); 
+
+        while (fread(agendamento, sizeof(Agendamento), 1, arqAgendamentos)) {
+            if (idEspetaculo == agendamento->id && agendamento->status) {
+                valido = 1;
+                break;
+            }
+        }
+
+        if (!valido) {
+            printf("ID inválido. Tente novamente.\n");
+        }
+    }
+    fclose(arqAgendamentos);
+    free(agendamento);
+    return idEspetaculo;
 }

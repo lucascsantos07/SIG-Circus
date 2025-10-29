@@ -24,3 +24,6 @@ void exibirCliente(Cliente *cliente);
 void confirmacaoCadastroCliente(Cliente *cliente);
 void salvarCliente(FILE *arqCliente, Cliente *cliente);
 void excluirClientePermanente(void);
+void alterarDado(char opcao, Cliente* cliente, FILE* arqCliente);
+char escolherDado(void);
+int verificarTemIngresso(char cpf[]);
