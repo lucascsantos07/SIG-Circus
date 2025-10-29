@@ -1,3 +1,4 @@
+#include <stdio.h>
 // Assinatura das funcoes do modulo vendas de ingressos
 
 

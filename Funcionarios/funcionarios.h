@@ -1,3 +1,4 @@
+#include <stdio.h>
 // Assinatura das funcoes do modulo funcionarios
 
 typedef struct funcionarios Funcionarios;

@@ -133,7 +133,7 @@ void reembolsarVendaIngresso(void){
     scanf("%d", &idVenda);
     getchar();
 
-    arqIngressos = fopen("Ingressos/ingressos.dat", "r+b");
+    arqIngressos = fopen("Ingressos/ingressos.dat", "rb");
 
     if (arqIngressos == NULL) {
         printf("\n\nERROR!\n\n");
@@ -142,8 +142,8 @@ void reembolsarVendaIngresso(void){
 
     encontrado = 0;
 
-    while (fread(ingresso, sizeof(Ingressos), 1, arqIngressos)) {
-        if ((ingresso->id == idVenda) && ingresso->status) {
+    while (fread(ingresso, sizeof(Ingressos), 1, arqIngressos)==1) {
+        if (ingresso->id == idVenda && ingresso->status) {
             encontrado = True;
             ExibirIngresso(ingresso);
             confirma = confirmarExclusao("Ingresso");

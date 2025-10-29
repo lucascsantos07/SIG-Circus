@@ -687,7 +687,7 @@ int lerCpfResponsavel(char cpf[20]){
     }while(encontrado==0);
 
     free(funcionario);
-
+    return False;
 }
 
 int gerarIdAgendamento(void){
