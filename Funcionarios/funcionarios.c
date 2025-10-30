@@ -44,8 +44,6 @@ void telaCadastroFuncionario(void) {
 
     Funcionarios* funcionarios;
 
-    FILE *arqFuncionarios;
-
     printf("\n");
     printf("==============================================================================\n");
     printf("||                                                                          ||\n");

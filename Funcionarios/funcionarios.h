@@ -1,3 +1,6 @@
+#ifndef FUNCIONARIOS_H
+#define FUNCIONARIOS_H
+
 #include <stdio.h>
 // Assinatura das funcoes do modulo funcionarios
 
@@ -31,3 +34,6 @@ void ConfirmarCadastroFuncionario(Funcionarios* funcionarios);
 void ExibirFuncionario(Funcionarios* funcionarios);
 void SalvarFuncionario(FILE* fp_funcionarios, Funcionarios* funcionarios);
 int FuncionarioMaiorID(void);
+
+
+#endif

@@ -220,7 +220,7 @@ void ExibirTodosAgendamentos(void) {
 } 
 
 Ingressos* ColetarDadosIngressos(void) {
-    int valido =0;
+    
     int encontrado = 0;
     int quantidadeIngressosValidado = 0;
     int quantidadeSolicitada = 0;
@@ -233,7 +233,6 @@ Ingressos* ColetarDadosIngressos(void) {
 
     lerCPF(ingresso->cpfCliente, 20);
 
-    valido = 0;
     printf("\nAgendamentos Ativos\n");
     ExibirTodosAgendamentos();
 

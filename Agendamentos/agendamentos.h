@@ -1,3 +1,6 @@
+#ifndef AGENDAMENTOS_H
+#define AGENDAMENTOS_H
+
 // Assinaturas das Funções de Agendamentos
 
 void menuAgendamentos(void);
@@ -30,3 +33,6 @@ int validarQuantidadeIngressos(Agendamento* agendamento, int quantidadeSolicitad
 int lerCpfResponsavel(char cpf[20]);
 int gerarIdAgendamento(void);
 void listarAgendamentosResponsavel(char cpf[20]);
+
+
+#endif

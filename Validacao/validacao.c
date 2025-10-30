@@ -324,7 +324,7 @@ void lerHora(char hora[], int tamanho){
             ok = 1;
         }else{
             printf("\n   Data inválido!\n");
-            if (strlen(hora) == tamanho - 1) {
+            if (strlen(hora) == (size_t)(tamanho - 1)) {
                 int c;
                 while ((c = getchar()) != '\n' && c != EOF);
             }
@@ -401,7 +401,7 @@ int verificarLetraEmString(const char str[]){
 }
 
 int verificarTamanhoMinimoString(const char str[], int tamanhoMinimo){
-    if (strlen(str) < tamanhoMinimo){
+    if (strlen(str) < (size_t)tamanhoMinimo){
         return False;
     }
     return True;

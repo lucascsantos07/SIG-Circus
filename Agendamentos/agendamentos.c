@@ -107,7 +107,6 @@ void alterarAgendamento(void){
     char opcao;
     Agendamento* agendamento;
     FILE* arqAgendamentos;
-    Agendamento temp;
 
     printf("\n");
     printf("==============================================================================\n");
@@ -253,7 +252,6 @@ void cancelarAgendamento(void){
     char cpfBusca[20];
     FILE* arqAgendamentos;
     Agendamento* agendamento;
-    Agendamento temp;
 
     printf("\n==============================================================================\n");
     printf("||                     ~ ~ ~ Cancelar Espetaculo ~ ~ ~                      ||\n");
@@ -713,7 +711,7 @@ int gerarIdAgendamento(void){
 
 void listarAgendamentosResponsavel(char cpf[20]){
 
-    FILE *arqAgendamentos, *arqTemp;
+    FILE *arqAgendamentos;
     Agendamento temp;
 
     printf("\n  Lista dos Agendamentos do Responsável Informado:\n");

@@ -1,3 +1,6 @@
+#ifndef CLIENTES_H
+#define CLIENTES_H
+
 #include <stdio.h>
 
 // Assinaturas da Funções do Clientes
@@ -27,3 +30,6 @@ void excluirClientePermanente(void);
 void alterarDado(char opcao, Cliente* cliente, FILE* arqCliente);
 char escolherDado(void);
 int verificarTemIngresso(char cpf[]);
+
+
+#endif

@@ -1,3 +1,6 @@
+#ifndef VALIDACAO_H
+#define VALIDACAO_H
+
 // Assinaturas da Funções
 
 int validarNome(char nome[]);
@@ -45,3 +48,5 @@ int validarFormaDePagamento(int pagamento);
 void lerFormaDePagamento(int pagamento);
 
 int lerIdEspetaculo();
+
+#endif
