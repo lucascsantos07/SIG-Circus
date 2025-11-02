@@ -2,7 +2,7 @@
 #define INTERFACE_H
 
 // Assinaturas das funções de interface
-void telaPrincipal(void);
+char telaPrincipal(void);
 void telaFinalizacao(void);
 
 

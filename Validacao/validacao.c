@@ -146,10 +146,9 @@ int validarCPF(char cpf[]) {
 void lerCPF(char cpf[], int tamanho){
 
     do{
-        printf("\n   Digite xxxxxxxxx CPF: ");
+        printf("\n   Digite seu CPF: ");
         fgets(cpf, tamanho, stdin);
         cpf[strcspn(cpf,"\n")] = '\0';
-        printf("|%s|\n", cpf);
 
         if(!validarCPF(cpf)){
             printf("\n   CPF inválido!\n");

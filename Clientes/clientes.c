@@ -39,6 +39,7 @@ char menuCliente(void) {
     printf("==============================================================================\n");
     printf("\nDigite sua opção: ");
     scanf("%c", &opcaoCliente);
+    limparBuffer();
     return opcaoCliente;
 }
 
@@ -103,7 +104,7 @@ void listarDadosCliente(void){
 
     fclose(arq_cliente);
     free(cliente);
-    printf("\n  Cliente não encontrado\n");
+    printf("\n   Cliente não encontrado\n");
 
 }
 
@@ -219,7 +220,7 @@ void excluirClientePermanente(void) {
     Cliente* cliente;
     int encontrado = False;
     int temIngresso;
-    int retorno;
+    int confirma = True;
 
     FILE* arqCliente;
     FILE* arqTemp;
@@ -253,31 +254,26 @@ void excluirClientePermanente(void) {
     }
 
     while (fread(cliente, sizeof(Cliente), 1, arqCliente) == 1) {
-        int deveGravar = True;
         if (strcmp(cliente->cpf, cpfBusca) == 0 && cliente->status == 1) {
             encontrado = True;
             exibirCliente(cliente);
-            retorno = confirmarExclusao("Cliente");
+            confirma = confirmarExclusao("Cliente");
 
-            if (retorno == 1) {
-                deveGravar = False;
+            if (!confirma) {
+                fwrite(cliente, sizeof(Cliente),1,arqTemp);
             }
-        }
-
-        if(deveGravar){
-            fwrite(cliente, sizeof(Cliente), 1, arqTemp);
+        }else{
+            fwrite(cliente,sizeof(Cliente),1,arqTemp);
         }
     }
 
     fclose(arqCliente);
     fclose(arqTemp);
+    remove("Clientes/clientes.dat");
+    rename("Clientes/temp.dat", "Clientes/clientes.dat");
     free(cliente);
 
-    if (encontrado) {
-        remove("Clientes/clientes.dat");
-        rename("Clientes/temp.dat", "Clientes/clientes.dat");
-    } else {
-        remove("Clientes/temp.dat");
+    if (!encontrado) {
         printf("\n  Cliente não encontrado.\n");
     }
 }
@@ -288,8 +284,6 @@ void exibirModuloClientes(void){
     do{
 
         opcaoCliente = menuCliente();
-
-        limparBuffer();
 
         if(opcaoCliente == '1'){
             telaCadastroCliente();
@@ -344,12 +338,6 @@ void exibirCliente(Cliente *cliente){
     
 }
 
-void salvarCliente(FILE *arqCliente, Cliente *cliente){
-
-    fwrite(cliente, sizeof(Cliente), 1, arqCliente);
-
-}
-
 void confirmacaoCadastroCliente(Cliente *cliente){
     char opcao;
     FILE *arqCliente;
@@ -364,11 +352,11 @@ void confirmacaoCadastroCliente(Cliente *cliente){
         arqCliente = fopen("Clientes/clientes.dat","ab");
 
         if (arqCliente == NULL){
-            printf("Erro na criacao do arquivo\n!");
+            printf("Erro na criacao do arquivo!\n");
             exit(1);
         }
 
-        salvarCliente(arqCliente, cliente);
+        fwrite(cliente, sizeof(Cliente), 1, arqCliente);
         fclose(arqCliente);
         free(cliente);
 

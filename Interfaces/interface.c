@@ -3,7 +3,8 @@
 #include "./interface.h"
 #include "../Utilitarios/utilitarios.h"
 
-void telaPrincipal(void) {
+char telaPrincipal(void) {
+    char opcao;
     limparTela();
     printf("\n");
     printf("==============================================================================\n");
@@ -32,6 +33,9 @@ void telaPrincipal(void) {
     printf("||                                                                          ||\n");
     printf("==============================================================================\n");
     printf("\nDigite sua opção: ");
+    scanf("%c", &opcao);
+    limparBuffer();
+    return opcao;
 }
 
 void telaFinalizacao(void) {
