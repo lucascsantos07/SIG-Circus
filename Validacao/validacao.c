@@ -4,6 +4,7 @@
 #include <ctype.h>
 #include "validacao.h"
 #include "../Agendamentos/agendamentos.h"
+#include "../Ingressos/ingressos.h"
 
 #define True 1
 #define False 0
@@ -101,19 +102,15 @@ int validarCPF(char cpf[]) {
     char numeros[12];
     int j = 0;
 
-    // 1️⃣ Extrair apenas os números (ignora '.' e '-')
     for (int i = 0; cpf[i] != '\0'; i++) {
         if (isdigit(cpf[i])) {
             numeros[j++] = cpf[i];
         }
     }
     numeros[j] = '\0';
-
-    // 2️⃣ Verifica se tem 11 dígitos
     if (strlen(numeros) != 11)
         return False;
 
-    // 3️⃣ Verifica se todos os dígitos são iguais (ex: 111.111.111-11 → inválido)
     int iguais = 1;
     for (int i = 1; i < 11; i++) {
         if (numeros[i] != numeros[0]) {
@@ -123,7 +120,6 @@ int validarCPF(char cpf[]) {
     }
     if (iguais) return False;
 
-    // 4️⃣ Cálculo do 1º dígito verificador
     int soma = 0;
     for (int i = 0; i < 9; i++) {
         soma += (numeros[i] - '0') * (10 - i);
@@ -132,7 +128,6 @@ int validarCPF(char cpf[]) {
     int resto = soma % 11;
     int digito1 = (resto < 2) ? 0 : 11 - resto;
 
-    // 5️⃣ Cálculo do 2º dígito verificador
     soma = 0;
     for (int i = 0; i < 10; i++) {
         soma += (numeros[i] - '0') * (11 - i);
@@ -141,7 +136,6 @@ int validarCPF(char cpf[]) {
     resto = soma % 11;
     int digito2 = (resto < 2) ? 0 : 11 - resto;
 
-    // 6️⃣ Verifica se os dígitos calculados batem com os do CPF
     if (digito1 == (numeros[9] - '0') && digito2 == (numeros[10] - '0'))
         return True;
     else
@@ -329,7 +323,7 @@ void lerHora(char hora[], int tamanho){
             ok = 1;
         }else{
             printf("\n   Data inválido!\n");
-            if (strlen(hora) == tamanho - 1) {
+            if (strlen(hora) == (size_t)(tamanho - 1)) {
                 int c;
                 while ((c = getchar()) != '\n' && c != EOF);
             }
@@ -406,7 +400,7 @@ int verificarLetraEmString(const char str[]){
 }
 
 int verificarTamanhoMinimoString(const char str[], int tamanhoMinimo){
-    if (strlen(str) < tamanhoMinimo){
+    if (strlen(str) < (size_t)tamanhoMinimo){
         return False;
     }
     return True;
@@ -502,4 +496,41 @@ void lerFormaDePagamento(int pagamento) {
     }
     
 
+}
+
+int lerIdEspetaculo(){
+
+    int valido = 0;
+    int idEspetaculo;
+    FILE* arqAgendamentos;
+    Agendamento* agendamento;
+    agendamento = (Agendamento*)malloc(sizeof(Agendamento));
+
+    arqAgendamentos = fopen("Agendamentos/agendamento.dat", "rb");
+    if (!arqAgendamentos) {
+        printf("Erro ao abrir o arquivo de agendamentos.\n");
+        return -1;
+    }
+
+    while (!valido) {
+        printf("\nSelecione o ID do espetáculo: ");
+        scanf(" %d", &idEspetaculo);
+        getchar();
+
+        rewind(arqAgendamentos); 
+
+        while (fread(agendamento, sizeof(Agendamento), 1, arqAgendamentos)) {
+            if (idEspetaculo == agendamento->id && agendamento->status) {
+                valido = 1;
+                break;
+            }
+        }
+
+        if (!valido) {
+            printf("ID inválido. Tente novamente.\n");
+        }
+    }
+    fclose(arqAgendamentos);
+    free(agendamento);
+    return idEspetaculo;
 }

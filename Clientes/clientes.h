@@ -1,8 +1,11 @@
+#ifndef CLIENTES_H
+#define CLIENTES_H
+
 #include <stdio.h>
 
 // Assinaturas da Funções do Clientes
 
-void menuCliente(void);
+char menuCliente(void);
 void telaCadastroCliente(void);
 void listarDadosCliente(void);
 void editarDadoscliente(void);
@@ -22,5 +25,10 @@ struct cliente{
 Cliente* coletarDadosCliente(void);
 void exibirCliente(Cliente *cliente);
 void confirmacaoCadastroCliente(Cliente *cliente);
-void salvarCliente(FILE *arqCliente, Cliente *cliente);
 void excluirClientePermanente(void);
+void alterarDado(char opcao, Cliente* cliente, FILE* arqCliente);
+char escolherDado(void);
+int verificarTemIngresso(char cpf[]);
+
+
+#endif

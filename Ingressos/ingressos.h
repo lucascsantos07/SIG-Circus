@@ -1,3 +1,7 @@
+#ifndef INGRESSOS_H
+#define INGRESSOS_H
+
+#include <stdio.h>
 // Assinatura das funcoes do modulo vendas de ingressos
 
 
@@ -25,3 +29,6 @@ void ConfirmarCadastroIngresso(Ingressos* ingresso);
 void SalvarIngresso(FILE* fp_ingressos, Ingressos* ingresso);
 void ExibirTodosAgendamentos(void);
 int IngressoMaiorID(void);
+
+
+#endif

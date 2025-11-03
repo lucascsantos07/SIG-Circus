@@ -10,8 +10,9 @@
 #define True 1
 #define False 0
 
-void menuCliente(void) {
+char menuCliente(void) {
     limparTela();
+    char opcaoCliente;
     printf("\n");
     printf("==============================================================================\n");
     printf("||                                                                          ||\n");
@@ -37,6 +38,9 @@ void menuCliente(void) {
     printf("||                                                                          ||\n");
     printf("==============================================================================\n");
     printf("\nDigite sua opção: ");
+    scanf("%c", &opcaoCliente);
+    limparBuffer();
+    return opcaoCliente;
 }
 
 
@@ -68,9 +72,9 @@ void listarDadosCliente(void){
     limparTela();
 
     Cliente* cliente;
-
     char cpfLido[20];
     FILE *arq_cliente;
+    int encontrado;
 
     printf("\n");
     printf("==============================================================================\n");
@@ -92,17 +96,20 @@ void listarDadosCliente(void){
         exit(1);
     }
 
+    encontrado=False;
     while(fread(cliente, sizeof(Cliente),1,arq_cliente)){
         if((cliente->status)&&(strcmp(cpfLido,cliente->cpf)==0)){
+            encontrado=True;
             exibirCliente(cliente);
-            return;
+            break;
         }
     }
 
     fclose(arq_cliente);
     free(cliente);
-    printf("\n  Cliente não encontrado\n");
-
+    if(!encontrado){
+        printf("\n   Cliente não encontrado\n");
+    }
 }
 
 
@@ -111,10 +118,9 @@ void editarDadoscliente(void){
 
     char cpfBusca[20];
     Cliente* cliente;
-    char novoNome[50], novaDataNascimento[20], novoEmail[50], novoCpf[20];
     FILE* arqCliente;
     char opcao;
-    int retorno, encontrado,c;
+    int encontrado;
 
     printf("\n");
     printf("==============================================================================\n");
@@ -141,89 +147,20 @@ void editarDadoscliente(void){
     while(fread(cliente, sizeof(Cliente),1,arqCliente)&&(!encontrado)){
         if((strcmp(cpfBusca,cliente->cpf)==0) && (cliente->status)){
             encontrado=True;
+
             exibirCliente(cliente);
 
-            do {
+            opcao = escolherDado();
 
-                printf("\n  Qual dado deseja alterar: \n");
-                printf("\n  1 - CPF");
-                printf("\n  2 - Nome");
-                printf("\n  3 - Email");
-                printf("\n  4 - Data de Nascimento\n");
-                printf("\n  Digite sua opção: ");
-                scanf(" %c", &opcao);
-                getchar();
-                
-                if (!isdigit(opcao) || opcao < '1' || opcao > '4') {
-                    printf("\n   Opção inválida! Digite um número de 1 a 4\n");
-                }
+            alterarDado(opcao, cliente, arqCliente);
 
-            } while (!isdigit(opcao) || opcao < '1' || opcao > '4');
-
-            switch (opcao){
-                case '1':
-
-                    lerCPF(novoCpf,20);
-
-                    retorno = confirmarAlteracao();
-                    if(retorno==1){
-                        strcpy(cliente->cpf,novoCpf);
-                        fseek(arqCliente,(-1)*sizeof(Cliente), SEEK_CUR);
-                        fwrite(cliente,sizeof(Cliente),1,arqCliente);
-                    }
-
-                    break;
-                
-                case '2':
-
-                    lerNome(novoNome,50);
-
-                    retorno = confirmarAlteracao();
-                    if(retorno==1){
-                        strcpy(cliente->nome,novoNome);
-                        fseek(arqCliente,(-1)*sizeof(Cliente), SEEK_CUR);
-                        fwrite(cliente,sizeof(Cliente),1,arqCliente);
-                    }
-
-                    break;
-                
-                case '3':
-
-                    lerEmail(novoEmail,50);
-
-                    retorno = confirmarAlteracao();
-                    if(retorno==1){
-                        strcpy(cliente->email,novoEmail);
-                        fseek(arqCliente,(-1)*sizeof(Cliente), SEEK_CUR);
-                        fwrite(cliente,sizeof(Cliente),1,arqCliente);
-                    }
-
-                    break;
-
-                case '4':
-
-                    lerData(novaDataNascimento,20); 
-
-                    retorno = confirmarAlteracao();
-                    if(retorno==1){
-                        strcpy(cliente->dataNascimento,novaDataNascimento);
-                        fseek(arqCliente,(-1)*sizeof(Cliente), SEEK_CUR);
-                        fwrite(cliente,sizeof(Cliente),1,arqCliente);
-                    }
-
-                    break;
-                
-                default:
-                    printf("\n  Opção Inválida\n");
-                    break;
-            }
         }
     }
 
     fclose(arqCliente);
     free(cliente);
     if(!encontrado){
-        printf("\n  Cliente não encontrado\n");
+        printf("\n   Cliente não encontrado\n");
     }
 
 }
@@ -285,14 +222,12 @@ void excluirClientePermanente(void) {
 
     char cpfBusca[20];
     Cliente* cliente;
-    Ingressos* ingresso;
     int encontrado = False;
-    int temIngresso = False;
-    int retorno;
+    int temIngresso;
+    int excluiu = False;
 
     FILE* arqCliente;
     FILE* arqTemp;
-    FILE* arqIngressos;
 
     printf("\n");
     printf("==============================================================================\n");
@@ -304,30 +239,12 @@ void excluirClientePermanente(void) {
     printf("==============================================================================\n");
 
     cliente = (Cliente*) malloc(sizeof(Cliente));
-      
-    ingresso = (Ingressos*) malloc(sizeof(Ingressos));
-    if (cliente == NULL || ingresso == NULL) {
-        printf("Erro de memória!\n");
-        exit(1);
-    }
 
     lerCPF(cpfBusca,20);
 
-    arqIngressos = fopen("Ingressos/ingressos.dat", "rb");
-    if (arqIngressos != NULL) {
-        while (fread(ingresso, sizeof(Ingressos), 1, arqIngressos) == 1) {
-            if (strcmp(cpfBusca, ingresso->cpfCliente) == 0 && ingresso->status == 1) {
-                temIngresso = True;
-                break;
-            }
-        }
-        fclose(arqIngressos);
-    }
+    temIngresso = verificarTemIngresso(cpfBusca);
 
-    if (temIngresso) {
-        printf("\n  Exclusão não permitida: o cliente possui ingressos comprados.\n");
-        free(cliente);
-        free(ingresso);
+    if(temIngresso){
         return;
     }
 
@@ -337,49 +254,43 @@ void excluirClientePermanente(void) {
     if (arqCliente == NULL || arqTemp == NULL) {
         printf("Erro na abertura dos arquivos!\n");
         free(cliente);
-        free(ingresso);
         exit(1);
     }
 
     while (fread(cliente, sizeof(Cliente), 1, arqCliente) == 1) {
-        int deveGravar = True;
         if (strcmp(cliente->cpf, cpfBusca) == 0 && cliente->status == 1) {
             encontrado = True;
             exibirCliente(cliente);
-            retorno = confirmarExclusao("Cliente");
 
-            if (retorno == 1) {
-                deveGravar = False;
+            if (confirmarExclusao("Cliente")) {
+                excluiu = True;
+                continue;
             }
-        }
 
-        if(deveGravar){
-            fwrite(cliente, sizeof(Cliente), 1, arqTemp);
         }
+        fwrite(cliente,sizeof(Cliente),1,arqTemp);
     }
 
     fclose(arqCliente);
     fclose(arqTemp);
-    free(cliente);
-    free(ingresso);
-
-    if (encontrado) {
+     if (excluiu) {
         remove("Clientes/clientes.dat");
         rename("Clientes/temp.dat", "Clientes/clientes.dat");
     } else {
         remove("Clientes/temp.dat");
-        printf("\n  Cliente não encontrado.\n");
+
+        if(!encontrado){
+            printf("\n  Cliente não encontrado.\n");
+        }
     }
 }
-
 
 void exibirModuloClientes(void){
     char opcaoCliente;
     do{
 
-        menuCliente();
-        scanf(" %c", &opcaoCliente);
-        getchar();
+        opcaoCliente = menuCliente();
+
         if(opcaoCliente == '1'){
             telaCadastroCliente();
         }else if (opcaoCliente == '2'){
@@ -433,12 +344,6 @@ void exibirCliente(Cliente *cliente){
     
 }
 
-void salvarCliente(FILE *arqCliente, Cliente *cliente){
-
-    fwrite(cliente, sizeof(Cliente), 1, arqCliente);
-
-}
-
 void confirmacaoCadastroCliente(Cliente *cliente){
     char opcao;
     FILE *arqCliente;
@@ -453,11 +358,11 @@ void confirmacaoCadastroCliente(Cliente *cliente){
         arqCliente = fopen("Clientes/clientes.dat","ab");
 
         if (arqCliente == NULL){
-            printf("Erro na criacao do arquivo\n!");
+            printf("Erro na criacao do arquivo!\n");
             exit(1);
         }
 
-        salvarCliente(arqCliente, cliente);
+        fwrite(cliente, sizeof(Cliente), 1, arqCliente);
         fclose(arqCliente);
         free(cliente);
 
@@ -473,4 +378,122 @@ void confirmacaoCadastroCliente(Cliente *cliente){
         printf("\n  Opção inválida\n");
     }
     
+}
+
+void alterarDado(char opcao, Cliente* cliente, FILE* arqCliente){
+
+    char novoNome[50], novaDataNascimento[20], novoEmail[50], novoCpf[20];
+    int retorno;
+    
+    switch (opcao){
+        case '1':
+
+            lerCPF(novoCpf,20);
+            retorno = confirmarAlteracao();
+            if(retorno==1){
+                strcpy(cliente->cpf,novoCpf);
+            }
+
+            break;
+        
+        case '2':
+
+            lerNome(novoNome,50);
+            retorno = confirmarAlteracao();
+            if(retorno==1){
+                strcpy(cliente->nome,novoNome);
+            }
+
+            break;
+        
+        case '3':
+
+            lerEmail(novoEmail,50);
+            retorno = confirmarAlteracao();
+            if(retorno==1){
+                strcpy(cliente->email,novoEmail);
+            }
+
+            break;
+
+        case '4':
+
+            lerData(novaDataNascimento,20); 
+            retorno = confirmarAlteracao();
+            if(retorno==1){
+                strcpy(cliente->dataNascimento,novaDataNascimento);
+            }
+
+            break;
+
+        case '5':
+
+            printf("\n  Voltando para menu...\n");
+            return;
+
+        default:
+            printf("\n  Opção Inválida\n");
+            break;
+    }
+
+    if(retorno==1){
+        fseek(arqCliente,(-1)*sizeof(Cliente), SEEK_CUR);
+        fwrite(cliente,sizeof(Cliente),1,arqCliente);
+    }
+
+}
+
+char escolherDado(void){
+    char opcao;
+    do {
+
+        printf("\n  Qual dado deseja alterar: \n");
+        printf("\n  1 - CPF");
+        printf("\n  2 - Nome");
+        printf("\n  3 - Email");
+        printf("\n  4 - Data de Nascimento");
+        printf("\n  5 - Cancelar\n");
+        printf("\n  Digite sua opção: ");
+        scanf(" %c", &opcao);
+
+        limparBuffer();
+        
+        if (!isdigit(opcao) || opcao < '1' || opcao > '5') {
+            printf("\n   Opção inválida! Digite um número de 1 a 5\n");
+        }
+
+    } while (!isdigit(opcao) || opcao < '1' || opcao > '5');
+    return opcao;
+}
+
+int verificarTemIngresso(char cpf[]){
+
+    Ingressos* ingresso;
+    FILE* arqIngressos;
+    int temIngresso = False;
+    ingresso = (Ingressos*) malloc(sizeof(Ingressos));
+
+    if (ingresso == NULL) {
+        printf("Erro de memória!\n");
+        exit(1);
+    }
+
+    arqIngressos = fopen("Ingressos/ingressos.dat", "rb");
+    if (arqIngressos != NULL) {
+        while (fread(ingresso, sizeof(Ingressos), 1, arqIngressos) == 1) {
+            if (strcmp(cpf, ingresso->cpfCliente) == 0 && ingresso->status == 1) {
+                temIngresso = True;
+                break;
+            }
+        }
+        fclose(arqIngressos);
+    }
+
+    if (temIngresso) {
+        printf("\n  Exclusão não permitida: o cliente possui ingressos comprados.\n");
+        free(ingresso);
+        return 1;
+    }else{
+        return 0;
+    }
 }

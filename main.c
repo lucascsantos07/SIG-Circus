@@ -4,11 +4,7 @@
 ///               Departamento de Computação e Tecnologia                   ///
 ///                  Disciplina DCT1106 -- Programação                      ///
 ///               Projeto SIG-Circus Sistema para um Circo                  ///
-///        Developed by @ViniciusL07 e @lucascsantos07 -- since Aug, 2025    ///
 ///////////////////////////////////////////////////////////////////////////////
-///                                Semana 2                                 ///
-///////////////////////////////////////////////////////////////////////////////
-
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,17 +16,14 @@
 #include "./Ingressos/ingressos.h"
 #include "./Interfaces/interface.h"
 
-
-
 //Programa Principal
 int main(void){
 
     char opcao;
 
     do{
-        telaPrincipal();
-        scanf(" %c", &opcao);
-        getchar();
+        
+        opcao = telaPrincipal();
 
         if (opcao == '1') {
 
@@ -63,13 +56,12 @@ int main(void){
         if (opcao != '0') {
             printf("\nPressione ENTER para continuar...");
             getchar(); 
-            //Depois de selecionar uma opção mostra essa mensagem
         }
     
     } while (opcao != '0');
 
-
     return 0;
+    
 }
 
 

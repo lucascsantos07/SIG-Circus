@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <ctype.h>
 #include "agendamentos.h"
 #include "../Utilitarios/utilitarios.h"
 #include "../Validacao/validacao.h"
@@ -86,6 +87,10 @@ void telaCadastroAgendamento(void){
 
     agendamento = coletarDadosAgendamentos();
 
+    if(agendamento == NULL){
+        return;
+    }
+
     exibirAgendamento(agendamento);
 
     confirmarCadastroAgendamento(agendamento);
@@ -95,14 +100,11 @@ void telaCadastroAgendamento(void){
 void alterarAgendamento(void){
     limparTela();
 
-    int codAgendamento, retorno, encontrado, novaCapacidade;
-    float novoPreco;
-    char cpf_busca[20];
-    char novaData[12], novoHorario[7];
+    int codAgendamento, encontrado, retorno;
     char opcao;
+    char cpfBusca[20];
     Agendamento* agendamento;
     FILE* arqAgendamentos;
-    Agendamento temp;
 
     printf("\n");
     printf("==============================================================================\n");
@@ -115,33 +117,14 @@ void alterarAgendamento(void){
 
     agendamento = (Agendamento*) malloc(sizeof(Agendamento));
 
-    printf("\n   Informe CPF do Responsavel pelo Agendamento: ");
-    fgets(cpf_busca, 20, stdin);
-    cpf_busca[strcspn(cpf_busca, "\n")] = '\0';
-
-    printf("\nLista dos Agendamentos do Responsável Informado: \n");
-
-    arqAgendamentos = fopen("Agendamentos/agendamento.dat", "rb");
-    if (arqAgendamentos == NULL){
-        printf("Erro na abertura do arquivo\n");
-        free(agendamento);
-        exit(1);
+    retorno = lerCpfResponsavel(cpfBusca);
+    if(retorno == 0){
+        return;
     }
 
-    printf("\nID    | Data         | Hora     | Cidade               | Capacidade | Preço   | Ingressos Vendidos | CPF Responsável\n");
-    printf("---------------------------------------------------------------------------------------------------------------------------\n");
-    while(fread(&temp, sizeof(Agendamento), 1, arqAgendamentos) == 1){
-        if(temp.status && strcmp(temp.cpfResponsavel, cpf_busca) == 0){
-            printf("%-5d | %-12s | %-8s | %-20s | %-10d | %-9.2f| %-19d| %-15s\n",
-                   temp.id, temp.data, temp.horario, temp.cidade,
-                   temp.capacidade, temp.precoIngresso,temp.quantIngressosVend, temp.cpfResponsavel);
-        }
-    }
-    fclose(arqAgendamentos);
+    listarAgendamentosResponsavel(cpfBusca);
 
-    printf("\n  Digite o código do Agendamento que deseja Alterar: ");
-    scanf("%d", &codAgendamento);
-    getchar();
+    lerIdAgendamento(&codAgendamento);
 
     arqAgendamentos = fopen("Agendamentos/agendamento.dat", "r+b");
     if (arqAgendamentos == NULL){
@@ -157,76 +140,10 @@ void alterarAgendamento(void){
             encontrado = True;
             exibirAgendamento(agendamento);
 
-            printf("\n  Qual dado deseja alterar: \n");
-            printf("\n  1 - Data");
-            printf("\n  2 - Horário");
-            printf("\n  3 - Quantidade de Ingressos");
-            printf("\n  4 - Preço\n");
+            opcao = escolherDadoAgend();
 
-            printf("\n  Digite seu opção: ");
-            scanf("%c", &opcao);
-            getchar();
+            alterarDadoAgend(opcao, agendamento, arqAgendamentos);
 
-            switch (opcao){
-                case '1':
-                    printf("\n   Data: ");
-                    fgets(novaData, 20, stdin);
-                    novaData[strcspn(novaData, "\n")] = '\0';
-
-                    retorno = confirmarAlteracao();
-                    if(retorno==1){
-                        strcpy(agendamento->data,novaData);
-                    }
-
-                    break;
-                
-                case '2':
-                    printf("\n   Horário: ");
-                    fgets(novoHorario, 20, stdin);
-                    novoHorario[strcspn(novoHorario, "\n")] = '\0';
-
-                    retorno = confirmarAlteracao();
-                    if(retorno==1){
-                        strcpy(agendamento->horario,novoHorario);
-                    }
-
-                    break;
-                
-                case '3':
-                    printf("\n   Capacidade de Público: ");
-                    scanf(" %d",&novaCapacidade);
-                    getchar();
-
-                    retorno = confirmarAlteracao();
-                    if(retorno==1){
-                        agendamento->capacidade=novaCapacidade;
-                    }
-
-                    break;
-
-                case '4':
-
-                    printf("\n   Preço Ingresso: ");
-                    scanf(" %f",&novoPreco);
-                    getchar();
-
-                    retorno = confirmarAlteracao();
-                    if(retorno==1){
-                        agendamento->precoIngresso=novoPreco;
-                    }
-
-                    break;
-                
-                default:
-                    printf("\n  Opção Inválida\n");
-                    break;
-            }
-            if (retorno == 1) {
-                fseek(arqAgendamentos, -sizeof(Agendamento), SEEK_CUR);
-                fwrite(agendamento, sizeof(Agendamento), 1, arqAgendamentos);
-                fclose(arqAgendamentos);
-                return;
-            }
         }
     }
 
@@ -244,10 +161,9 @@ void cancelarAgendamento(void){
     limparTela();
 
     int codAgendamento, retorno, encontrado;
-    char cpf_busca[20];
+    char cpfBusca[20];
     FILE* arqAgendamentos;
     Agendamento* agendamento;
-    Agendamento temp;
 
     printf("\n==============================================================================\n");
     printf("||                     ~ ~ ~ Cancelar Espetaculo ~ ~ ~                      ||\n");
@@ -259,33 +175,14 @@ void cancelarAgendamento(void){
         exit(1);
     }
 
-    printf("\n  Informe CPF do Responsável pelo Agendamento: ");
-    fgets(cpf_busca, 20, stdin);
-    cpf_busca[strcspn(cpf_busca, "\n")] = '\0';
-
-    printf("\n  Lista dos Agendamentos do Responsável Informado: \n");
-
-    arqAgendamentos = fopen("Agendamentos/agendamento.dat", "rb");
-    if (arqAgendamentos == NULL){
-        printf("Erro na abertura do arquivo\n");
-        free(agendamento);
-        exit(1);
+    retorno = lerCpfResponsavel(cpfBusca);
+    if(retorno == 0){
+        return;
     }
 
-    printf("\nID    | Data         | Hora     | Cidade               | Capacidade | Preço   | Ingressos Vendidos | CPF Responsável\n");
-    printf("---------------------------------------------------------------------------------------------------------------------------\n");
-    while(fread(&temp, sizeof(Agendamento), 1, arqAgendamentos) == 1){
-        if(temp.status && strcmp(temp.cpfResponsavel, cpf_busca) == 0){
-            printf("%-5d | %-12s | %-8s | %-20s | %-10d | %-9.2f| %-19d| %-15s\n",
-                   temp.id, temp.data, temp.horario, temp.cidade,
-                   temp.capacidade, temp.precoIngresso,temp.quantIngressosVend, temp.cpfResponsavel);
-        }
-    }
-    fclose(arqAgendamentos);
+    listarAgendamentosResponsavel(cpfBusca);
 
-    printf("\n  Digite o código do Agendamento que deseja cancelar: ");
-    scanf("%d", &codAgendamento);
-    getchar();
+    lerIdAgendamento(&codAgendamento);
 
     arqAgendamentos = fopen("Agendamentos/agendamento.dat", "r+b");
     if (arqAgendamentos == NULL){
@@ -316,6 +213,7 @@ void cancelarAgendamento(void){
     if(!encontrado){
         printf("\n  Agendamento não encontrado\n");
     }
+
 }
 
 
@@ -323,11 +221,11 @@ void cancelarAgendamento(void){
 void excluirPermanenteAgendamento(void) {
     limparTela();
 
-    int codAgendamento, retorno, encontrado = 0;
-    char cpf_busca[20];
+    int retorno, encontrado = 0;
+    int codAgendamento;
+    char cpfBusca[20];
     FILE *arqAgendamentos, *arqTemp;
     Agendamento *agendamento;
-    Agendamento temp;
 
     printf("\n");
     printf("==============================================================================\n");
@@ -344,37 +242,19 @@ void excluirPermanenteAgendamento(void) {
         exit(1);
     }
 
-    printf("\n  Informe CPF do Responsável pelo Agendamento: ");
-    fgets(cpf_busca, 20, stdin);
-    cpf_busca[strcspn(cpf_busca, "\n")] = '\0';
-
-    printf("\n  Lista dos Agendamentos do Responsável Informado:\n");
-
-    arqAgendamentos = fopen("Agendamentos/agendamento.dat", "rb");
-    if (arqAgendamentos == NULL) {
-        printf("Erro na abertura do arquivo\n");
-        free(agendamento);
-        exit(1);
+    retorno = lerCpfResponsavel(cpfBusca);
+    if(retorno == 0){
+        return;
     }
 
-    printf("\nID    | Data         | Hora     | Cidade               | Capacidade | Preço   | Ingressos Vendidos | CPF Responsável\n");
-    printf("---------------------------------------------------------------------------------------------------------------------------\n");
-    while(fread(&temp, sizeof(Agendamento), 1, arqAgendamentos) == 1){
-        if(temp.status && strcmp(temp.cpfResponsavel, cpf_busca) == 0){
-            printf("%-5d | %-12s | %-8s | %-20s | %-10d | %-9.2f| %-19d| %-15s\n",
-                   temp.id, temp.data, temp.horario, temp.cidade,
-                   temp.capacidade, temp.precoIngresso,temp.quantIngressosVend, temp.cpfResponsavel);
-        }
-    }
-    fclose(arqAgendamentos);
+    listarAgendamentosResponsavel(cpfBusca);
 
-    printf("\n  Digite o código do Agendamento que deseja excluir: ");
-    scanf("%d", &codAgendamento);
-    getchar();
+    lerIdAgendamento(&codAgendamento);
 
     arqAgendamentos = fopen("Agendamentos/agendamento.dat", "rb");
+
     if (arqAgendamentos == NULL) {
-        printf("Erro ao abrir arquivo original.\n");
+        printf("\n  Nenhum agendamento cadastrado ainda.\n");
         free(agendamento);
         return;
     }
@@ -388,7 +268,7 @@ void excluirPermanenteAgendamento(void) {
     }
 
     while (fread(agendamento, sizeof(Agendamento), 1, arqAgendamentos) == 1) {
-        int deveGravar = True; 
+        int deveGravar = True;
 
         if (agendamento->id == codAgendamento && agendamento->status) {
             encontrado = True;
@@ -400,12 +280,11 @@ void excluirPermanenteAgendamento(void) {
             } else {
                 retorno = confirmarExclusao("Agendamento");
                 if (retorno == 1) {
-                    printf("\n  Agendamento excluído fisicamente!\n");
-                    deveGravar = False; 
+                    deveGravar = False;
                 }
             }
         }
-        
+
         if (deveGravar) {
             fwrite(agendamento, sizeof(Agendamento), 1, arqTemp);
         }
@@ -413,7 +292,6 @@ void excluirPermanenteAgendamento(void) {
 
     fclose(arqAgendamentos);
     fclose(arqTemp);
-    free(agendamento);
 
     if (encontrado) {
         remove("Agendamentos/agendamento.dat");
@@ -422,13 +300,18 @@ void excluirPermanenteAgendamento(void) {
         remove("Agendamentos/temp.dat");
         printf("\n  Agendamento não encontrado.\n");
     }
+
+    free(agendamento);
+
 }
+
 
 
 void consultarAgendamento(void){
     limparTela();
 
-    int escolha, encontrado;
+    char escolha;
+    int encontrado;
     FILE* arqAgendamentos;
     char cpfLido[20], dataLida[12];
     Agendamento* agendamento;
@@ -444,24 +327,33 @@ void consultarAgendamento(void){
 
     agendamento = (Agendamento*) malloc(sizeof(Agendamento));
 
-    printf("\n  Deseja Pesquisar Por \n");
-    printf("\n    1 - Data ");
-    printf("\n    2 - Responsavel \n");
-    printf("\n  Digite sua opcao: ");
-    scanf("%d", &escolha);
-    getchar();
+    do {
 
-    if(escolha == 1){
+        printf("\n  Deseja Pesquisar Por \n");
+        printf("\n    1 - Data ");
+        printf("\n    2 - Responsavel \n");
+        printf("\n  Digite sua opcao: ");
+        scanf(" %c", &escolha);
+        
+        if (!isdigit(escolha) || escolha < '1' || escolha > '2') {
+            printf("\n   Opção inválida! Digite o número de 1 ou 2\n");
+        }
+
+        int c;
+        while((c = getchar()) != '\n' && c != EOF);
+
+    } while (!isdigit(escolha) || escolha < '1' || escolha > '2');
+
+    if(escolha == '1'){
    
-        printf("\n  Informe a Data (DD/MM/AAAA): ");
-        fgets(dataLida, 12, stdin);
-        dataLida[strcspn(dataLida, "\n")] = '\0';
+        lerData(dataLida,20);
 
         arqAgendamentos = fopen("Agendamentos/agendamento.dat","rb");
 
         if (arqAgendamentos == NULL){
-            printf("Erro na criacao do arquivo\n!");
-            exit(1);
+            printf("\n   Nenhum agendamento cadastrado ainda.\n");
+            free(agendamento);
+            return;
         }
 
         encontrado = False;
@@ -481,17 +373,19 @@ void consultarAgendamento(void){
             printf("\n  Agendamento não encontrado\n");
         }
 
-    }else if(escolha == 2){
-        
-        printf("\n  Informe a CPF do Responsavel: ");
-        fgets(cpfLido, 20, stdin);
-        cpfLido[strcspn(cpfLido, "\n")] = '\0';
+    }else if(escolha == '2'){
+
+        int retorno = lerCpfResponsavel(cpfLido);
+        if(retorno == 0){
+            return;
+        }
 
         arqAgendamentos = fopen("Agendamentos/agendamento.dat","rb");
 
         if (arqAgendamentos == NULL){
-            printf("Erro na criacao do arquivo\n!");
-            exit(1);
+            printf("\n   Nenhum agendamento cadastrado ainda.\n");
+            free(agendamento);
+            return; 
         }
 
         encontrado = False;
@@ -519,14 +413,8 @@ void consultarAgendamento(void){
 Agendamento* coletarDadosAgendamentos(void){
 
     Agendamento* agendamento;
-    Agendamento temp;
-    int maiorID;
-    FILE* arqAgendamento;
-    Funcionarios* funcionario;
-    FILE *fp_funcionario;
 
     agendamento = (Agendamento*) malloc(sizeof(Agendamento));
-    funcionario = (Funcionarios*)malloc(sizeof(Funcionarios));
 
     lerDataEspetaculo(agendamento->data, 12);
 
@@ -538,49 +426,19 @@ Agendamento* coletarDadosAgendamentos(void){
 
     lerPreco(&agendamento->precoIngresso);
 
-    int encontrado;
-    do{
-        lerCPF(agendamento->cpfResponsavel, 20);
-
-        encontrado = 0;
-
-        fp_funcionario = fopen("Funcionarios/funcionarios.dat", "rb");
-        if (fp_funcionario == NULL) {
-            printf("Erro ao abrir arquivo!\n");
-            exit(1);
-        }
-        
-        while (fread(funcionario, sizeof(Funcionarios), 1, fp_funcionario)) {
-            if (strcmp(funcionario->cpf, agendamento->cpfResponsavel) == 0 && funcionario->status) {
-                encontrado=1;
-                break;
-            }
-        }
-
-        fclose(fp_funcionario);
-
-        if(encontrado==0){
-            printf("\n  Funcionário não encontrado");
-        }
-
-    }while(encontrado==0);
-
-    agendamento->id=1;
-    maiorID=0;
-    arqAgendamento = fopen("Agendamentos/agendamento.dat", "rb");
-    if (arqAgendamento != NULL) {
-        while (fread(&temp, sizeof(Agendamento),1,arqAgendamento) == 1) {
-            if (temp.id > maiorID) {
-                maiorID = temp.id;
-            }
-        }
-        agendamento->id = maiorID + 1;
-        fclose(arqAgendamento);
+    int retorno = lerCpfResponsavel(agendamento->cpfResponsavel);
+    if(retorno == 0){
+        return NULL;
     }
 
+    agendamento->id = gerarIdAgendamento();
+
     agendamento->quantIngressosVend = 0;
+
     agendamento->status = True;
+
     return agendamento;
+
 }
 
 void exibirAgendamento(Agendamento* agendamento){
@@ -665,4 +523,203 @@ int validarQuantidadeIngressos(Agendamento* agendamento, int quantidadeSolicitad
 } else {
         return True;
     }
+}
+
+int lerCpfResponsavel(char cpf[20]){
+
+    Funcionarios* funcionario;
+    FILE *fp_funcionario;
+    int encontrado;
+    char escolha;
+    funcionario = (Funcionarios*) malloc(sizeof(Funcionarios));
+
+    do{
+        lerCPF(cpf, 20);
+
+        encontrado = 0;
+
+        fp_funcionario = fopen("Funcionarios/funcionarios.dat", "rb");
+        if (fp_funcionario == NULL) {
+            printf("\n   Nenhum funcionário cadastrado ainda!\n");
+            free(funcionario);
+            return False;
+        }
+        
+        while (fread(funcionario, sizeof(Funcionarios), 1, fp_funcionario)) {
+            if (strcmp(funcionario->cpf, cpf) == 0 && funcionario->status) {
+                encontrado=1;
+                break;
+            }
+        }
+
+        fclose(fp_funcionario);
+
+        if(encontrado==0){
+            printf("\n   Funcionário não encontrado\n");
+            printf("\n   Deseja Continuar? (s/n) ");
+            scanf(" %c", &escolha);
+            getchar();
+            if(escolha=='n'){
+                free(funcionario);
+                return False;
+            }
+        }
+
+    }while(encontrado==0);
+
+    free(funcionario);
+    return True;
+}
+
+int gerarIdAgendamento(void){
+
+    Agendamento temp;
+    int maiorID;
+    FILE* arqAgendamento;
+
+    maiorID=0;
+    arqAgendamento = fopen("Agendamentos/agendamento.dat", "rb");
+    if (arqAgendamento != NULL) {
+        while (fread(&temp, sizeof(Agendamento),1,arqAgendamento) == 1) {
+            if (temp.id > maiorID) {
+                maiorID = temp.id;
+            }
+        }
+        fclose(arqAgendamento);
+    }
+
+    return maiorID + 1;
+
+}
+
+void listarAgendamentosResponsavel(char cpf[20]){
+
+    FILE *arqAgendamentos;
+    Agendamento temp;
+
+    printf("\n  Lista dos Agendamentos do Responsável Informado:\n");
+
+    arqAgendamentos = fopen("Agendamentos/agendamento.dat", "rb");
+    if (arqAgendamentos == NULL) {
+        printf("\n   Nenhum agendamento cadastrado ainda!\n");
+        return;
+    }
+
+    printf("\nID    | Data         | Hora     | Cidade               | Capacidade | Preço   | Ingressos Vendidos | CPF Responsável\n");
+    printf("---------------------------------------------------------------------------------------------------------------------------\n");
+    while(fread(&temp, sizeof(Agendamento), 1, arqAgendamentos) == 1){
+        if(temp.status && strcmp(temp.cpfResponsavel, cpf) == 0){
+            printf("%-5d | %-12s | %-8s | %-20s | %-10d | %-9.2f| %-19d| %-15s\n",
+                   temp.id, temp.data, temp.horario, temp.cidade,
+                   temp.capacidade, temp.precoIngresso,temp.quantIngressosVend, temp.cpfResponsavel);
+        }
+    }
+    fclose(arqAgendamentos);
+
+}
+
+char escolherDadoAgend(void){
+    char opcao;
+    do {
+
+        printf("\n  Qual dado deseja alterar: \n");
+        printf("\n  1 - Data");
+        printf("\n  2 - Horário");
+        printf("\n  3 - Quantidade de Ingressos");
+        printf("\n  4 - Preço");
+        printf("\n  5 - Cancelar\n");
+
+        printf("\n  Digite seu opção: ");
+        scanf("%c", &opcao);
+        
+        if (!isdigit(opcao) || opcao < '1' || opcao > '5') {
+            printf("\n   Opção inválida! Digite um número de 1 a 5\n");
+        }
+
+        limparBuffer();
+
+    } while (!isdigit(opcao) || opcao < '1' || opcao > '5');
+    return opcao;
+}
+
+void alterarDadoAgend(char opcao, Agendamento* agendamento, FILE* arqAgendamentos){
+    float novoPreco;
+    int novaCapacidade, retorno;
+    char novaData[12], novoHorario[7];
+    switch (opcao){
+        case '1':
+
+            lerDataEspetaculo(novaData,12);
+
+            retorno = confirmarAlteracao();
+            if(retorno==1){
+                strcpy(agendamento->data,novaData);
+            }
+
+            break;
+        
+        case '2':
+
+            lerHora(novoHorario,7);
+
+            retorno = confirmarAlteracao();
+            if(retorno==1){
+                strcpy(agendamento->horario,novoHorario);
+            }
+
+            break;
+        
+        case '3':
+
+            lerCapacidade(&novaCapacidade);
+
+            retorno = confirmarAlteracao();
+            if(retorno==1){
+                agendamento->capacidade=novaCapacidade;
+            }
+
+            break;
+
+        case '4':
+
+            lerPreco(&novoPreco);
+
+            retorno = confirmarAlteracao();
+            if(retorno==1){
+                agendamento->precoIngresso=novoPreco;
+            }
+
+            break;
+
+        case '5':
+
+            printf("\n  Voltando para menu...");
+            return;
+        
+        default:
+            printf("\n  Opção Inválida\n");
+            break;
+
+    }
+    if (retorno == 1) {
+        fseek(arqAgendamentos, -sizeof(Agendamento), SEEK_CUR);
+        fwrite(agendamento, sizeof(Agendamento), 1, arqAgendamentos);
+        fclose(arqAgendamentos);
+        return;
+    }
+}
+
+void lerIdAgendamento(int *idAgendamento){
+    int leituraValida;
+    do {
+        printf("\n  Digite o código do Agendamento que deseja excluir: ");
+
+        leituraValida = scanf("%d", idAgendamento);
+        limparBuffer();
+        if (leituraValida != 1) {
+            printf("\n  Valor inválido! Digite apenas números.\n");
+
+        }
+
+    } while (leituraValida != 1);
 }
