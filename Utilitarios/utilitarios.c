@@ -17,7 +17,7 @@ int confirmarExclusao(const char *modulo) {
     char confirma;
 
     while (1) {
-        printf("\nDeseja realmente excluir este dado do sistema? (s/n): ");
+        printf("\nDeseja realmente excluir este dado? (s/n): ");
         scanf(" %c", &confirma);
 
         limparBuffer();

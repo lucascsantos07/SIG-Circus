@@ -1,6 +1,9 @@
 #ifndef AGENDAMENTOS_H
 #define AGENDAMENTOS_H
 
+#include <stdio.h>
+#include <stdlib.h>
+
 // Assinaturas das Funções de Agendamentos
 
 void menuAgendamentos(void);
@@ -33,6 +36,9 @@ int validarQuantidadeIngressos(Agendamento* agendamento, int quantidadeSolicitad
 int lerCpfResponsavel(char cpf[20]);
 int gerarIdAgendamento(void);
 void listarAgendamentosResponsavel(char cpf[20]);
+char escolherDadoAgend(void);
+void alterarDadoAgend(char opcao, Agendamento* agendamento, FILE* arqAgendamentos);
+void lerIdAgendamento(int *idAgendamento);
 
 
 #endif

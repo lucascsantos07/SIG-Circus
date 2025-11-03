@@ -100,11 +100,9 @@ void telaCadastroAgendamento(void){
 void alterarAgendamento(void){
     limparTela();
 
-    int codAgendamento, retorno, encontrado, novaCapacidade;
-    float novoPreco;
-    char cpfBusca[20];
-    char novaData[12], novoHorario[7];
+    int codAgendamento, encontrado, retorno;
     char opcao;
+    char cpfBusca[20];
     Agendamento* agendamento;
     FILE* arqAgendamentos;
 
@@ -126,20 +124,7 @@ void alterarAgendamento(void){
 
     listarAgendamentosResponsavel(cpfBusca);
 
-    int leituraValida;
-    do {
-        printf("\n  Digite o código do Agendamento que deseja alterar: ");
-
-        leituraValida = scanf("%d", &codAgendamento);
-
-        if (leituraValida != 1) {
-            printf("\n  Valor inválido! Digite apenas números.\n");
-
-            int c;
-            while ((c = getchar()) != '\n' && c != EOF);
-        }
-
-    } while (leituraValida != 1);
+    lerIdAgendamento(&codAgendamento);
 
     arqAgendamentos = fopen("Agendamentos/agendamento.dat", "r+b");
     if (arqAgendamentos == NULL){
@@ -155,81 +140,10 @@ void alterarAgendamento(void){
             encontrado = True;
             exibirAgendamento(agendamento);
 
-            do {
+            opcao = escolherDadoAgend();
 
-                printf("\n  Qual dado deseja alterar: \n");
-                printf("\n  1 - Data");
-                printf("\n  2 - Horário");
-                printf("\n  3 - Quantidade de Ingressos");
-                printf("\n  4 - Preço\n");
+            alterarDadoAgend(opcao, agendamento, arqAgendamentos);
 
-                printf("\n  Digite seu opção: ");
-                scanf("%c", &opcao);
-                
-                if (!isdigit(opcao) || opcao < '1' || opcao > '4') {
-                    printf("\n   Opção inválida! Digite um número de 1 a 4\n");
-                }
-
-                int c;
-                while((c = getchar()) != '\n' && c != EOF);
-
-            } while (!isdigit(opcao) || opcao < '1' || opcao > '4');
-
-            switch (opcao){
-                case '1':
-
-                    lerDataEspetaculo(novaData,12);
-
-                    retorno = confirmarAlteracao();
-                    if(retorno==1){
-                        strcpy(agendamento->data,novaData);
-                    }
-
-                    break;
-                
-                case '2':
-
-                    lerHora(novoHorario,7);
-
-                    retorno = confirmarAlteracao();
-                    if(retorno==1){
-                        strcpy(agendamento->horario,novoHorario);
-                    }
-
-                    break;
-                
-                case '3':
-
-                    lerCapacidade(&novaCapacidade);
-
-                    retorno = confirmarAlteracao();
-                    if(retorno==1){
-                        agendamento->capacidade=novaCapacidade;
-                    }
-
-                    break;
-
-                case '4':
-
-                    lerPreco(&novoPreco);
-
-                    retorno = confirmarAlteracao();
-                    if(retorno==1){
-                        agendamento->precoIngresso=novoPreco;
-                    }
-
-                    break;
-                
-                default:
-                    printf("\n  Opção Inválida\n");
-                    break;
-            }
-            if (retorno == 1) {
-                fseek(arqAgendamentos, -sizeof(Agendamento), SEEK_CUR);
-                fwrite(agendamento, sizeof(Agendamento), 1, arqAgendamentos);
-                fclose(arqAgendamentos);
-                return;
-            }
         }
     }
 
@@ -239,8 +153,6 @@ void alterarAgendamento(void){
     if(!encontrado){
         printf("\nAgendamento não encontrado\n");
     }
-
-    getchar();
 
 }
 
@@ -270,20 +182,7 @@ void cancelarAgendamento(void){
 
     listarAgendamentosResponsavel(cpfBusca);
 
-    int leituraValida;
-    do {
-        printf("\n  Digite o código do Agendamento que deseja excluir: ");
-
-        leituraValida = scanf("%d", &codAgendamento);
-
-        if (leituraValida != 1) {
-            printf("\n  Valor inválido! Digite apenas números.\n");
-
-            int c;
-            while ((c = getchar()) != '\n' && c != EOF);
-        }
-
-    } while (leituraValida != 1);
+    lerIdAgendamento(&codAgendamento);
 
     arqAgendamentos = fopen("Agendamentos/agendamento.dat", "r+b");
     if (arqAgendamentos == NULL){
@@ -314,8 +213,6 @@ void cancelarAgendamento(void){
     if(!encontrado){
         printf("\n  Agendamento não encontrado\n");
     }
-
-    getchar();
 
 }
 
@@ -352,20 +249,7 @@ void excluirPermanenteAgendamento(void) {
 
     listarAgendamentosResponsavel(cpfBusca);
 
-    int leituraValida;
-    do {
-        printf("\n  Digite o código do Agendamento que deseja excluir: ");
-
-        leituraValida = scanf("%d", &codAgendamento);
-
-        if (leituraValida != 1) {
-            printf("\n  Valor inválido! Digite apenas números.\n");
-
-            int c;
-            while ((c = getchar()) != '\n' && c != EOF);
-        }
-
-    } while (leituraValida != 1);
+    lerIdAgendamento(&codAgendamento);
 
     arqAgendamentos = fopen("Agendamentos/agendamento.dat", "rb");
 
@@ -419,7 +303,6 @@ void excluirPermanenteAgendamento(void) {
 
     free(agendamento);
 
-    getchar();
 }
 
 
@@ -685,7 +568,7 @@ int lerCpfResponsavel(char cpf[20]){
     }while(encontrado==0);
 
     free(funcionario);
-    return False;
+    return True;
 }
 
 int gerarIdAgendamento(void){
@@ -733,4 +616,110 @@ void listarAgendamentosResponsavel(char cpf[20]){
     }
     fclose(arqAgendamentos);
 
+}
+
+char escolherDadoAgend(void){
+    char opcao;
+    do {
+
+        printf("\n  Qual dado deseja alterar: \n");
+        printf("\n  1 - Data");
+        printf("\n  2 - Horário");
+        printf("\n  3 - Quantidade de Ingressos");
+        printf("\n  4 - Preço");
+        printf("\n  5 - Cancelar\n");
+
+        printf("\n  Digite seu opção: ");
+        scanf("%c", &opcao);
+        
+        if (!isdigit(opcao) || opcao < '1' || opcao > '5') {
+            printf("\n   Opção inválida! Digite um número de 1 a 5\n");
+        }
+
+        limparBuffer();
+
+    } while (!isdigit(opcao) || opcao < '1' || opcao > '5');
+    return opcao;
+}
+
+void alterarDadoAgend(char opcao, Agendamento* agendamento, FILE* arqAgendamentos){
+    float novoPreco;
+    int novaCapacidade, retorno;
+    char novaData[12], novoHorario[7];
+    switch (opcao){
+        case '1':
+
+            lerDataEspetaculo(novaData,12);
+
+            retorno = confirmarAlteracao();
+            if(retorno==1){
+                strcpy(agendamento->data,novaData);
+            }
+
+            break;
+        
+        case '2':
+
+            lerHora(novoHorario,7);
+
+            retorno = confirmarAlteracao();
+            if(retorno==1){
+                strcpy(agendamento->horario,novoHorario);
+            }
+
+            break;
+        
+        case '3':
+
+            lerCapacidade(&novaCapacidade);
+
+            retorno = confirmarAlteracao();
+            if(retorno==1){
+                agendamento->capacidade=novaCapacidade;
+            }
+
+            break;
+
+        case '4':
+
+            lerPreco(&novoPreco);
+
+            retorno = confirmarAlteracao();
+            if(retorno==1){
+                agendamento->precoIngresso=novoPreco;
+            }
+
+            break;
+
+        case '5':
+
+            printf("\n  Voltando para menu...");
+            return;
+        
+        default:
+            printf("\n  Opção Inválida\n");
+            break;
+
+    }
+    if (retorno == 1) {
+        fseek(arqAgendamentos, -sizeof(Agendamento), SEEK_CUR);
+        fwrite(agendamento, sizeof(Agendamento), 1, arqAgendamentos);
+        fclose(arqAgendamentos);
+        return;
+    }
+}
+
+void lerIdAgendamento(int *idAgendamento){
+    int leituraValida;
+    do {
+        printf("\n  Digite o código do Agendamento que deseja excluir: ");
+
+        leituraValida = scanf("%d", idAgendamento);
+        limparBuffer();
+        if (leituraValida != 1) {
+            printf("\n  Valor inválido! Digite apenas números.\n");
+
+        }
+
+    } while (leituraValida != 1);
 }
