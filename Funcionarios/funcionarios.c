@@ -305,7 +305,6 @@ void ExibirFuncionario(Funcionarios* funcionario) {
     printf("  Setor: %s\n", funcionario->setor);
     printf("\n==============================================================================\n");
 }
-
 void deletarFuncionarioPermanentemente(void){
     limparTela();
     FILE* arqFuncionarios;
