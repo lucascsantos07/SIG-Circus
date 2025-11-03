@@ -74,6 +74,7 @@ void listarDadosCliente(void){
     Cliente* cliente;
     char cpfLido[20];
     FILE *arq_cliente;
+    int encontrado;
 
     printf("\n");
     printf("==============================================================================\n");
@@ -95,17 +96,20 @@ void listarDadosCliente(void){
         exit(1);
     }
 
+    encontrado=False;
     while(fread(cliente, sizeof(Cliente),1,arq_cliente)){
         if((cliente->status)&&(strcmp(cpfLido,cliente->cpf)==0)){
+            encontrado=True;
             exibirCliente(cliente);
-            return;
+            break;
         }
     }
 
     fclose(arq_cliente);
     free(cliente);
-    printf("\n   Cliente não encontrado\n");
-
+    if(!encontrado){
+        printf("\n   Cliente não encontrado\n");
+    }
 }
 
 
@@ -220,7 +224,7 @@ void excluirClientePermanente(void) {
     Cliente* cliente;
     int encontrado = False;
     int temIngresso;
-    int confirma = True;
+    int excluiu = False;
 
     FILE* arqCliente;
     FILE* arqTemp;
@@ -257,27 +261,29 @@ void excluirClientePermanente(void) {
         if (strcmp(cliente->cpf, cpfBusca) == 0 && cliente->status == 1) {
             encontrado = True;
             exibirCliente(cliente);
-            confirma = confirmarExclusao("Cliente");
 
-            if (!confirma) {
-                fwrite(cliente, sizeof(Cliente),1,arqTemp);
+            if (confirmarExclusao("Cliente")) {
+                excluiu = True;
+                continue;
             }
-        }else{
-            fwrite(cliente,sizeof(Cliente),1,arqTemp);
+
         }
+        fwrite(cliente,sizeof(Cliente),1,arqTemp);
     }
 
     fclose(arqCliente);
     fclose(arqTemp);
-    remove("Clientes/clientes.dat");
-    rename("Clientes/temp.dat", "Clientes/clientes.dat");
-    free(cliente);
+     if (excluiu) {
+        remove("Clientes/clientes.dat");
+        rename("Clientes/temp.dat", "Clientes/clientes.dat");
+    } else {
+        remove("Clientes/temp.dat");
 
-    if (!encontrado) {
-        printf("\n  Cliente não encontrado.\n");
+        if(!encontrado){
+            printf("\n  Cliente não encontrado.\n");
+        }
     }
 }
-
 
 void exibirModuloClientes(void){
     char opcaoCliente;
