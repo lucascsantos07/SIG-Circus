@@ -354,6 +354,8 @@ void confirmacaoCadastroCliente(Cliente *cliente){
     scanf("%c",&opcao);
     getchar();
 
+    limparBuffer();
+
     if(opcao == '1'){
         arqCliente = fopen("Clientes/clientes.dat","ab");
 

@@ -16,7 +16,6 @@ struct funcionarios {
     char telefone[15];
     char salario[20];
     char cargo[30];
-    char setor[30];
     int status;
 };
 

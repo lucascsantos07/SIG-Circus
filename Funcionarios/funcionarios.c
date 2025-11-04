@@ -70,6 +70,7 @@ void listarDadosFuncionario(void) {
 
     Funcionarios* funcionario;
     char cpfLido[20];
+    int encontrado=False;
 
     FILE *arqFuncionarios;
     printf("\n");
@@ -93,14 +94,17 @@ void listarDadosFuncionario(void) {
 
     while (fread(funcionario, sizeof(Funcionarios), 1, arqFuncionarios)) {
         if (strcmp(funcionario->cpf, cpfLido) == 0 && funcionario->status) {
+            encontrado=True;
             ExibirFuncionario(funcionario);
-            return;
+            break;
         }
     }
 
     fclose(arqFuncionarios);
     free(funcionario);
-    printf("\n   Funcionario não encontrado!\n");
+    if(!encontrado){
+        printf("\n   Funcionario não encontrado!\n");
+    }
 }
 
 
@@ -249,7 +253,6 @@ Funcionarios* ColetarDadosFuncionario(void) {
     lerTelefone(funcionarios->telefone, 15);
     lerSalario(funcionarios->salario);
     lerCargo(funcionarios->cargo, 30);
-    lerSetor(funcionarios->setor, 30);
     funcionarios->status = True;
     return funcionarios;
 
@@ -302,7 +305,6 @@ void ExibirFuncionario(Funcionarios* funcionario) {
     printf("  Telefone: %s\n", funcionario->telefone);
     printf("  Salário: %s\n", funcionario->salario);
     printf("  Cargo: %s\n", funcionario->cargo);
-    printf("  Setor: %s\n", funcionario->setor);
     printf("\n==============================================================================\n");
 }
 void deletarFuncionarioPermanentemente(void){
@@ -376,8 +378,7 @@ int escolherDadoFunc(void) {
         printf("\n  7 - Telefone");
         printf("\n  8 - Salário");
         printf("\n  9 - Cargo");
-        printf("\n  10 - Setor");
-        printf("\n  11 - Cancelar\n");
+        printf("\n  10 - Cancelar\n");
 
         printf("\n  Digite sua opção: ");
 
@@ -385,11 +386,11 @@ int escolherDadoFunc(void) {
 
         limparBuffer();
 
-        if (leituraValida != 1 || opcao < 1 || opcao > 11) {
-            printf("\n   Opção inválida! Digite um número de 1 a 11.\n");
+        if (leituraValida != 1 || opcao < 1 || opcao > 10) {
+            printf("\n   Opção inválida! Digite um número de 1 a 10.\n");
         }
 
-    } while (leituraValida != 1 || opcao < 1 || opcao > 11);
+    } while (leituraValida != 1 || opcao < 1 || opcao > 10);
 
     return opcao;
 }
@@ -405,7 +406,6 @@ void alterarDadoFunc(int opcao, Funcionarios* funcionario, FILE* arqFuncionarios
     char novoTelefone[15];
     char novoSalario[20];
     char novoCargo[30];
-    char novoSetor[30];
     int retorno;
 
     switch (opcao) {
@@ -509,16 +509,8 @@ void alterarDadoFunc(int opcao, Funcionarios* funcionario, FILE* arqFuncionarios
 
             break;
         case 10:
-            
-            lerSetor(novoSetor, 30);
-
-            retorno = confirmarAlteracao();
-
-            if (retorno) {
-                strcpy(funcionario->setor, novoSetor);
-            }
-
-            break;
+            printf("\n  Voltando para menu...\n");
+            return;
         default:
             printf("Opcao Inválida!\n");
             break;

@@ -30,7 +30,7 @@ void menuVendasIngressos(void) {
     printf("||                                                                          ||\n");
     printf("==============================================================================\n");
     printf("||                                                                          ||\n");
-    printf("||             1. Cadastrar Venda de Ingresso                               ||\n");
+    printf("||             1. Comprar Ingresso                                          ||\n");
     printf("||             2. Consultar Venda de Ingresso                               ||\n");
     printf("||             3. Reembolsar Venda de Ingresso                              ||\n");
     printf("||             0. Voltar Menu Principal                                     ||\n");
@@ -56,7 +56,7 @@ void telaCadastroVendaIngresso(void) {
     
     ingresso = ColetarDadosIngressos();
 
-    if (ingresso != '\0') {
+    if (ingresso != NULL) {
 
         ExibirIngresso(ingresso);
 
@@ -243,6 +243,7 @@ Ingressos* ColetarDadosIngressos(void) {
     int quantidadeIngressosValidado = 0;
     int quantidadeSolicitada = 0;
     float precoDoIngresso = 0;
+
     Ingressos* ingresso;
     ingresso = (Ingressos*)malloc(sizeof(Ingressos));
     FILE* arqAgendamentos;
@@ -251,7 +252,7 @@ Ingressos* ColetarDadosIngressos(void) {
 
     lerCPF(ingresso->cpfCliente, 20);
 
-    printf("\nAgendamentos Ativos\n");
+    printf("\n   <------------------------ Lista de Espetáculos ----------------------->\n");
     ExibirTodosAgendamentos();
 
     ingresso->idEspetaculo = lerIdEspetaculo();
@@ -268,13 +269,13 @@ Ingressos* ColetarDadosIngressos(void) {
     }
     if (agendamento->quantIngressosVend >= agendamento->capacidade) {
         printf("Espetaculo Cheio!");
-        return '\0';
+        return NULL;
     } else {
         if (encontrado) {
             while (!quantidadeIngressosValidado) {
                 precoDoIngresso = agendamento->precoIngresso;
-                printf("Preco do Ingresso: %.2f\n", precoDoIngresso);
-                printf("Quantidade de ingressos que deseja comprar: ");
+                printf("\n  Preco do Ingresso: %.2f\n", precoDoIngresso);
+                printf("\n  Quantidade de ingressos que deseja comprar: ");
                 scanf(" %d", &quantidadeSolicitada);
                 getchar();
                 if (validarQuantidadeIngressos(agendamento, quantidadeSolicitada) && quantidadeSolicitada > 0) {
@@ -288,7 +289,7 @@ Ingressos* ColetarDadosIngressos(void) {
                 }
             }
             ingresso->valorTotal = precoDoIngresso * ingresso->quantidadeIngressos;
-            printf("\nValor Total: %.2f", ingresso->valorTotal);
+            printf("\n  Valor Total: %.2f\n", ingresso->valorTotal);
             lerFormaDePagamento(ingresso->formaPag);
         } else {
             printf("Espetáculo nao localizado.");
@@ -302,12 +303,12 @@ Ingressos* ColetarDadosIngressos(void) {
 
 void ExibirIngresso(Ingressos* ingresso) {
     printf("\n==============================================================================\n");
-    printf("\nDados do Ingresso: \n");
-    printf("\nCPF do Cliente: %s\n", ingresso->cpfCliente);
-    printf("\nQuantidade de Ingressos: %d\n", ingresso->quantidadeIngressos);
-    printf("\nID do Espetáculo: %d\n", ingresso->idEspetaculo);
-    printf("\nID do Ingresso: %d\n", ingresso->id);
-    printf("\nValor Total: %f\n", ingresso->valorTotal);
+    printf("\n  Dados do Ingresso \n");
+    printf("\n  CPF do Cliente: %s\n", ingresso->cpfCliente);
+    printf("\n  Quantidade de Ingressos: %d\n", ingresso->quantidadeIngressos);
+    printf("\n  ID do Espetáculo: %d\n", ingresso->idEspetaculo);
+    printf("\n  ID do Ingresso: %d\n", ingresso->id);
+    printf("\n  Valor Total: %.2f\n", ingresso->valorTotal);
     printf("\n==============================================================================\n");
 }
 
@@ -331,32 +332,37 @@ int IngressoMaiorID(void) {
 }
 
 void ConfirmarCadastroIngresso(Ingressos* ingresso) {
-    int opcao;
+    char opcao;
     FILE* arqIngressos;
 
-    printf("\nConfirmar cadastro (1)\nRecusar Cadastro(0)\n ");
-    scanf( "%d", &opcao);
+    printf("\n   <-------------  Digite 1 para confirmar cadastro --------------------->\n");
+    printf("   <-------------  Digite 2 para cancelar cadastro  --------------------->\n");
+    printf("\n  Opção: ");
+    scanf("%c",&opcao);
     getchar();
 
-    switch (opcao) {
-        case 0:
-            printf("Cadastro Cancelado!");
-            free(ingresso);
-            break;
-        case 1:
-            arqIngressos = fopen("Ingressos/ingressos.dat", "ab");
+    if(opcao == '1'){
+        arqIngressos = fopen("Ingressos/ingressos.dat","ab");
 
-            if (arqIngressos == NULL) {
-                printf("\n\nERROR!\n\n");
-                exit(1);
-            }
+        if (arqIngressos == NULL){
+            printf("Erro na criacao do arquivo!\n");
+            exit(1);
+        }
 
-            SalvarIngresso(arqIngressos, ingresso);
-            free(ingresso);
-            fclose(arqIngressos);
-            printf("Cadastro Concluído!");
-            break;
-        
+        fwrite(ingresso, sizeof(Ingressos), 1, arqIngressos);
+        fclose(arqIngressos);
+        free(ingresso);
+
+        printf("\n==============================================================================\n");
+        printf("||                             Cadastro concluído                           ||\n");
+        printf("==============================================================================\n");
+    }else if(opcao == '2'){
+        printf("\n==============================================================================\n");
+        printf("||                             Cadastro cancelado                           ||\n");
+        printf("==============================================================================\n");
+        free(ingresso);
+    }else{
+        printf("\n  Opção inválida\n");
     }
 
 }
