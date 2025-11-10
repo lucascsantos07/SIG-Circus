@@ -15,6 +15,9 @@
 #include "./Informacoes/informacoes.h"
 #include "./Ingressos/ingressos.h"
 #include "./Interfaces/interface.h"
+#include "./Relatorios/relatorio.h"
+
+
 
 //Programa Principal
 int main(void){
@@ -42,7 +45,9 @@ int main(void){
             exibirModuloVendasIngressos();
 
         } else if (opcao == '5') {
-            printf("\nO módulo Relatórios está em desenvolvimento...\n");
+
+            exibirModuloRelatorios();
+            
         } else if (opcao == '6') {
             telaSobre();
         } else if (opcao == '7') {
