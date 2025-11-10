@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "../Agendamentos/agendamentos.h"
+#include "../Clientes/clientes.h"
 #include "../Utilitarios/utilitarios.h"
 #include "relatorio.h"
 
@@ -25,6 +26,15 @@ void exibirModuloRelatorios(void){
                 break;
             case '3':
                 relatorioAgendamentosInativos();
+                break;
+            case '4':
+                relatorioClientes();
+                break;
+            case '5':
+                relatorioClientesAtivos();
+                break;
+            case '6':
+                relatorioClientesInativos();
                 break;
             case '0':
                 printf("\nVoltando ao menu principal...\n");
@@ -63,6 +73,9 @@ void menuRelatorios(void){
     printf("||             1. Relatório de Todos os Agendamentos                        ||\n");
     printf("||             2. Relatório de Agendamentos Ativos                          ||\n");
     printf("||             3. Relatório de Agendamentos Inativos                        ||\n");
+    printf("||             4. Relatório de Todos os Clientes                            ||\n");
+    printf("||             5. Relatório de Clientes Ativos                              ||\n");
+    printf("||             6. Relatório de Clientes Inativos                            ||\n");
     printf("||             0. Voltar Menu Principal                                     ||\n");
     printf("||                                                                          ||\n");
     printf("==============================================================================\n");
@@ -174,6 +187,111 @@ void relatorioAgendamentosInativos(void){
 
     if (contador == 0){
         printf("\n  Nenhum agendamento inativo encontrado.\n");
+    }
+
+    fclose(arq);
+}
+
+void relatorioClientes(void){
+    limparTela();
+
+    FILE *arq;
+    Cliente cli;
+    int contador = 0;
+
+    printf("\n==============================================================================\n");
+    printf("||                       ~ ~ ~ Relatório de Clientes ~ ~ ~                  ||\n");
+    printf("==============================================================================\n");
+
+    arq = fopen("Clientes/clientes.dat", "rb");
+    if (arq == NULL){
+        printf("\n  Nenhum cliente encontrado!\n");
+        return;
+    }
+
+    printf("\nCPF           | Nome                           | Data de Nasc.   | Email          | Status\n");
+    printf("--------------------------------------------------------------------------------------------\n");
+
+    while (fread(&cli, sizeof(Cliente), 1, arq) == 1) {
+        printf("%-13s | %-30s | %-11s | %-25s | %s\n",
+            cli.cpf, cli.nome, cli.dataNascimento, cli.email,
+            cli.status ? "Ativo" : "Inativo");
+        contador++;
+    }
+
+    if (contador == 0){
+        printf("\n  Nenhum cliente cadastrado.\n");
+    }
+
+    fclose(arq);
+}
+
+void relatorioClientesAtivos(void){
+    limparTela();
+
+    FILE *arq;
+    Cliente cli;
+    int contador = 0;
+
+    printf("\n==============================================================================\n");
+    printf("||                   ~ ~ ~ Relatório de Clientes Ativos ~ ~ ~               ||\n");
+    printf("==============================================================================\n");
+
+    arq = fopen("Clientes/clientes.dat", "rb");
+    if (arq == NULL){
+        printf("\n  Nenhum cliente encontrado!\n");
+        return;
+    }
+
+    printf("\nCPF           | Nome                           | Data de Nasc.   | Email\n");
+    printf("-----------------------------------------------------------------------------\n");
+
+    while(fread(&cli, sizeof(Cliente), 1, arq) == 1){
+        if(cli.status){
+            printf("%-13s | %-30s | %-11s | %-30s\n",
+                cli.cpf, cli.nome, cli.dataNascimento, cli.email);
+            contador++;
+        }
+    }
+
+    if (contador == 0){
+        printf("\n  Nenhum cliente ativo encontrado.\n");
+    }
+
+    fclose(arq);
+}
+
+
+void relatorioClientesInativos(void){
+    limparTela();
+
+    FILE *arq;
+    Cliente cli;
+    int contador = 0;
+
+    printf("\n==============================================================================\n");
+    printf("||                  ~ ~ ~ Relatório de Clientes Inativos ~ ~ ~              ||\n");
+    printf("==============================================================================\n");
+
+    arq = fopen("Clientes/clientes.dat", "rb");
+    if (arq == NULL){
+        printf("\n  Nenhum cliente encontrado!\n");
+        return;
+    }
+
+    printf("\nCPF           | Nome                           | Data de Nasc.   | Email\n");
+    printf("-----------------------------------------------------------------------------\n");
+
+    while(fread(&cli, sizeof(Cliente), 1, arq) == 1){
+        if(!cli.status){
+            printf("%-13s | %-30s | %-11s | %-30s\n",
+                cli.cpf, cli.nome, cli.dataNascimento, cli.email);
+            contador++;
+        }
+    }
+
+    if (contador == 0){
+        printf("\n  Nenhum cliente inativo encontrado.\n");
     }
 
     fclose(arq);
