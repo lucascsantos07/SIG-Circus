@@ -9,5 +9,7 @@ void relatorioAgendamentosInativos(void);
 void relatorioClientes(void);
 void relatorioClientesAtivos(void);
 void relatorioClientesInativos(void);
+void relatorioFuncionarios(int status);
+void relatorioIngressos(int status);
 
 #endif

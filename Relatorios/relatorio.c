@@ -5,38 +5,58 @@
 #include "../Clientes/clientes.h"
 #include "../Utilitarios/utilitarios.h"
 #include "relatorio.h"
+#include "../Funcionarios/funcionarios.h"
+#include "../Ingressos/ingressos.h"
 
 #define True 1
 #define False 0
 
 void exibirModuloRelatorios(void){
-    char opcaoRelatorio;
+    int opcaoRelatorio;
 
     do {
         menuRelatorios();
-        scanf(" %c", &opcaoRelatorio);
+        scanf(" %d", &opcaoRelatorio);
         getchar();
 
         switch (opcaoRelatorio){
-            case '1':
+            case 1:
                 relatorioAgendamentos();
                 break;
-            case '2':
+            case 2:
                 relatorioAgendamentosAtivos();
                 break;
-            case '3':
+            case 3:
                 relatorioAgendamentosInativos();
                 break;
-            case '4':
+            case 4:
                 relatorioClientes();
                 break;
-            case '5':
+            case 5:
                 relatorioClientesAtivos();
                 break;
-            case '6':
+            case 6:
                 relatorioClientesInativos();
                 break;
-            case '0':
+            case 7:
+                relatorioFuncionarios(2);
+                break;
+            case 8:
+                relatorioFuncionarios(1);
+                break;
+            case 9:
+                relatorioFuncionarios(0);
+                break;
+            case 10:
+                relatorioIngressos(2);
+                break;
+            case 11:
+                relatorioIngressos(1);
+                break;
+            case 12:
+                relatorioIngressos(0);
+                break;
+            case 0:
                 printf("\nVoltando ao menu principal...\n");
                 break;
             default:
@@ -44,12 +64,12 @@ void exibirModuloRelatorios(void){
                 break;
         }
 
-        if (opcaoRelatorio != '0') {
+        if (opcaoRelatorio != 0) {
             printf("\nPressione ENTER para continuar...");
             getchar();
         }
 
-    } while (opcaoRelatorio != '0');
+    } while (opcaoRelatorio != 0);
 }
 
 void menuRelatorios(void){
@@ -76,6 +96,12 @@ void menuRelatorios(void){
     printf("||             4. Relatório de Todos os Clientes                            ||\n");
     printf("||             5. Relatório de Clientes Ativos                              ||\n");
     printf("||             6. Relatório de Clientes Inativos                            ||\n");
+    printf("||             7. Relatório de Todos os Funcionários                        ||\n");
+    printf("||             8. Relatório de Funcionarios Ativos                          ||\n");
+    printf("||             9. Relatório de Funcionários Inativos                        ||\n");
+    printf("||             10. Relatório de Todos os Ingressos                          ||\n");
+    printf("||             11. Relatório de Ingressos Ativos                            ||\n");
+    printf("||             12. Relatório de Ingressos Inativos                          ||\n");  
     printf("||             0. Voltar Menu Principal                                     ||\n");
     printf("||                                                                          ||\n");
     printf("==============================================================================\n");
@@ -295,4 +321,58 @@ void relatorioClientesInativos(void){
     }
 
     fclose(arq);
+}
+
+void relatorioFuncionarios(int status) {
+    Funcionarios* funcionario;
+    FILE* arqFuncionarios;
+
+    funcionario = (Funcionarios*)malloc(sizeof(Funcionarios));
+
+    arqFuncionarios = fopen("Funcionarios/funcionarios.dat", "rb");
+
+    printf("CPF | Nome | Email | Data de Nascimento | Sexo | Endereço | Telefone | Salário | Cargo | Status\n");
+    printf("-----------------------------------------------------------------------------------------------");
+
+    if (status == 2) {
+        while (fread(funcionario, sizeof(Funcionarios), 1, arqFuncionarios)) {
+        printf("\n%s | %s | %s | %s | %s | %s | %s | %s | %s | %s", funcionario->cpf, funcionario->nome, funcionario->email, funcionario->dataNascimento,  funcionario->sexo, funcionario->endereco, funcionario->telefone, funcionario->salario, funcionario->cargo, funcionario->status ? "Ativo" : "Inativo");
+        }
+    } else if (status == 0 || status == 1) {
+        while (fread(funcionario, sizeof(Funcionarios), 1, arqFuncionarios)) {
+            if (funcionario->status == status) {
+            printf("\n%s | %s | %s | %s | %s | %s | %s | %s | %s | %s", funcionario->cpf, funcionario->nome, funcionario->email, funcionario->dataNascimento,  funcionario->sexo, funcionario->endereco, funcionario->telefone, funcionario->salario, funcionario->cargo, funcionario->status ? "Ativo" : "Inativo");
+            }
+        }
+    }
+
+
+    fclose(arqFuncionarios);
+    free(funcionario);
+}
+
+relatorioIngressos(int status) {
+    Ingressos* ingresso;
+    FILE* arqIngresso;
+
+    ingresso = (Ingressos*)malloc(sizeof(Ingressos));
+
+    arqIngresso = fopen("Ingressos/ingressos.dat", "rb");
+
+    printf("ID | CPF do cliente | Quantidade de Ingressos | ID do espetáculo | Status\n");
+    printf("-----------------------------------------------------------------------------------------------");
+
+    if (status == 2) {
+        while (fread(ingresso, sizeof(Ingressos), 1, arqIngresso)) {
+        printf("\n%d | %s | %d | %d | %s ", ingresso->id, ingresso->cpfCliente, ingresso->quantidadeIngressos, ingresso->idEspetaculo, ingresso->status ? "Ativo" : "Inativo");
+        }
+    } else if (status == 0 || status == 1) {
+        while (fread(ingresso, sizeof(Ingressos), 1, arqIngresso)) {
+            if (ingresso->status == status) {
+                printf("\n%d | %s | %d | %d | %s ", ingresso->id, ingresso->cpfCliente, ingresso->quantidadeIngressos, ingresso->idEspetaculo, ingresso->status ? "Ativo" : "Inativo");            }
+        }
+    }
+
+    fclose(arqIngresso);
+    free(ingresso);
 }
