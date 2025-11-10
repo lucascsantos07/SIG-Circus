@@ -163,7 +163,7 @@ void relatorioAgendamentosInativos(void){
     printf("-------------------------------------------------------------------------------------------------------------\n");
 
     while(fread(&ag, sizeof(Agendamento), 1, arq) == 1){
-        if(ag.status){
+        if(!ag.status){
             printf("%-3d | %-10s | %-5s | %-20s | %-10d | %-7.2f | %-18d | %-15s\n",
                    ag.id, ag.data, ag.horario, ag.cidade,
                    ag.capacidade, ag.precoIngresso,
