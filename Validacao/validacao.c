@@ -5,28 +5,20 @@
 #include "validacao.h"
 #include "../Agendamentos/agendamentos.h"
 #include "../Ingressos/ingressos.h"
+#include "../Utilitarios/utilitarios.h"
 
 #define True 1
 #define False 0
 
-int validarNome(char nome[]){
-    int valido = False;
-
-    for (int i = 0; nome[i] != '\0'; i++){
-
-        if (!isalpha(nome[i]) && nome[i] != ' ' && nome[i] != '\n'){
-            return False;
+int validarNome(char nome[]) {
+    for (int i = 0; nome[i] != '\0'; i++) {
+        if (isdigit((unsigned char)nome[i]) || ispunct((unsigned char)nome[i])) {
+            return 0; // falso
         }
-
-        if (isalpha(nome[i])){
-            valido = True;
-        }
-
     }
-
-    return valido;
-
+    return 1; // verdadeiro
 }
+
 
 void lerNome(char nome[], int tamanho){
 
@@ -418,15 +410,22 @@ void lerTelefone(char telefone[], int tamanho) {
 }
 
 void lerSalario(char salario[]) {
-    int valido;
-    printf("\n   Digite seu salário: ");
-    scanf(" %s", salario);
-    getchar();
-    valido = verificarLetraEmString(salario);
-    if (!valido) {
-        printf("Salário inválido. Por favor, insira um salário válido.\n");
-    }
+    int valido = 0;
+
+    do {
+        printf("\n   Digite seu salário: ");
+        scanf(" %s", salario);
+        getchar();
+
+        valido = verificarLetraEmString(salario);
+
+        if (!valido) {
+            printf("Salário inválido. Por favor, insira um valor numérico válido.\n");
+        }
+
+    } while (!valido);
 }
+
 
 int validarSexo(char sexo[]) {
 
@@ -445,7 +444,7 @@ void lerSexo(char sexo[], int tamanho) {
     int valido;
     valido = 0;
     while (!valido) {
-        printf("\n   Digite seu sexo: ");
+        printf("\n   Digite seu sexo(M/F): ");
         fgets(sexo, tamanho, stdin);
         sexo[strcspn(sexo, "\n")] = 0;
         valido = validarSexo(sexo);
@@ -486,12 +485,12 @@ void lerFormaDePagamento(int pagamento) {
     int valido;
     valido = 0;
     while (!valido) {
-        printf("\nForma de pagamento: \n1 - PIX\n2 - Dinheiro\n");
+        printf("\n  Forma de pagamento: \n  1 - PIX\n  2 - Dinheiro\n  >> ");
         scanf(" %d", &pagamento);
         getchar();
         valido = validarFormaDePagamento(pagamento);
         if (!valido) {
-            printf("Forma de Pagamento Inválida.\n");
+            printf("\n  Forma de Pagamento Inválida.\n");
         }
     }
     
@@ -513,9 +512,10 @@ int lerIdEspetaculo(){
     }
 
     while (!valido) {
-        printf("\nSelecione o ID do espetáculo: ");
+        printf("\n  Selecione o ID do espetáculo: ");
         scanf(" %d", &idEspetaculo);
-        getchar();
+
+        limparBuffer();
 
         rewind(arqAgendamentos); 
 
@@ -527,7 +527,7 @@ int lerIdEspetaculo(){
         }
 
         if (!valido) {
-            printf("ID inválido. Tente novamente.\n");
+            printf("\n  ID inválido. Tente novamente.\n");
         }
     }
     fclose(arqAgendamentos);
