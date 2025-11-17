@@ -70,6 +70,9 @@ void exibirRelatoriosAgendamentos(void){
             case 3:
                 relatorioClientes(0);
                 break;
+            case 4:
+                filtrarAgendamentosPorCidade();
+                break;
             case 0:
                 printf("\nVoltando ao menu de relatórios...\n");
                 break;
@@ -237,6 +240,7 @@ void menuRelatoriosAgendamentos(void){
     printf("||             1. Relatório de Todos os Agendamentos                        ||\n");
     printf("||             2. Relatório dos Agendamentos Ativos                         ||\n");
     printf("||             3. Relatório dos Agendamentos Inativos                       ||\n");
+    printf("||             4. Filtro de Relatório de Agendamentos por Cidades           ||\n");
     printf("||             0. Voltar ao menu de Relatórios                              ||\n");
     printf("||                                                                          ||\n");
     printf("==============================================================================\n");
@@ -471,5 +475,69 @@ relatorioIngressos(int status) {
 
     fclose(arqIngresso);
     free(ingresso);
+}
+
+int buscarAgendamentosPorCidade(const char* cidadeBuscada) {
+    limparTela();
+    
+    FILE* arqAgendamentos;
+
+    arqAgendamentos = fopen("Agendamentos/agendamento.dat","rb");
+
+    if (arqAgendamentos == NULL) {
+        printf("\nErro ao abrir o arquivo de agendamentos!\n");
+        return 0;
+    }
+
+    Agendamento* ag;
+    ag = (Agendamento*)malloc(sizeof(Agendamento));
+    int encontrados = 0;
+
+    printf("\n====================================================================================\n");
+    printf("||             ~ ~ ~ Relatório de Agendamentos Filtrados Por Cidades ~ ~ ~        ||\n");
+    printf("====================================================================================\n");
+
+    printf("\nID  | Data       | Hora  | Cidade               | Capacidade | Preço   | Ingressos Vendidos | CPF Responsável | Status\n");
+    printf("---------------------------------------------------------------------------------------------------------------------------\n");
+
+    while (fread(ag, sizeof(Agendamento), 1, arqAgendamentos)) {
+        if (strcasecmp(ag->cidade, cidadeBuscada) == 0) {
+            encontrados++;
+            printf("%d | %s | %s | %s | %d | %-7.2f | %d | %s | %s\n",
+                ag->id, ag->data, ag->horario, ag->cidade,
+                ag->capacidade, ag->precoIngresso,
+                ag->quantIngressosVend, ag->cpfResponsavel,
+                ag->status ? "Ativo" : "Cancelado");
+        }
+    }
+
+    return encontrados;
+}
+
+void filtrarAgendamentosPorCidade(void) {
+    limparTela();
+
+    FILE* arqAgendamentos = fopen("Agendamentos/agendamento.dat", "rb");
+    if (arqAgendamentos == NULL) {
+        printf("\nNenhum agendamento encontrado!\n");
+        return;
+    }
+
+    printf("\n======================================================================\n");
+    printf("||                     ~ ~ ~ Filtro de Cidades ~ ~ ~                ||\n");
+    printf("======================================================================\n");
+
+    char cidadeBuscada[50];
+    printf("\nDigite a cidade para filtrar: ");
+    fgets(cidadeBuscada, 50, stdin);
+    cidadeBuscada[strcspn(cidadeBuscada, "\n")] = '\0';
+
+    int encontrados = buscarAgendamentosPorCidade(cidadeBuscada);
+
+    if (encontrados == 0) {
+        printf("\nNenhum agendamento encontrado para a cidade \"%s\".\n", cidadeBuscada);
+    }
+
+    fclose(arqAgendamentos);
 }
 

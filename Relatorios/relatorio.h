@@ -15,5 +15,7 @@ void relatorioAgendamentos(int status);
 void relatorioClientes(int status);
 void relatorioFuncionarios(int status);
 void relatorioIngressos(int status);
+int buscarAgendamentosPorCidade(const char* cidadeBuscada);
+void filtrarAgendamentosPorCidade(void);
 
 #endif
