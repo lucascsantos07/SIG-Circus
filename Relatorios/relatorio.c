@@ -144,6 +144,9 @@ void exibirRelatoriosFuncionarios(void){
             case 3:
                 relatorioFuncionarios(0);
                 break;
+            case 4:
+                filtrarFuncionariosPorNome();
+                break;
             case 0:
                 printf("\nVoltando ao menu de relatórios...\n");
                 break;
@@ -603,4 +606,34 @@ void filtrarClientesPorNome(void) {
     }
 
     fclose(arqCliente);
+}
+
+int buscarFuncionariosPorNome(const char *nomeBuscado) {
+    limparTela();
+
+    FILE* arqFuncionarios;
+
+    Funcionarios* func;
+    func = (Funcionarios*)malloc(sizeof(Funcionarios));
+
+    int encontrados = 0;
+    
+    printf("\n============================================================================================\n");
+    printf("||                              ~ ~ ~ Relatório de Funcionários ~ ~ ~                     ||\n");
+    printf("============================================================================================\n");
+    printf("\nCPF           | Nome                           | Data de Nasc.   | Email          | Status\n");
+    printf("--------------------------------------------------------------------------------------------\n");
+
+    while (fread(func, sizeof(Funcionarios), 1, arqFuncionarios)) {
+        if (strcasestr(func->nome, nomeBuscado) != NULL) {
+            encontrados++;
+            printf("%s | %s | %s | %s | %s | %s | %s | %s | %s | %s \n", func->nome, func->dataNascimento, func->email, func->cpf, func->sexo, func->endereco, func->telefone, func->salario, func->cargo, func->status ? "Ativo" : "Inativo");
+        }
+    }
+
+    fclose(arqFuncionarios);
+    free(func);
+
+    return encontrados;
+
 }
