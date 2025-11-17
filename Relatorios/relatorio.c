@@ -68,7 +68,7 @@ void exibirRelatoriosAgendamentos(void){
                 relatorioAgendamentos(1);
                 break;
             case 3:
-                relatorioClientes(0);
+                relatorioAgendamentos(0);
                 break;
             case 4:
                 filtrarAgendamentosPorCidade();
@@ -354,7 +354,7 @@ void relatorioAgendamentos(int status){
 
     if (status == 2){
         while(fread(ag, sizeof(Agendamento), 1, arqAgendamentos)){
-            printf("%d | %s | %s | %s | %d | %f | %d | %s | %s\n",
+            printf("%d | %s | %s | %s | %d | %.2f | %d | %s | %s\n",
                 ag->id, ag->data, ag->horario, ag->cidade,
                 ag->capacidade, ag->precoIngresso,
                 ag->quantIngressosVend, ag->cpfResponsavel,
@@ -365,7 +365,7 @@ void relatorioAgendamentos(int status){
     else if (status == 0 || status == 1){
         while (fread(ag, sizeof(Agendamento), 1, arqAgendamentos)) {
             if (ag->status == status) {
-                printf("%d | %s | %s | %s | %d | %f | %d | %s | %s\n",
+                printf("%d | %s | %s | %s | %d | %.2f | %d | %s | %s\n",
                     ag->id, ag->data, ag->horario, ag->cidade,
                     ag->capacidade, ag->precoIngresso,
                     ag->quantIngressosVend, ag->cpfResponsavel,
@@ -497,17 +497,17 @@ int buscarAgendamentosPorCidade(const char* cidadeBuscada) {
     ag = (Agendamento*)malloc(sizeof(Agendamento));
     int encontrados = 0;
 
-    printf("\n====================================================================================\n");
-    printf("||             ~ ~ ~ Relatório de Agendamentos Filtrados Por Cidades ~ ~ ~        ||\n");
-    printf("====================================================================================\n");
+    printf("\n========================================================================================================================\n");
+    printf("||                               ~ ~ ~ Relatório de Agendamentos Filtrados Por Cidades ~ ~ ~                          ||\n");
+    printf("========================================================================================================================\n");
 
-    printf("\nID  | Data       | Hora  | Cidade               | Capacidade | Preço   | Ingressos Vendidos | CPF Responsável | Status\n");
-    printf("---------------------------------------------------------------------------------------------------------------------------\n");
+    printf("\nID  |    Data    | Hora  |        Cidade        | Capacidade |  Preço  | Ingressos Vendidos | CPF Responsável | Status\n");
+    printf("------------------------------------------------------------------------------------------------------------------------\n");
 
     while (fread(ag, sizeof(Agendamento), 1, arqAgendamentos)) {
         if (strcasecmp(ag->cidade, cidadeBuscada) == 0) {
             encontrados++;
-            printf("%d | %s | %s | %s | %d | %f | %d | %s | %s\n",
+            printf("%d | %s | %s | %s | %d | %.2f | %d | %s | %s\n",
                 ag->id, ag->data, ag->horario, ag->cidade,
                 ag->capacidade, ag->precoIngresso,
                 ag->quantIngressosVend, ag->cpfResponsavel,
@@ -546,6 +546,8 @@ void filtrarAgendamentosPorCidade(void) {
 }
 
 int buscarClientesPorNome(const char* nomeBuscado) {
+    limparTela();
+
     FILE* arqCliente;
     arqCliente = fopen("Clientes/clientes.dat","rb");
     if (arqCliente == NULL){
@@ -557,6 +559,12 @@ int buscarClientesPorNome(const char* nomeBuscado) {
     cli = (Cliente*)malloc(sizeof(Cliente));
 
     int encontrados = 0;
+
+    printf("\n============================================================================================\n");
+    printf("||                              ~ ~ ~ Relatório de Clientes ~ ~ ~                         ||\n");
+    printf("============================================================================================\n");
+    printf("\nCPF           | Nome                           | Data de Nasc.   | Email          | Status\n");
+    printf("--------------------------------------------------------------------------------------------\n");
 
     while (fread(cli, sizeof(Cliente), 1, arqCliente)) {
         if (strcasestr(cli->nome, nomeBuscado) != NULL) {
@@ -578,6 +586,10 @@ void filtrarClientesPorNome(void) {
         printf("\nNenhum cliente encontrado!\n");
         return;
     }
+
+    printf("\n======================================================================\n");
+    printf("||                      ~ ~ ~ Filtro de Nomes ~ ~ ~                 ||\n");
+    printf("======================================================================\n");
 
     char nomeBuscado[50];
     printf("\nDigite parte do nome para buscar: ");
