@@ -2,10 +2,10 @@
 #define RELATORIO_H
 
 void exibirModuloRelatorios(void);
+void exibirRelatoriosAgendamentos(void);
 void menuRelatorios(void);
-void relatorioAgendamentos(void);
-void relatorioAgendamentosAtivos(void);
-void relatorioAgendamentosInativos(void);
+void menuRelatoriosAgendamentos(void);
+void relatorioAgendamentos(int status);
 void relatorioClientes(void);
 void relatorioClientesAtivos(void);
 void relatorioClientesInativos(void);

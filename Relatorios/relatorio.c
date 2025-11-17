@@ -21,7 +21,8 @@ void exibirModuloRelatorios(void){
 
         switch (opcaoRelatorio){
             case 1:
-                relatorioAgendamentos();
+                menuRelatoriosAgendamentos();
+                exibirRelatoriosAgendamentos();
                 break;
             case 2:
                 relatorioAgendamentosAtivos();
@@ -72,6 +73,40 @@ void exibirModuloRelatorios(void){
     } while (opcaoRelatorio != 0);
 }
 
+void exibirRelatoriosAgendamentos(void){
+    int opcaoRelatorio;
+
+    do {
+        menuRelatoriosAgendamentos();
+        scanf(" %d", &opcaoRelatorio);
+        getchar();
+
+        switch (opcaoRelatorio){
+            case 1:
+                relatorioAgendamentos(2);
+                break;
+            case 2:
+                relatorioAgendamentos(1);
+                break;
+            case 3:
+                relatorioAgendamentos(0);
+                break;
+            case 0:
+                printf("\nVoltando ao menu de relatórios...\n");
+                break;
+            default:
+                printf("\nOpção inválida! Tente novamente.\n");
+                break;
+        }
+
+        if (opcaoRelatorio != 0) {
+            printf("\nPressione ENTER para continuar...");
+            getchar();
+        }
+
+    } while (opcaoRelatorio != 0);
+}
+
 void menuRelatorios(void){
     limparTela();
     printf("\n");
@@ -90,132 +125,86 @@ void menuRelatorios(void){
     printf("||                                                                          ||\n");
     printf("||                              -- Relatórios --                            ||\n");
     printf("||                                                                          ||\n");
-    printf("||             1. Relatório de Todos os Agendamentos                        ||\n");
-    printf("||             2. Relatório de Agendamentos Ativos                          ||\n");
-    printf("||             3. Relatório de Agendamentos Inativos                        ||\n");
-    printf("||             4. Relatório de Todos os Clientes                            ||\n");
-    printf("||             5. Relatório de Clientes Ativos                              ||\n");
-    printf("||             6. Relatório de Clientes Inativos                            ||\n");
-    printf("||             7. Relatório de Todos os Funcionários                        ||\n");
-    printf("||             8. Relatório de Funcionarios Ativos                          ||\n");
-    printf("||             9. Relatório de Funcionários Inativos                        ||\n");
-    printf("||             10. Relatório de Todos os Ingressos                          ||\n");
-    printf("||             11. Relatório de Ingressos Ativos                            ||\n");
-    printf("||             12. Relatório de Ingressos Inativos                          ||\n");  
+    printf("||             1. Todos os Relatório de Agendamentos                        ||\n");
+    printf("||             2. Todos os Relatório de Clientes                            ||\n");
+    printf("||             3. Todos os Relatório de Funcionários                        ||\n");
+    printf("||             4. Todos os Relatório de Ingressos                           ||\n"); 
     printf("||             0. Voltar Menu Principal                                     ||\n");
     printf("||                                                                          ||\n");
     printf("==============================================================================\n");
     printf("\nDigite sua opção: ");
 }
 
-void relatorioAgendamentos(void){
+void menuRelatoriosAgendamentos(void){
+    limparTela();
+    printf("\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||             Universidade Federal do Rio Grande do Norte                  ||\n");
+    printf("||                 Centro de Ensino Superior do Seridó                      ||\n");
+    printf("||               Departamento de Computação e Tecnologia                    ||\n");
+    printf("||                  Disciplina DCT1106 -- Programação                       ||\n");
+    printf("||                         Projeto SIG-Circus                               ||\n");
+    printf("||             Developed by @j.samuel007 -- since Nov, 2025                 ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||               ~ ~ ~ Sistema de Gestão Para Um Circo ~ ~ ~                ||\n");
+    printf("||                                                                          ||\n");
+    printf("||                       -- Relatórios Agendamentos--                       ||\n");
+    printf("||                                                                          ||\n");
+    printf("||             1. Relatório de Todos os Agendamentos                        ||\n");
+    printf("||             2. Relatório dos Agendamentos Ativos                         ||\n");
+    printf("||             3. Relatório dos Agendamentos Inativos                       ||\n");
+    printf("||             0. Voltar ao menu de Relatórios                              ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("\nDigite sua opção: ");
+}
+
+void relatorioAgendamentos(int status){
     limparTela();
 
-    FILE *arq;
-    Agendamento ag;
-    int contador = 0;
+    FILE *arqAgendamentos;
+    Agendamento* ag;
+    ag = (Agendamento*)malloc(sizeof(Agendamento));
+
+    arqAgendamentos = fopen("Agendamentos/agendamento.dat", "rb");
+    if (arqAgendamentos == NULL){
+        printf("\n  Nenhum agendamento encontrado!\n");
+        return;
+    }
 
     printf("\n==============================================================================\n");
     printf("||                     ~ ~ ~ Relatório de Agendamentos ~ ~ ~                ||\n");
     printf("==============================================================================\n");
 
-    arq = fopen("Agendamentos/agendamento.dat", "rb");
-    if (arq == NULL){
-        printf("\n  Nenhum agendamento encontrado!\n");
-        return;
-    }
-
     printf("\nID  | Data       | Hora  | Cidade               | Capacidade | Preço   | Ingressos Vendidos | CPF Responsável | Status\n");
     printf("---------------------------------------------------------------------------------------------------------------------------\n");
 
-    while(fread(&ag, sizeof(Agendamento), 1, arq) == 1){
-        printf("%-3d | %-10s | %-5s | %-20s | %-10d | %-7.2f | %-18d | %-15s | %s\n",
-               ag.id, ag.data, ag.horario, ag.cidade,
-               ag.capacidade, ag.precoIngresso,
-               ag.quantIngressosVend, ag.cpfResponsavel,
-               ag.status ? "Ativo" : "Cancelado");
-        contador++;
-    }
-
-    if (contador == 0){
-        printf("\n  Nenhum agendamento cadastrado.\n");
-    }
-
-    fclose(arq);
-}
-
-void relatorioAgendamentosAtivos(void){
-    limparTela();
-
-    FILE *arq;
-    Agendamento ag;
-    int contador = 0;
-
-    printf("\n==============================================================================\n");
-    printf("||                 ~ ~ ~ Relatório de Agendamentos Ativos ~ ~ ~             ||\n");
-    printf("==============================================================================\n");
-
-    arq = fopen("Agendamentos/agendamento.dat", "rb");
-    if (arq == NULL){
-        printf("\n  Nenhum agendamento encontrado!\n");
-        return;
-    }
-
-    printf("\nID  | Data       | Hora  | Cidade               | Capacidade | Preço   | Ingressos Vendidos | CPF Responsável\n");
-    printf("-------------------------------------------------------------------------------------------------------------\n");
-
-    while(fread(&ag, sizeof(Agendamento), 1, arq) == 1){
-        if(ag.status){
-            printf("%-3d | %-10s | %-5s | %-20s | %-10d | %-7.2f | %-18d | %-15s\n",
-                   ag.id, ag.data, ag.horario, ag.cidade,
-                   ag.capacidade, ag.precoIngresso,
-                   ag.quantIngressosVend, ag.cpfResponsavel);
-            contador++;
+    if (status == 2){
+        while(fread(ag, sizeof(Agendamento), 1, arqAgendamentos)){
+            printf("%-3d | %-10s | %-5s | %-20s | %-10d | %-7.2f | %-18d | %-15s | %s\n",
+                ag->id, ag->data, ag->horario, ag->cidade,
+                ag->capacidade, ag->precoIngresso,
+                ag->quantIngressosVend, ag->cpfResponsavel,
+                ag->status ? "Ativo" : "Cancelado");
         }
     }
 
-    if (contador == 0){
-        printf("\n  Nenhum agendamento ativo encontrado.\n");
-    }
-
-    fclose(arq);
-}
-
-void relatorioAgendamentosInativos(void){
-    limparTela();
-
-    FILE *arq;
-    Agendamento ag;
-    int contador = 0;
-
-    printf("\n==============================================================================\n");
-    printf("||                 ~ ~ ~ Relatório de Agendamentos Inativos ~ ~ ~           ||\n");
-    printf("==============================================================================\n");
-
-    arq = fopen("Agendamentos/agendamento.dat", "rb");
-    if (arq == NULL){
-        printf("\n  Nenhum agendamento encontrado!\n");
-        return;
-    }
-
-    printf("\nID  | Data       | Hora  | Cidade               | Capacidade | Preço   | Ingressos Vendidos | CPF Responsável\n");
-    printf("-------------------------------------------------------------------------------------------------------------\n");
-
-    while(fread(&ag, sizeof(Agendamento), 1, arq) == 1){
-        if(!ag.status){
-            printf("%-3d | %-10s | %-5s | %-20s | %-10d | %-7.2f | %-18d | %-15s\n",
-                   ag.id, ag.data, ag.horario, ag.cidade,
-                   ag.capacidade, ag.precoIngresso,
-                   ag.quantIngressosVend, ag.cpfResponsavel);
-            contador++;
+    else if (status == 0 || status == 1){
+        while (fread(ag, sizeof(Agendamento), 1, arqAgendamentos)) {
+            if (ag->status == status) {
+                printf("%-3d | %-10s | %-5s | %-20s | %-10d | %-7.2f | %-18d | %-15s | %s\n",
+                    ag->id, ag->data, ag->horario, ag->cidade,
+                    ag->capacidade, ag->precoIngresso,
+                    ag->quantIngressosVend, ag->cpfResponsavel,
+                    ag->status ? "Ativo" : "Cancelado");
+            }
         }
     }
-
-    if (contador == 0){
-        printf("\n  Nenhum agendamento inativo encontrado.\n");
-    }
-
-    fclose(arq);
+    fclose(arqAgendamentos);
+    free(ag);
 }
 
 void relatorioClientes(void){
@@ -376,3 +365,4 @@ relatorioIngressos(int status) {
     fclose(arqIngresso);
     free(ingresso);
 }
+
