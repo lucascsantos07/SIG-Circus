@@ -144,6 +144,9 @@ void exibirRelatoriosFuncionarios(void){
             case 3:
                 relatorioFuncionarios(0);
                 break;
+            case 4:
+                filtrarFuncionariosPorNome();
+                break;
             case 0:
                 printf("\nVoltando ao menu de relatórios...\n");
                 break;
@@ -177,6 +180,9 @@ void exibirRelatoriosIngressos(void){
                 break;
             case 3:
                 relatorioIngressos(0);
+                break;
+            case 4:
+                filtrarIngressosPorEspetaculo();
                 break;
             case 0:
                 printf("\nVoltando ao menu de relatórios...\n");
@@ -299,6 +305,7 @@ void menuRelatoriosFuncionarios(void){
     printf("||             1. Relatório de Todos os Funcionários                        ||\n");
     printf("||             2. Relatório dos Funcionários Ativos                         ||\n");
     printf("||             3. Relatório dos Funcionários Inativos                       ||\n");
+    printf("||             4. Filtrar Funcionários por Nome                             ||\n");
     printf("||             0. Voltar ao menu de Relatórios                              ||\n");
     printf("||                                                                          ||\n");
     printf("==============================================================================\n");
@@ -326,6 +333,7 @@ void menuRelatoriosIngressos(void){
     printf("||             1. Relatório de Todos os Ingressos                           ||\n");
     printf("||             2. Relatório dos Ingresos Ativos                             ||\n");
     printf("||             3. Relatório dos Ingressos Inativos                          ||\n");
+    printf("||             4. Filtrar Ingressos por Espetáculo                          ||\n");
     printf("||             0. Voltar ao menu de Relatórios                              ||\n");
     printf("||                                                                          ||\n");
     printf("==============================================================================\n");
@@ -575,17 +583,14 @@ int buscarClientesPorNome(const char* nomeBuscado) {
         }
     }
 
+    free(cli);
+    fclose(arqCliente);
+
     return encontrados;
 }
 
 void filtrarClientesPorNome(void) {
     limparTela();
-
-    FILE* arqCliente = fopen("Clientes/clientes.dat", "rb");
-    if (arqCliente == NULL) {
-        printf("\nNenhum cliente encontrado!\n");
-        return;
-    }
 
     printf("\n======================================================================\n");
     printf("||                      ~ ~ ~ Filtro de Nomes ~ ~ ~                 ||\n");
@@ -602,5 +607,121 @@ void filtrarClientesPorNome(void) {
         printf("\nNenhum cliente encontrado contendo \"%s\" no nome.\n", nomeBuscado);
     }
 
-    fclose(arqCliente);
+}
+
+int buscarFuncionariosPorNome(const char *nomeBuscado) {
+    limparTela();
+
+    FILE* arqFuncionarios;
+
+    Funcionarios* func;
+    func = (Funcionarios*)malloc(sizeof(Funcionarios));
+
+    int encontrados = 0;
+    
+    printf("\n============================================================================================\n");
+    printf("||                              ~ ~ ~ Relatório de Funcionários ~ ~ ~                     ||\n");
+    printf("============================================================================================\n");
+    printf("\nCPF           | Nome                           | Data de Nasc.   | Email          | Status\n");
+    printf("--------------------------------------------------------------------------------------------\n");
+
+    arqFuncionarios = fopen("Funcionarios/funcionarios.dat", "r+b");
+    if (arqFuncionarios == NULL) {
+        printf("\n\n\nERROR!\n\n\n");
+        return;
+    }
+
+    while (fread(func, sizeof(Funcionarios), 1, arqFuncionarios)) {
+        if (strcasestr(func->nome, nomeBuscado) != NULL) {
+            encontrados++;
+            printf("%s | %s | %s | %s | %s | %s | %s | %s | %s | %s \n", func->nome, func->dataNascimento, func->email, func->cpf, func->sexo, func->endereco, func->telefone, func->salario, func->cargo, func->status ? "Ativo" : "Inativo");
+        }
+    }
+
+    fclose(arqFuncionarios);
+    free(func);
+
+    return encontrados;
+
+}
+
+void filtrarFuncionariosPorNome(void) {
+    limparTela();
+
+    int encontrados;
+
+    printf("\n======================================================================\n");
+    printf("||                      ~ ~ ~ Filtro de Nomes ~ ~ ~                 ||\n");
+    printf("======================================================================\n");
+
+    char nomeBuscado[50];
+    printf("\nDigite parte do nome para buscar: ");
+    fgets(nomeBuscado, 50, stdin);
+    nomeBuscado[strcspn(nomeBuscado, "\n")] = '\0';
+
+    encontrados = buscarFuncionariosPorNome(nomeBuscado);
+
+    if (!encontrados) {
+        printf("\nNenhum funcionário encontrado contendo \"%s\" no nome.\n", nomeBuscado);    
+    }
+
+
+}
+
+int BuscarIngressosPorEspetaculo(const int* espetaculoID) {
+    limparTela();
+
+    FILE* arqIngresso;
+
+    Ingressos* ing;
+    ing = (Ingressos*)malloc(sizeof(Ingressos));
+
+    int encontrados;
+
+    printf("\n============================================================================================\n");
+    printf("||                              ~ ~ ~ Relatório de Ingressos ~ ~ ~                        ||\n");
+    printf("============================================================================================\n");
+    printf("\nID do  ingresso | CPF do cliente     | Quantidade  | ID do espetáculo    | Status\n");
+    printf("--------------------------------------------------------------------------------------------\n");
+
+    arqIngresso = fopen("Ingressos/ingressos.dat", "r+b");
+    if (arqIngresso == NULL) {
+        printf("\n\n\nERROR\n\n\n");
+        return;
+    }
+
+    while (fread(ing, sizeof(Ingressos), 1, arqIngresso)) {
+        if (ing->idEspetaculo == espetaculoID) {
+            encontrados++;
+            printf("%d | %s | %d | %d | %s \n", ing->id, ing->cpfCliente, ing->quantidadeIngressos, ing->idEspetaculo, ing->status ? "Ativo":"Inativo");
+        }
+    }
+
+    fclose(arqIngresso);
+    free(ing);
+
+    return encontrados;
+
+}
+
+void filtrarIngressosPorEspetaculo(void) {
+    limparTela();
+
+    int encontrados;
+    int idBuscado;
+
+    printf("\n======================================================================\n");
+    printf("||                    ~ ~ ~ Filtro de Espetáculo ~ ~ ~              ||\n");
+    printf("======================================================================\n");
+
+    printf("Digite o ID do espetáculo: ");
+    scanf("%d", &idBuscado);
+    getchar();
+
+    encontrados = BuscarIngressosPorEspetaculo(idBuscado);
+
+    if (!encontrados) {
+        printf("\nNenhum ingresso no espetáculo com ID: \"%d\"\n", idBuscado);
+    }
+
 }
