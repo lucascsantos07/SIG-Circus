@@ -32,11 +32,9 @@ void exibirModuloRelatorios(void){
                 menuRelatoriosFuncionarios();
                 exibirRelatoriosFuncionarios();
                 break;
-            case 11:
-                relatorioIngressos(1);
-                break;
-            case 12:
-                relatorioIngressos(0);
+            case 4:
+                menuRelatoriosIngressos();
+                exibirRelatoriosIngressos();
                 break;
             case 0:
                 printf("\nVoltando ao menu principal...\n");
@@ -139,6 +137,40 @@ void exibirRelatoriosFuncionarios(void){
                 break;
             case 3:
                 relatorioFuncionarios(0);
+                break;
+            case 0:
+                printf("\nVoltando ao menu de relatórios...\n");
+                break;
+            default:
+                printf("\nOpção inválida! Tente novamente.\n");
+                break;
+        }
+
+        if (opcaoRelatorio != 0) {
+            printf("\nPressione ENTER para continuar...");
+            getchar();
+        }
+
+    } while (opcaoRelatorio != 0);
+}
+
+void exibirRelatoriosIngressos(void){
+    int opcaoRelatorio;
+
+    do {
+        menuRelatoriosIngressos();
+        scanf(" %d", &opcaoRelatorio);
+        getchar();
+
+        switch (opcaoRelatorio){
+            case 1:
+                relatorioIngressos(2);
+                break;
+            case 2:
+                relatorioIngressos(1);
+                break;
+            case 3:
+                relatorioIngressos(0);
                 break;
             case 0:
                 printf("\nVoltando ao menu de relatórios...\n");
@@ -259,6 +291,33 @@ void menuRelatoriosFuncionarios(void){
     printf("||             1. Relatório de Todos os Funcionários                        ||\n");
     printf("||             2. Relatório dos Funcionários Ativos                         ||\n");
     printf("||             3. Relatório dos Funcionários Inativos                       ||\n");
+    printf("||             0. Voltar ao menu de Relatórios                              ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("\nDigite sua opção: ");
+}
+
+void menuRelatoriosIngressos(void){
+    limparTela();
+    printf("\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||             Universidade Federal do Rio Grande do Norte                  ||\n");
+    printf("||                 Centro de Ensino Superior do Seridó                      ||\n");
+    printf("||               Departamento de Computação e Tecnologia                    ||\n");
+    printf("||                  Disciplina DCT1106 -- Programação                       ||\n");
+    printf("||                         Projeto SIG-Circus                               ||\n");
+    printf("||             Developed by @j.samuel007 -- since Nov, 2025                 ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||               ~ ~ ~ Sistema de Gestão Para Um Circo ~ ~ ~                ||\n");
+    printf("||                                                                          ||\n");
+    printf("||                         -- Relatórios Ingresss--                         ||\n");
+    printf("||                                                                          ||\n");
+    printf("||             1. Relatório de Todos os Ingressos                           ||\n");
+    printf("||             2. Relatório dos Ingresos Ativos                             ||\n");
+    printf("||             3. Relatório dos Ingressos Inativos                          ||\n");
     printf("||             0. Voltar ao menu de Relatórios                              ||\n");
     printf("||                                                                          ||\n");
     printf("==============================================================================\n");
@@ -393,8 +452,11 @@ relatorioIngressos(int status) {
 
     arqIngresso = fopen("Ingressos/ingressos.dat", "rb");
 
+    printf("\n===========================================================================\n");
+    printf("||                     ~ ~ ~ Relatório de Ingressos ~ ~ ~                ||\n");
+    printf("===========================================================================\n");
     printf("ID | CPF do cliente | Quantidade de Ingressos | ID do espetáculo | Status\n");
-    printf("-----------------------------------------------------------------------------------------------");
+    printf("-------------------------------------------------------------------------");
 
     if (status == 2) {
         while (fread(ingresso, sizeof(Ingressos), 1, arqIngresso)) {
