@@ -107,6 +107,9 @@ void exibirRelatoriosClientes(void){
             case 3:
                 relatorioClientes(0);
                 break;
+            case 4:
+                filtrarClientesPorNome();
+                break;
             case 0:
                 printf("\nVoltando ao menu de relatórios...\n");
                 break;
@@ -268,6 +271,7 @@ void menuRelatoriosClientes(void){
     printf("||             1. Relatório de Todos os Clientes                            ||\n");
     printf("||             2. Relatório dos Clientes Ativos                             ||\n");
     printf("||             3. Relatório dos Clientes Inativos                           ||\n");
+    printf("||             4. Filtro de Relatório dos Clientes Por Nomes                ||\n");
     printf("||             0. Voltar ao menu de Relatórios                              ||\n");
     printf("||                                                                          ||\n");
     printf("==============================================================================\n");
@@ -350,7 +354,7 @@ void relatorioAgendamentos(int status){
 
     if (status == 2){
         while(fread(ag, sizeof(Agendamento), 1, arqAgendamentos)){
-            printf("%-3d | %-10s | %-5s | %-20s | %-10d | %-7.2f | %-18d | %-15s | %s\n",
+            printf("%d | %s | %s | %s | %d | %f | %d | %s | %s\n",
                 ag->id, ag->data, ag->horario, ag->cidade,
                 ag->capacidade, ag->precoIngresso,
                 ag->quantIngressosVend, ag->cpfResponsavel,
@@ -361,7 +365,7 @@ void relatorioAgendamentos(int status){
     else if (status == 0 || status == 1){
         while (fread(ag, sizeof(Agendamento), 1, arqAgendamentos)) {
             if (ag->status == status) {
-                printf("%-3d | %-10s | %-5s | %-20s | %-10d | %-7.2f | %-18d | %-15s | %s\n",
+                printf("%d | %s | %s | %s | %d | %f | %d | %s | %s\n",
                     ag->id, ag->data, ag->horario, ag->cidade,
                     ag->capacidade, ag->precoIngresso,
                     ag->quantIngressosVend, ag->cpfResponsavel,
@@ -394,7 +398,7 @@ void relatorioClientes(int status){
 
     if (status == 2){
         while (fread(cli, sizeof(Cliente), 1, arqCliente) == 1) {
-            printf("%-13s | %-30s | %-11s | %-25s | %s\n",
+            printf("%s | %s | %s | %s | %s\n",
             cli->cpf, cli->nome, cli->dataNascimento, cli->email,
             cli->status ? "Ativo" : "Inativo");
         }
@@ -403,7 +407,7 @@ void relatorioClientes(int status){
     else if (status == 0 || status == 1){
         while (fread(cli, sizeof(Cliente), 1, arqCliente)) {
             if (cli->status == status) {
-                printf("%-13s | %-30s | %-11s | %-25s | %s\n",
+                printf("%s | %s | %s | %s | %s\n",
                 cli->cpf, cli->nome, cli->dataNascimento, cli->email,
                 cli->status ? "Ativo" : "Inativo");
             }
@@ -479,7 +483,7 @@ relatorioIngressos(int status) {
 
 int buscarAgendamentosPorCidade(const char* cidadeBuscada) {
     limparTela();
-    
+
     FILE* arqAgendamentos;
 
     arqAgendamentos = fopen("Agendamentos/agendamento.dat","rb");
@@ -503,7 +507,7 @@ int buscarAgendamentosPorCidade(const char* cidadeBuscada) {
     while (fread(ag, sizeof(Agendamento), 1, arqAgendamentos)) {
         if (strcasecmp(ag->cidade, cidadeBuscada) == 0) {
             encontrados++;
-            printf("%d | %s | %s | %s | %d | %-7.2f | %d | %s | %s\n",
+            printf("%d | %s | %s | %s | %d | %f | %d | %s | %s\n",
                 ag->id, ag->data, ag->horario, ag->cidade,
                 ag->capacidade, ag->precoIngresso,
                 ag->quantIngressosVend, ag->cpfResponsavel,
@@ -541,3 +545,50 @@ void filtrarAgendamentosPorCidade(void) {
     fclose(arqAgendamentos);
 }
 
+int buscarClientesPorNome(const char* nomeBuscado) {
+    FILE* arqCliente;
+    arqCliente = fopen("Clientes/clientes.dat","rb");
+    if (arqCliente == NULL){
+        printf("\nErro ao abrir o arquivo!");
+        return 0;
+    }
+
+    Cliente*cli;
+    cli = (Cliente*)malloc(sizeof(Cliente));
+
+    int encontrados = 0;
+
+    while (fread(cli, sizeof(Cliente), 1, arqCliente)) {
+        if (strcasestr(cli->nome, nomeBuscado) != NULL) {
+            encontrados++;
+            printf("%s | %s | %s | %s | %s\n",
+                cli->cpf, cli->nome, cli->dataNascimento, cli->email,
+                cli->status ? "Ativo" : "Inativo");
+        }
+    }
+
+    return encontrados;
+}
+
+void filtrarClientesPorNome(void) {
+    limparTela();
+
+    FILE* arqCliente = fopen("Clientes/clientes.dat", "rb");
+    if (arqCliente == NULL) {
+        printf("\nNenhum cliente encontrado!\n");
+        return;
+    }
+
+    char nomeBuscado[50];
+    printf("\nDigite parte do nome para buscar: ");
+    fgets(nomeBuscado, 50, stdin);
+    nomeBuscado[strcspn(nomeBuscado, "\n")] = '\0';
+
+    int encontrados = buscarClientesPorNome(nomeBuscado);
+
+    if (encontrados == 0) {
+        printf("\nNenhum cliente encontrado contendo \"%s\" no nome.\n", nomeBuscado);
+    }
+
+    fclose(arqCliente);
+}
