@@ -17,7 +17,11 @@ void relatorioFuncionarios(int status);
 void relatorioIngressos(int status);
 void filtrarAgendamentosPorCidade(void);
 void filtrarClientesPorNome(void);
+void filtrarFuncionariosPorNome(void);
+void filtrarIngressosPorEspetaculo(void);
 int buscarAgendamentosPorCidade(const char* cidadeBuscada);
 int buscarClientesPorNome(const char* nomeBuscado);
+int buscarFuncionariosPorNome(const char* nomeBuscado);
+int buscarIngressosPorEspetaculo(const int* EspetaculoID);
 
 #endif
