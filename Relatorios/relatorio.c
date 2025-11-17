@@ -25,19 +25,8 @@ void exibirModuloRelatorios(void){
                 exibirRelatoriosAgendamentos();
                 break;
             case 2:
-                relatorioAgendamentosAtivos();
-                break;
-            case 3:
-                relatorioAgendamentosInativos();
-                break;
-            case 4:
-                relatorioClientes();
-                break;
-            case 5:
-                relatorioClientesAtivos();
-                break;
-            case 6:
-                relatorioClientesInativos();
+                menuRelatoriosClientes();
+                exibirRelatoriosClientes();
                 break;
             case 7:
                 relatorioFuncionarios(2);
@@ -89,7 +78,41 @@ void exibirRelatoriosAgendamentos(void){
                 relatorioAgendamentos(1);
                 break;
             case 3:
-                relatorioAgendamentos(0);
+                relatorioClientes(0);
+                break;
+            case 0:
+                printf("\nVoltando ao menu de relatórios...\n");
+                break;
+            default:
+                printf("\nOpção inválida! Tente novamente.\n");
+                break;
+        }
+
+        if (opcaoRelatorio != 0) {
+            printf("\nPressione ENTER para continuar...");
+            getchar();
+        }
+
+    } while (opcaoRelatorio != 0);
+}
+
+void exibirRelatoriosClientes(void){
+    int opcaoRelatorio;
+
+    do {
+        menuRelatoriosClientes();
+        scanf(" %d", &opcaoRelatorio);
+        getchar();
+
+        switch (opcaoRelatorio){
+            case 1:
+                relatorioClientes(2);
+                break;
+            case 2:
+                relatorioClientes(1);
+                break;
+            case 3:
+                relatorioClientes(0);
                 break;
             case 0:
                 printf("\nVoltando ao menu de relatórios...\n");
@@ -162,6 +185,33 @@ void menuRelatoriosAgendamentos(void){
     printf("\nDigite sua opção: ");
 }
 
+void menuRelatoriosClientes(void){
+    limparTela();
+    printf("\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||             Universidade Federal do Rio Grande do Norte                  ||\n");
+    printf("||                 Centro de Ensino Superior do Seridó                      ||\n");
+    printf("||               Departamento de Computação e Tecnologia                    ||\n");
+    printf("||                  Disciplina DCT1106 -- Programação                       ||\n");
+    printf("||                         Projeto SIG-Circus                               ||\n");
+    printf("||             Developed by @j.samuel007 -- since Nov, 2025                 ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("||                                                                          ||\n");
+    printf("||               ~ ~ ~ Sistema de Gestão Para Um Circo ~ ~ ~                ||\n");
+    printf("||                                                                          ||\n");
+    printf("||                         -- Relatórios Clientes--                         ||\n");
+    printf("||                                                                          ||\n");
+    printf("||             1. Relatório de Todos os Clientes                            ||\n");
+    printf("||             2. Relatório dos Clientes Ativos                             ||\n");
+    printf("||             3. Relatório dos Clientes Inativos                           ||\n");
+    printf("||             0. Voltar ao menu de Relatórios                              ||\n");
+    printf("||                                                                          ||\n");
+    printf("==============================================================================\n");
+    printf("\nDigite sua opção: ");
+}
+
 void relatorioAgendamentos(int status){
     limparTela();
 
@@ -207,38 +257,44 @@ void relatorioAgendamentos(int status){
     free(ag);
 }
 
-void relatorioClientes(void){
+void relatorioClientes(int status){
     limparTela();
 
-    FILE *arq;
-    Cliente cli;
-    int contador = 0;
+    FILE *arqCliente;
+    Cliente* cli;
+    cli = (Cliente*)malloc(sizeof(Cliente));
 
-    printf("\n==============================================================================\n");
-    printf("||                       ~ ~ ~ Relatório de Clientes ~ ~ ~                  ||\n");
-    printf("==============================================================================\n");
-
-    arq = fopen("Clientes/clientes.dat", "rb");
-    if (arq == NULL){
+    arqCliente = fopen("Clientes/clientes.dat", "rb");
+    if (arqCliente == NULL){
         printf("\n  Nenhum cliente encontrado!\n");
         return;
     }
 
+    printf("\n==============================================================================\n");
+    printf("||                       ~ ~ ~ Relatório de Clientes ~ ~ ~                  ||\n");
+    printf("==============================================================================\n");
     printf("\nCPF           | Nome                           | Data de Nasc.   | Email          | Status\n");
     printf("--------------------------------------------------------------------------------------------\n");
 
-    while (fread(&cli, sizeof(Cliente), 1, arq) == 1) {
-        printf("%-13s | %-30s | %-11s | %-25s | %s\n",
-            cli.cpf, cli.nome, cli.dataNascimento, cli.email,
-            cli.status ? "Ativo" : "Inativo");
-        contador++;
+    if (status == 2){
+        while (fread(cli, sizeof(Cliente), 1, arqCliente) == 1) {
+            printf("%-13s | %-30s | %-11s | %-25s | %s\n",
+            cli->cpf, cli->nome, cli->dataNascimento, cli->email,
+            cli->status ? "Ativo" : "Inativo");
+        }
     }
 
-    if (contador == 0){
-        printf("\n  Nenhum cliente cadastrado.\n");
+    else if (status == 0 || status == 1){
+        while (fread(cli, sizeof(Cliente), 1, arqCliente)) {
+            if (cli->status == status) {
+                printf("%-13s | %-30s | %-11s | %-25s | %s\n",
+                cli->cpf, cli->nome, cli->dataNascimento, cli->email,
+                cli->status ? "Ativo" : "Inativo");
+            }
+        }
     }
-
-    fclose(arq);
+    fclose(arqCliente);
+    free(cli);
 }
 
 void relatorioClientesAtivos(void){
