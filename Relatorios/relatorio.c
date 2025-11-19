@@ -672,6 +672,9 @@ int BuscarIngressosPorEspetaculo(const int* espetaculoID) {
     limparTela();
 
     FILE* arqIngresso;
+    Cliente* cliente;
+
+    int found = False;
 
     Ingressos* ing;
     ing = (Ingressos*)malloc(sizeof(Ingressos));
@@ -681,7 +684,7 @@ int BuscarIngressosPorEspetaculo(const int* espetaculoID) {
     printf("\n============================================================================================\n");
     printf("||                              ~ ~ ~ Relatório de Ingressos ~ ~ ~                        ||\n");
     printf("============================================================================================\n");
-    printf("\nID do  ingresso | CPF do cliente     | Quantidade  | ID do espetáculo    | Status\n");
+    printf("\nID do  ingresso | Nome do Cliente | Quantidade  | ID do espetáculo    | Status\n");
     printf("--------------------------------------------------------------------------------------------\n");
 
     arqIngresso = fopen("Ingressos/ingressos.dat", "r+b");
@@ -693,10 +696,19 @@ int BuscarIngressosPorEspetaculo(const int* espetaculoID) {
     while (fread(ing, sizeof(Ingressos), 1, arqIngresso)) {
         if (ing->idEspetaculo == espetaculoID) {
             encontrados++;
-            printf("%d | %s | %d | %d | %s \n", ing->id, ing->cpfCliente, ing->quantidadeIngressos, ing->idEspetaculo, ing->status ? "Ativo":"Inativo");
+            cliente = encontrarClientePorCPF(ing->cpfCliente);
+
+            if (cliente == NULL) {
+            printf("Cliente não encontrado.\n");
+            } else {
+            printf("%d | %s | %d | %d | %s \n", ing->id, cliente->nome, ing->quantidadeIngressos, ing->idEspetaculo, ing->status ? "Ativo":"Inativo");
+            }
+
+            
         }
     }
 
+    free(cliente);
     fclose(arqIngresso);
     free(ing);
 
@@ -724,4 +736,24 @@ void filtrarIngressosPorEspetaculo(void) {
         printf("\nNenhum ingresso no espetáculo com ID: \"%d\"\n", idBuscado);
     }
 
+}
+
+Cliente* encontrarClientePorCPF(char* cpfParametro[]) {
+    FILE* arqCliente;
+    Cliente* cli;
+    cli = (Cliente*)malloc(sizeof(Cliente));
+    arqCliente = fopen("Clientes/clientes.dat", "rb");
+    if (arqCliente == NULL) {
+        printf("\n\n\nERROR!\n\n\n");
+    }
+
+    while (fread(cli, sizeof(Cliente), 1, arqCliente)) {
+        if (strcmp(cli->cpf, cpfParametro) == 0) {
+            fclose(arqCliente);
+            return cli;
+        }
+    }
+
+    fclose(arqCliente);
+    return NULL;
 }
