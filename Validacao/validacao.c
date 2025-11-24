@@ -534,3 +534,19 @@ int lerIdEspetaculo(){
     free(agendamento);
     return idEspetaculo;
 }
+
+void lerNomeEspetaculo(char nomeEspetaculo[], int tamanho){
+
+    do {
+
+        printf("\n   Digite o nome do espetáculo: ");
+        fgets(nomeEspetaculo, tamanho, stdin);
+        nomeEspetaculo[strcspn(nomeEspetaculo, "\n")] = '\0';
+
+        if(!validarNome(nomeEspetaculo)) {
+            printf("\n   Nome do Espetáculo inválido! Apenas letras e espaços são permitidos.\n");
+        }
+
+    } while(!validarNome(nomeEspetaculo));
+
+}

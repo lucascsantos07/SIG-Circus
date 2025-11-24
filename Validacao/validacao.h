@@ -47,6 +47,8 @@ int validarFormaDePagamento(int pagamento);
 
 void lerFormaDePagamento(int pagamento);
 
+void lerNomeEspetaculo(char nomeEspetaculo[], int tamanho);
+
 int lerIdEspetaculo();
 
 #endif
