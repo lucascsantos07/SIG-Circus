@@ -1,6 +1,10 @@
 #ifndef RELATORIO_H
 #define RELATORIO_H
 
+#include "../Agendamentos/agendamentos.h"
+#include "../Clientes/clientes.h"
+#include "../Funcionarios/funcionarios.h"
+
 void exibirModuloRelatorios(void);
 void exibirRelatoriosAgendamentos(void);
 void exibirRelatoriosClientes(void);
@@ -9,7 +13,7 @@ void exibirRelatoriosIngressos(void);
 void menuRelatorios(void);
 void menuRelatoriosAgendamentos(void);
 void menuRelatoriosClientes(void);
-void menuRelarotiosFuncionarios(void);
+void menuRelatoriosFuncionarios(void);
 void menuRelatoriosIngressos(void);
 void relatorioAgendamentos(int status);
 void relatorioClientes(int status);
@@ -25,5 +29,6 @@ int buscarFuncionariosPorNome(const char* nomeBuscado);
 int buscarIngressosPorEspetaculo(const int* EspetaculoID);
 Cliente* encontrarClientePorCPF(char* cpfParametro[]);
 Agendamento* encontrarAgendamentoPorID(int* idEspParametro);
+Funcionarios* encontrarFuncionariosPorCpf(char* cpfParametro[]);
 
 #endif
