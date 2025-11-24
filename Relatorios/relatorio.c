@@ -579,7 +579,7 @@ int buscarClientesPorNome(const char* nomeBuscado) {
     printf("--------------------------------------------------------------------------------------------\n");
 
     while (fread(cli, sizeof(Cliente), 1, arqCliente)) {
-        if (strcasestr(cli->nome, nomeBuscado) != NULL) {
+        if (strncasecmp(cli->nome, nomeBuscado, strlen(nomeBuscado)) == 0) {
             encontrados++;
             printf("%s | %s | %s | %s | %s\n",
                 cli->cpf, cli->nome, cli->dataNascimento, cli->email,
@@ -632,11 +632,11 @@ int buscarFuncionariosPorNome(const char *nomeBuscado) {
     arqFuncionarios = fopen("Funcionarios/funcionarios.dat", "r+b");
     if (arqFuncionarios == NULL) {
         printf("\n\n\nERROR!\n\n\n");
-        return;
+        return 0 ;
     }
 
     while (fread(func, sizeof(Funcionarios), 1, arqFuncionarios)) {
-        if (strcasestr(func->nome, nomeBuscado) != NULL) {
+        if (strncasecmp(func->nome, nomeBuscado,  strlen(nomeBuscado)) == 0) {
             encontrados++;
             printf("%s | %s | %s | %s | %s | %s | %s | %s | %s | %s \n", func->nome, func->dataNascimento, func->email, func->cpf, func->sexo, func->endereco, func->telefone, func->salario, func->cargo, func->status ? "Ativo" : "Inativo");
         }
@@ -679,8 +679,6 @@ int buscarIngressosPorEspetaculo(const int* espetaculoID) {
     Cliente* cliente;
     Agendamento* agendamento;
 
-    int found = False;
-
     Ingressos* ing;
     ing = (Ingressos*)malloc(sizeof(Ingressos));
 
@@ -695,11 +693,11 @@ int buscarIngressosPorEspetaculo(const int* espetaculoID) {
     arqIngresso = fopen("Ingressos/ingressos.dat", "r+b");
     if (arqIngresso == NULL) {
         printf("\n\n\nERROR\n\n\n");
-        return;
+        return 0;
     }
 
     while (fread(ing, sizeof(Ingressos), 1, arqIngresso)) {
-        if (ing->idEspetaculo == espetaculoID) {
+        if (ing->idEspetaculo == *espetaculoID) {
             encontrados++;
             cliente = encontrarClientePorCPF(ing->cpfCliente);
             agendamento = encontrarAgendamentoPorID(ing->idEspetaculo);
@@ -737,7 +735,7 @@ void filtrarIngressosPorEspetaculo(void) {
     scanf("%d", &idBuscado);
     getchar();
 
-    encontrados = buscarIngressosPorEspetaculo(idBuscado);
+    encontrados = buscarIngressosPorEspetaculo(&idBuscado);
 
     if (!encontrados) {
         printf("\nNenhum ingresso no espetáculo com ID: \"%d\"\n", idBuscado);
@@ -745,7 +743,7 @@ void filtrarIngressosPorEspetaculo(void) {
 
 }
 
-Cliente* encontrarClientePorCPF(char* cpfParametro[]) {
+Cliente* encontrarClientePorCPF(char cpfParametro[]) {
     FILE* arqCliente;
     Cliente* cli;
     cli = (Cliente*)malloc(sizeof(Cliente));
@@ -765,7 +763,7 @@ Cliente* encontrarClientePorCPF(char* cpfParametro[]) {
     return NULL;
 }
 
-Agendamento* encontrarAgendamentoPorID(int* idEspParametro) {
+Agendamento* encontrarAgendamentoPorID(int idEspParametro) {
     FILE* arqAgendamento;
     Agendamento* ag;
     ag = (Agendamento*)malloc(sizeof(Agendamento));
@@ -786,7 +784,7 @@ Agendamento* encontrarAgendamentoPorID(int* idEspParametro) {
     return NULL;
 }
 
-Funcionarios* encontrarFuncionariosPorCpf(char* cpfParametro[]) {
+Funcionarios* encontrarFuncionariosPorCpf(char cpfParametro[]) {
     FILE* arqFuncionarios;
     Funcionarios* funcionario;
     funcionario = (Funcionarios*)malloc(sizeof(Funcionarios));
