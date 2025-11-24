@@ -357,13 +357,13 @@ void relatorioAgendamentos(int status){
     printf("||                     ~ ~ ~ Relatório de Agendamentos ~ ~ ~                ||\n");
     printf("==============================================================================\n");
 
-    printf("\nID  | Data       | Hora  | Cidade               | Capacidade | Preço   | Ingressos Vendidos | CPF Responsável | Status\n");
-    printf("---------------------------------------------------------------------------------------------------------------------------\n");
+    printf("\nID  |  Nome do Espetáculo  | Data       | Hora  | Cidade               | Capacidade | Preço   | Ingressos Vendidos | CPF Responsável | Status\n");
+    printf("-----------------------------------------------------------------------------------------------------------------------------------------------\n");
 
     if (status == 2){
         while(fread(ag, sizeof(Agendamento), 1, arqAgendamentos)){
-            printf("%d | %s | %s | %s | %d | %.2f | %d | %s | %s\n",
-                ag->id, ag->data, ag->horario, ag->cidade,
+            printf("%d | %s | %s | %s | %s | %d | %.2f | %d | %s | %s\n",
+                ag->id,ag->nomeEspetaculo, ag->data, ag->horario, ag->cidade,
                 ag->capacidade, ag->precoIngresso,
                 ag->quantIngressosVend, ag->cpfResponsavel,
                 ag->status ? "Ativo" : "Cancelado");
@@ -373,8 +373,8 @@ void relatorioAgendamentos(int status){
     else if (status == 0 || status == 1){
         while (fread(ag, sizeof(Agendamento), 1, arqAgendamentos)) {
             if (ag->status == status) {
-                printf("%d | %s | %s | %s | %d | %.2f | %d | %s | %s\n",
-                    ag->id, ag->data, ag->horario, ag->cidade,
+                printf("%d | %s | %s | %s | %s | %d | %.2f | %d | %s | %s\n",
+                    ag->id,ag->nomeEspetaculo ,ag->data, ag->horario, ag->cidade,
                     ag->capacidade, ag->precoIngresso,
                     ag->quantIngressosVend, ag->cpfResponsavel,
                     ag->status ? "Ativo" : "Cancelado");
