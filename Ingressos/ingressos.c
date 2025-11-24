@@ -56,7 +56,7 @@ void telaCadastroVendaIngresso(void) {
     
     ingresso = ColetarDadosIngressos();
 
-    if (ingresso != '\0') {
+    if (ingresso != NULL) {
 
         ExibirIngresso(ingresso);
 
