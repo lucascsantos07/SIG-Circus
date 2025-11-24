@@ -24,5 +24,6 @@ int buscarClientesPorNome(const char* nomeBuscado);
 int buscarFuncionariosPorNome(const char* nomeBuscado);
 int buscarIngressosPorEspetaculo(const int* EspetaculoID);
 Cliente* encontrarClientePorCPF(char* cpfParametro[]);
+Agendamento* encontrarAgendamentoPorID(int* idEspParametro);
 
 #endif
