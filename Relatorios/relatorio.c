@@ -358,8 +358,8 @@ void relatorioAgendamentos(int status){
     printf("||                     ~ ~ ~ Relatório de Agendamentos ~ ~ ~                ||\n");
     printf("==============================================================================\n");
 
-    printf("\nID  |  Nome do Espetáculo  | Data       | Hora  | Cidade               | Capacidade | Preço   | Ingressos Vendidos | CPF Responsável | Status\n");
-    printf("-----------------------------------------------------------------------------------------------------------------------------------------------\n");
+    printf("\nID  |  Nome do Espetáculo  | Data       | Hora  | Cidade               | Capacidade | Preço   | Ingressos Vendidos | Nome do Responsável | Status\n");
+    printf("---------------------------------------------------------------------------------------------------------------------------------------------------\n");
 
     if (status == 2){
         while(fread(ag, sizeof(Agendamento), 1, arqAgendamentos)){
@@ -375,10 +375,11 @@ void relatorioAgendamentos(int status){
     else if (status == 0 || status == 1){
         while (fread(ag, sizeof(Agendamento), 1, arqAgendamentos)) {
             if (ag->status == status) {
+                funcionario = encontrarFuncionariosPorCpf(ag->cpfResponsavel);
                 printf("%d | %s | %s | %s | %s | %d | %.2f | %d | %s | %s\n",
                     ag->id,ag->nomeEspetaculo ,ag->data, ag->horario, ag->cidade,
                     ag->capacidade, ag->precoIngresso,
-                    ag->quantIngressosVend, ag->cpfResponsavel,
+                    ag->quantIngressosVend, funcionario->nome,
                     ag->status ? "Ativo" : "Cancelado");
             }
         }
@@ -465,6 +466,8 @@ void relatorioIngressos(int status) {
 
     Ingressos* ingresso;
     FILE* arqIngresso;
+    Cliente* cliente;
+    Agendamento* agendamento;
 
     ingresso = (Ingressos*)malloc(sizeof(Ingressos));
 
@@ -473,17 +476,20 @@ void relatorioIngressos(int status) {
     printf("\n===========================================================================\n");
     printf("||                     ~ ~ ~ Relatório de Ingressos ~ ~ ~                ||\n");
     printf("===========================================================================\n");
-    printf("ID | CPF do cliente | Quantidade de Ingressos | ID do espetáculo | Status\n");
-    printf("-------------------------------------------------------------------------");
+    printf("ID | Nome do cliente | Quantidade de Ingressos | Nome do espetáculo | Status\n");
+    printf("----------------------------------------------------------------------------\n");
+
+    cliente = encontrarClientePorCPF(ingresso->cpfCliente);
+    agendamento = encontrarAgendamentoPorID(ingresso->idEspetaculo);
 
     if (status == 2) {
         while (fread(ingresso, sizeof(Ingressos), 1, arqIngresso)) {
-        printf("\n%d | %s | %d | %d | %s ", ingresso->id, ingresso->cpfCliente, ingresso->quantidadeIngressos, ingresso->idEspetaculo, ingresso->status ? "Ativo" : "Inativo");
+        printf("\n%d | %s | %d | %s | %s ", ingresso->id, cliente->nome, ingresso->quantidadeIngressos, agendamento->nomeEspetaculo, ingresso->status ? "Ativo" : "Inativo");
         }
     } else if (status == 0 || status == 1) {
         while (fread(ingresso, sizeof(Ingressos), 1, arqIngresso)) {
             if (ingresso->status == status) {
-                printf("\n%d | %s | %d | %d | %s ", ingresso->id, ingresso->cpfCliente, ingresso->quantidadeIngressos, ingresso->idEspetaculo, ingresso->status ? "Ativo" : "Inativo");            }
+                printf("\n%d | %s | %d | %s | %s ", ingresso->id, cliente->nome, ingresso->quantidadeIngressos, agendamento->nomeEspetaculo, ingresso->status ? "Ativo" : "Inativo");            }
         }
     }
 
