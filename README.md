@@ -14,7 +14,7 @@
   📧 [icaro.freitas.113@ufrn.edu.br](mailto:icaro.freitas.113@ufrn.edu.br)  
   🔗 [GitHub](https://github.com/Icaro-Nonato) 
 
-* **José Samuel Silva Lima** *
+* **José Samuel Silva Lima**
   📧 [jose.lima.146@ufrn.edu.br](mailto:jose.lima.146@ufrn.edu.br)  
   🔗 [GitHub](https://github.com/Jose-Samuel-Lima)
 
