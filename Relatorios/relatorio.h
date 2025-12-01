@@ -5,10 +5,11 @@
 #include "../Clientes/clientes.h"
 #include "../Funcionarios/funcionarios.h"
 
-typedef struct NodoAg {
+typedef struct Ag {
     Agendamento ag;
-    struct NodoAg* prox;
-} NodoAg;
+    struct Ag* prox;
+} Ag;
+
 
 void exibirModuloRelatorios(void);
 void exibirRelatoriosAgendamentos(void);
@@ -32,8 +33,9 @@ int buscarAgendamentosPorCidade(const char* cidadeBuscada);
 int buscarClientesPorNome(const char* nomeBuscado);
 int buscarFuncionariosPorNome(const char* nomeBuscado);
 int buscarIngressosPorEspetaculo(const int* EspetaculoID);
-void inserirOrdenado(NodoAg** lista, Agendamento* novoAg);
+void inserirOrdenado(Ag** lista, Agendamento* novoAg);
 int dataParaInt(const char* data);
+void lerClientes(const char* nomeArquivo, Cliente** lista);
 Cliente* encontrarClientePorCPF(char cpfParametro[]);
 Agendamento* encontrarAgendamentoPorID(int idEspParametro);
 Funcionarios* encontrarFuncionariosPorCpf(char cpfParametro[]);

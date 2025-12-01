@@ -350,7 +350,7 @@ void relatorioAgendamentos(int status){
     Funcionarios* funcionario;
     Agendamento tempAg;
 
-    NodoAg* listaOrdenada = NULL;
+    Ag* listaOrdenada = NULL;
 
     arqAgendamentos = fopen("Agendamentos/agendamento.dat", "rb");
     if (arqAgendamentos == NULL){
@@ -367,7 +367,6 @@ void relatorioAgendamentos(int status){
 
     fclose(arqAgendamentos);
 
-    // CABEÇALHO
     printf("\n==============================================================================\n");
     printf("||                     ~ ~ ~ Relatório de Agendamentos ~ ~ ~                ||\n");
     printf("==============================================================================\n");
@@ -375,7 +374,7 @@ void relatorioAgendamentos(int status){
     printf("\nID  |  Nome do Espetáculo  | Data       | Hora  | Cidade               | Capacidade | Preço   | Ingressos Vendidos | Nome do Responsável | Status\n");
     printf("---------------------------------------------------------------------------------------------------------------------------------------------------\n");
 
-    NodoAg* aux = listaOrdenada;
+    Ag* aux = listaOrdenada;
 
     if (status == 2) {
         while (aux != NULL) {
@@ -406,7 +405,7 @@ void relatorioAgendamentos(int status){
     }
 
     while (listaOrdenada != NULL) {
-        NodoAg* tmp = listaOrdenada;
+        Ag* tmp = listaOrdenada;
         listaOrdenada = listaOrdenada->prox;
         free(tmp);
     }
@@ -416,41 +415,43 @@ void relatorioAgendamentos(int status){
 void relatorioClientes(int status){
     limparTela();
 
-    FILE *arqCliente;
-    Cliente* cli;
-    cli = (Cliente*)malloc(sizeof(Cliente));
+    Cliente* listaClientes = NULL;
 
-    arqCliente = fopen("Clientes/clientes.dat", "rb");
-    if (arqCliente == NULL){
-        printf("\n  Nenhum cliente encontrado!\n");
-        return;
-    }
+    lerClientes("Clientes/clientes.dat", &listaClientes);
 
-    printf("\n==============================================================================\n");
+    printf("\n=============================================================================\n");
     printf("||                       ~ ~ ~ Relatório de Clientes ~ ~ ~                  ||\n");
-    printf("==============================================================================\n");
+    printf("=============================================================================\n");
     printf("\nCPF           | Nome                           | Data de Nasc.   | Email          | Status\n");
     printf("--------------------------------------------------------------------------------------------\n");
 
-    if (status == 2){
-        while (fread(cli, sizeof(Cliente), 1, arqCliente) == 1) {
+    Cliente* temp = listaClientes;
+
+    if (status == 2) {
+        while (temp != NULL) {
             printf("%s | %s | %s | %s | %s\n",
-            cli->cpf, cli->nome, cli->dataNascimento, cli->email,
-            cli->status ? "Ativo" : "Inativo");
+                temp->cpf, temp->nome, temp->dataNascimento, temp->email,
+                temp->status ? "Ativo" : "Inativo");
+            temp = temp->prox;
+        }
+    } else if( status == 0 || status == 1) {
+        while (temp != NULL) {
+            if (temp->status == status) {
+                printf("%s | %s | %s | %s | %s\n",
+                    temp->cpf, temp->nome, temp->dataNascimento, temp->email,
+                    temp->status ? "Ativo" : "Inativo");
+            }
+            temp = temp->prox;
         }
     }
 
-    else if (status == 0 || status == 1){
-        while (fread(cli, sizeof(Cliente), 1, arqCliente)) {
-            if (cli->status == status) {
-                printf("%s | %s | %s | %s | %s\n",
-                cli->cpf, cli->nome, cli->dataNascimento, cli->email,
-                cli->status ? "Ativo" : "Inativo");
-            }
-        }
+    while (listaClientes != NULL) {
+        Cliente* aux = listaClientes;
+        listaClientes = listaClientes->prox;
+        free(aux);
     }
-    fclose(arqCliente);
-    free(cli);
+
+    return;
 }
 
 void relatorioFuncionarios(int status) {
@@ -841,29 +842,70 @@ Funcionarios* encontrarFuncionariosPorCpf(char cpfParametro[]) {
 int dataParaInt(const char* data) {
     int d, m, a;
     sscanf(data, "%d/%d/%d", &d, &m, &a);
-    return a*10000 + m*100 + d;   // AAAAMMDD
+    return a*10000 + m*100 + d;
 }
 
 
-void inserirOrdenado(NodoAg** lista, Agendamento* novoAg) {
-    NodoAg* novo = (NodoAg*)malloc(sizeof(NodoAg));
+void inserirOrdenado(Ag** lista, Agendamento* novoAg) {
+    Ag* novo = (Ag*)malloc(sizeof(Ag));
     novo->ag = *novoAg;
     novo->prox = NULL;
 
     int dataNovo = dataParaInt(novoAg->data);
 
-    NodoAg *atual = *lista, *anterior = NULL;
+    Ag *atual = *lista, *anterior = NULL;
 
     while (atual != NULL && dataParaInt(atual->ag.data) < dataNovo) {
         anterior = atual;
         atual = atual->prox;
     }
 
-    if (anterior == NULL) {          // insere no início
+    if (anterior == NULL) {
         novo->prox = *lista;
         *lista = novo;
-    } else {                          // meio ou fim
+    } else {
         anterior->prox = novo;
         novo->prox = atual;
     }
+}
+
+
+void lerClientes(const char* nomeArquivo, Cliente** lista) {
+    FILE *arqCliente;
+    Cliente* novaCliente;
+    
+    arqCliente = fopen(nomeArquivo, "rb");
+    if (arqCliente == NULL) {
+        printf("Erro na abertura do arquivo de clientes!\n");
+        exit(1);
+    }
+
+    while (1) {
+        novaCliente = (Cliente*)malloc(sizeof(Cliente));
+        if (novaCliente == NULL) {
+            printf("Erro ao alocar memória para o cliente.\n");
+            fclose(arqCliente);
+            exit(1);
+        }
+
+        if (fread(novaCliente, sizeof(Cliente), 1, arqCliente) != 1) {
+            free(novaCliente);
+            break;
+        }
+
+        if (*lista == NULL || strcmp(novaCliente->nome, (*lista)->nome) < 0) {
+            novaCliente->prox = *lista;
+            *lista = novaCliente;
+        } else {
+            Cliente* anter = *lista, *atual = (*lista)->prox;
+            while (atual != NULL && strcmp(novaCliente->nome, atual->nome) > 0) {
+                anter = atual;
+                atual = atual->prox;
+            }
+            anter->prox = novaCliente;
+            novaCliente->prox = atual;
+        }
+    }
+
+    fclose(arqCliente);
 }
