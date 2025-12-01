@@ -340,13 +340,17 @@ void menuRelatoriosIngressos(void){
     printf("\nDigite sua opção: ");
 }
 
+// Creáditos ao chatGPT por ajudar na implementação da função abaixo
+// a partir de um código referencial de @flaviusgorgonio
+
 void relatorioAgendamentos(int status){
     limparTela();
 
     FILE *arqAgendamentos;
     Funcionarios* funcionario;
-    Agendamento* ag;
-    ag = (Agendamento*)malloc(sizeof(Agendamento));
+    Agendamento tempAg;
+
+    NodoAg* listaOrdenada = NULL;
 
     arqAgendamentos = fopen("Agendamentos/agendamento.dat", "rb");
     if (arqAgendamentos == NULL){
@@ -354,6 +358,16 @@ void relatorioAgendamentos(int status){
         return;
     }
 
+    while (fread(&tempAg, sizeof(Agendamento), 1, arqAgendamentos)) {
+
+        if (status == 2 || tempAg.status == status) {
+            inserirOrdenado(&listaOrdenada, &tempAg);
+        }
+    }
+
+    fclose(arqAgendamentos);
+
+    // CABEÇALHO
     printf("\n==============================================================================\n");
     printf("||                     ~ ~ ~ Relatório de Agendamentos ~ ~ ~                ||\n");
     printf("==============================================================================\n");
@@ -361,32 +375,43 @@ void relatorioAgendamentos(int status){
     printf("\nID  |  Nome do Espetáculo  | Data       | Hora  | Cidade               | Capacidade | Preço   | Ingressos Vendidos | Nome do Responsável | Status\n");
     printf("---------------------------------------------------------------------------------------------------------------------------------------------------\n");
 
-    if (status == 2){
-        while(fread(ag, sizeof(Agendamento), 1, arqAgendamentos)){
-            funcionario = encontrarFuncionariosPorCpf(ag->cpfResponsavel);
+    NodoAg* aux = listaOrdenada;
+
+    if (status == 2) {
+        while (aux != NULL) {
+            funcionario = encontrarFuncionariosPorCpf(aux->ag.cpfResponsavel);
+
             printf("%d | %s | %s | %s | %s | %d | %.2f | %d | %s | %s\n",
-                ag->id,ag->nomeEspetaculo, ag->data, ag->horario, ag->cidade,
-                ag->capacidade, ag->precoIngresso,
-                ag->quantIngressosVend, funcionario->nome,
-                ag->status ? "Ativo" : "Cancelado");
+                aux->ag.id, aux->ag.nomeEspetaculo, aux->ag.data, aux->ag.horario, aux->ag.cidade,
+                aux->ag.capacidade, aux->ag.precoIngresso,
+                aux->ag.quantIngressosVend, funcionario->nome,
+                aux->ag.status ? "Ativo" : "Cancelado");
+
+            aux = aux->prox;
         }
+    } else if (status == 0 || status == 1) {
+        while (aux != NULL) {
+            if (aux->ag.status == status) {
+                funcionario = encontrarFuncionariosPorCpf(aux->ag.cpfResponsavel);
+
+                printf("%d | %s | %s | %s | %s | %d | %.2f | %d | %s | %s\n",
+                    aux->ag.id, aux->ag.nomeEspetaculo, aux->ag.data, aux->ag.horario, aux->ag.cidade,
+                    aux->ag.capacidade, aux->ag.precoIngresso,
+                    aux->ag.quantIngressosVend, funcionario->nome,
+                    aux->ag.status ? "Ativo" : "Cancelado");
+            }
+            aux = aux->prox;
+        }
+
     }
 
-    else if (status == 0 || status == 1){
-        while (fread(ag, sizeof(Agendamento), 1, arqAgendamentos)) {
-            if (ag->status == status) {
-                funcionario = encontrarFuncionariosPorCpf(ag->cpfResponsavel);
-                printf("%d | %s | %s | %s | %s | %d | %.2f | %d | %s | %s\n",
-                    ag->id,ag->nomeEspetaculo ,ag->data, ag->horario, ag->cidade,
-                    ag->capacidade, ag->precoIngresso,
-                    ag->quantIngressosVend, funcionario->nome,
-                    ag->status ? "Ativo" : "Cancelado");
-            }
-        }
+    while (listaOrdenada != NULL) {
+        NodoAg* tmp = listaOrdenada;
+        listaOrdenada = listaOrdenada->prox;
+        free(tmp);
     }
-    fclose(arqAgendamentos);
-    free(ag);
 }
+
 
 void relatorioClientes(int status){
     limparTela();
@@ -809,4 +834,36 @@ Funcionarios* encontrarFuncionariosPorCpf(char cpfParametro[]) {
 
     fclose(arqFuncionarios);
     return NULL;
+}
+
+// Créditos ao ChatGPT da OpenAI pela ajuda nesta função abaixo
+
+int dataParaInt(const char* data) {
+    int d, m, a;
+    sscanf(data, "%d/%d/%d", &d, &m, &a);
+    return a*10000 + m*100 + d;   // AAAAMMDD
+}
+
+
+void inserirOrdenado(NodoAg** lista, Agendamento* novoAg) {
+    NodoAg* novo = (NodoAg*)malloc(sizeof(NodoAg));
+    novo->ag = *novoAg;
+    novo->prox = NULL;
+
+    int dataNovo = dataParaInt(novoAg->data);
+
+    NodoAg *atual = *lista, *anterior = NULL;
+
+    while (atual != NULL && dataParaInt(atual->ag.data) < dataNovo) {
+        anterior = atual;
+        atual = atual->prox;
+    }
+
+    if (anterior == NULL) {          // insere no início
+        novo->prox = *lista;
+        *lista = novo;
+    } else {                          // meio ou fim
+        anterior->prox = novo;
+        novo->prox = atual;
+    }
 }
