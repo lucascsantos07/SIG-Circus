@@ -399,13 +399,15 @@ int verificarTamanhoMinimoString(const char str[], int tamanhoMinimo){
 }
 
 void lerTelefone(char telefone[], int tamanho) {
-    int valido;
-    printf("\n   Digite seu telefone: ");
-    fgets(telefone, tamanho, stdin);
-    telefone[strcspn(telefone, "\n")] = 0;
-    valido = verificarLetraEmString(telefone) * verificarTamanhoMinimoString(telefone, 7);
-    if (!valido) {
-        printf("\nTelefone inválido. Por favor, insira um telefone válido.\n");
+    int valido = 0;
+    while (!valido) {
+        printf("\n   Digite seu telefone: ");
+        fgets(telefone, tamanho, stdin);
+        telefone[strcspn(telefone, "\n")] = 0;
+        valido = verificarLetraEmString(telefone) * verificarTamanhoMinimoString(telefone, 7);
+        if (!valido) {
+            printf("\nTelefone inválido. Por favor, insira um telefone válido.\n");
+        }
     }
 }
 

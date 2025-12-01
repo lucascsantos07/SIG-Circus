@@ -4,6 +4,7 @@
 #include "../Agendamentos/agendamentos.h"
 #include "../Clientes/clientes.h"
 #include "../Funcionarios/funcionarios.h"
+#include "../Ingressos/ingressos.h"
 
 typedef struct Ag {
     Agendamento ag;
@@ -39,5 +40,7 @@ void lerClientes(const char* nomeArquivo, Cliente** lista);
 Cliente* encontrarClientePorCPF(char cpfParametro[]);
 Agendamento* encontrarAgendamentoPorID(int idEspParametro);
 Funcionarios* encontrarFuncionariosPorCpf(char cpfParametro[]);
+void lerFuncionarios(const char* nomeArquivo, Funcionarios** lista);
+void lerIngressos(const char* nomeArquivo, Ingressos** lista);
 
 #endif

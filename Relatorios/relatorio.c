@@ -454,37 +454,48 @@ void relatorioClientes(int status){
     return;
 }
 
-void relatorioFuncionarios(int status) {
-limparTela();
+void relatorioFuncionarios(int status){
+    limparTela();
 
-    Funcionarios* funcionario;
-    FILE* arqFuncionarios;
+    Funcionarios* listaFuncionarios = NULL;
 
-    funcionario = (Funcionarios*)malloc(sizeof(Funcionarios));
+    lerFuncionarios("Funcionarios/funcionarios.dat", &listaFuncionarios);
 
-    arqFuncionarios = fopen("Funcionarios/funcionarios.dat", "rb");
+    printf("\n============================================================================================\n");
+    printf("||                              ~ ~ ~ Relatório de Funcionários ~ ~ ~                     ||\n");
+    printf("============================================================================================\n");
+    printf("\nCPF | Nome | Data de Nasc. | Email | Sexo | Endereço | Telefone | Salário | Cargo |status\n");
+    printf("--------------------------------------------------------------------------------------------\n");
 
-    printf("\n===============================================================================================\n");
-    printf("||                             ~ ~ ~ Relatório de Funcionárioss ~ ~ ~                        ||\n");
-    printf("===============================================================================================\n");
-    printf("CPF | Nome | Email | Data de Nascimento | Sexo | Endereço | Telefone | Salário | Cargo | Status\n");
-    printf("-----------------------------------------------------------------------------------------------");
+    Funcionarios* temp = listaFuncionarios;
 
     if (status == 2) {
-        while (fread(funcionario, sizeof(Funcionarios), 1, arqFuncionarios)) {
-        printf("\n%s | %s | %s | %s | %s | %s | %s | %s | %s | %s", funcionario->cpf, funcionario->nome, funcionario->email, funcionario->dataNascimento,  funcionario->sexo, funcionario->endereco, funcionario->telefone, funcionario->salario, funcionario->cargo, funcionario->status ? "Ativo" : "Inativo");
+        while (temp != NULL) {
+            printf("\n%s | %s | %s | %s | %s | %s | %s | %s | %s | %s",
+            temp->cpf, temp->nome, temp->dataNascimento, temp->email, 
+            temp->sexo, temp->endereco, temp->telefone, temp->salario, 
+            temp->cargo, temp->status ? "Ativo" : "Inativo");
+            temp = temp->prox;
         }
     } else if (status == 0 || status == 1) {
-        while (fread(funcionario, sizeof(Funcionarios), 1, arqFuncionarios)) {
-            if (funcionario->status == status) {
-            printf("\n%s | %s | %s | %s | %s | %s | %s | %s | %s | %s", funcionario->cpf, funcionario->nome, funcionario->email, funcionario->dataNascimento,  funcionario->sexo, funcionario->endereco, funcionario->telefone, funcionario->salario, funcionario->cargo, funcionario->status ? "Ativo" : "Inativo");
+        while (temp != NULL) {
+            if (temp->status == status) {
+                printf("\n%s | %s | %s | %s | %s | %s | %s | %s | %s | %s",
+                temp->cpf, temp->nome, temp->dataNascimento, temp->email, 
+                temp->sexo, temp->endereco, temp->telefone, temp->salario, 
+                temp->cargo, temp->status ? "Ativo" : "Inativo");
             }
+            temp = temp->prox;
         }
     }
 
+    while (listaFuncionarios != NULL) {
+        Funcionarios* aux = listaFuncionarios;
+        listaFuncionarios = listaFuncionarios->prox;
+        free(aux);
+    }
 
-    fclose(arqFuncionarios);
-    free(funcionario);
+    return;
 }
 
 void relatorioIngressos(int status) {
@@ -908,4 +919,45 @@ void lerClientes(const char* nomeArquivo, Cliente** lista) {
     }
 
     fclose(arqCliente);
+}
+
+void lerFuncionarios(const char* nomeArquivo, Funcionarios** lista) {
+    FILE *arqFuncionarios;
+    Funcionarios* novoFuncionario;
+    
+    arqFuncionarios = fopen(nomeArquivo, "rb");
+    if (arqFuncionarios == NULL) {
+        printf("Erro na abertura do arquivo de funcionários!\n");
+        exit(1);
+    }
+
+    while (1) {
+        novoFuncionario = (Funcionarios*)malloc(sizeof(Funcionarios));
+        if (novoFuncionario == NULL) {
+            printf("Erro ao alocar memória para o funcionário.\n");
+            fclose(arqFuncionarios);
+            exit(1);
+        }
+
+        if (fread(novoFuncionario, sizeof(Funcionarios), 1, arqFuncionarios) != 1) {
+            free(novoFuncionario);
+            break;
+        }
+
+        // Inserção ordenada por nome
+        if (*lista == NULL || strcmp(novoFuncionario->nome, (*lista)->nome) < 0) {
+            novoFuncionario->prox = *lista;
+            *lista = novoFuncionario;
+        } else {
+            Funcionarios* anter = *lista, *atual = (*lista)->prox;
+            while (atual != NULL && strcmp(novoFuncionario->nome, atual->nome) > 0) {
+                anter = atual;
+                atual = atual->prox;
+            }
+            anter->prox = novoFuncionario;
+            novoFuncionario->prox = atual;
+        }
+    }
+
+    fclose(arqFuncionarios);
 }
