@@ -534,13 +534,15 @@ void relatorioIngressos(int status) {
         }
     } else if (status == 0 || status == 1) {
         while (fread(ingresso, sizeof(Ingressos), 1, arqIngresso)) {
-                if (ingresso->status == status) {
-                    if (cliente == 0) {
-                    printf("\nCliente não encontrado. Informações estão incompletas.\n");
-                } else if (agendamento == 0) {
-                    printf("\nAgendamento não encontrado. Informações estão incompletas.\n");
-                }
-                printf("\n%d | %s | %d | %s | %s ", ingresso->id, cliente->nome, ingresso->quantidadeIngressos, agendamento->nomeEspetaculo, ingresso->status ? "Ativo" : "Inativo");            }
+            cliente = encontrarClientePorCPF(ingresso->cpfCliente);
+            agendamento = encontrarAgendamentoPorID(ingresso->idEspetaculo);
+            if (ingresso->status == status) {
+                if (cliente == 0) {
+                printf("\nCliente não encontrado. Informações estão incompletas.\n");
+            } else if (agendamento == 0) {
+                printf("\nAgendamento não encontrado. Informações estão incompletas.\n");
+            }
+            printf("\n%d | %s | %d | %s | %s ", ingresso->id, cliente->nome, ingresso->quantidadeIngressos, agendamento->nomeEspetaculo, ingresso->status ? "Ativo" : "Inativo");            }
         }
     }
 
