@@ -526,7 +526,8 @@ void relatorioIngressos(int status) {
             agendamento = encontrarAgendamentoPorID(ingresso->idEspetaculo);
             if (cliente == 0) {
                 printf("\nCliente não encontrado. Informações estão incompletas.\n");
-            } else if (agendamento == 0) {
+            }
+            if (agendamento == 0) {
                 printf("\nAgendamento não encontrado. Informações estão incompletas.\n");
             }
             printf("\n%d | %s | %d | %s | %s ", ingresso->id, cliente->nome, ingresso->quantidadeIngressos, agendamento->nomeEspetaculo, ingresso->status ? "Ativo" : "Inativo");
