@@ -188,7 +188,6 @@ int verificarCPFUnicoFuncionario(const char cpf[]) {
         printf("\n\n\nERROR!\n\n\n");
         exit(1);
     }
-    func = (Funcionarios*)malloc(sizeof(Funcionarios));
     
     while (fread(func, sizeof(Funcionarios), 1, arqFuncionarios)) {
         if (strcmp(func->cpf, cpf) == 0) {
@@ -219,13 +218,13 @@ int verificarCPFUnicoCliente(const char cpf[]) {
         printf("\n\n\nERROR!\n\n\n");
         exit(1);
     }
-    cli = (Cliente*)malloc(sizeof(Cliente));
+    
     
     while (fread(cli, sizeof(Cliente), 1, arqCliente)) {
         if (strcmp(cli->cpf, cpf) == 0) {
             fclose(arqCliente);
             free(cli);
-            return False; 
+            return False; // CPF já existente
         }
     }
 
