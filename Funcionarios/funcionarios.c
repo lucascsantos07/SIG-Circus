@@ -84,7 +84,7 @@ void listarDadosFuncionario(void) {
 
     funcionario = (Funcionarios*)malloc(sizeof(Funcionarios));
 
-    lerCPF(cpfLido,20);
+    lerCPF(cpfLido,20,'0');
 
     arqFuncionarios = fopen("Funcionarios/funcionarios.dat", "rb");
     if (arqFuncionarios == NULL) {
@@ -127,7 +127,7 @@ void editarDadosFuncionario(void) {
 
     funcionario = (Funcionarios*)malloc(sizeof(Funcionarios));
 
-    lerCPF(cpfBusca,20);
+    lerCPF(cpfBusca,20,'0');
 
     arqFuncionarios = fopen("Funcionarios/funcionarios.dat", "r+b");
 
@@ -177,7 +177,7 @@ void excluirFuncionario(void) {
 
     funcionario = (Funcionarios*)malloc(sizeof(Funcionarios));
 
-    lerCPF(cpfBusca,20);
+    lerCPF(cpfBusca,20,'0');
 
     arqFuncionarios = fopen("Funcionarios/funcionarios.dat", "r+b");
 
@@ -247,7 +247,7 @@ Funcionarios* ColetarDadosFuncionario(void) {
     lerNome(funcionarios->nome, 50);
     lerData(funcionarios->dataNascimento, 20);
     lerEmail(funcionarios->email, 50);
-    lerCPF(funcionarios->cpf, 20);
+    lerCPF(funcionarios->cpf, 20, 'F');
     lerSexo(funcionarios->sexo, 12);
     lerEndereco(funcionarios->endereco, 100);
     lerTelefone(funcionarios->telefone, 15);
@@ -327,7 +327,7 @@ void deletarFuncionarioPermanentemente(void){
 
     funcionario = (Funcionarios*)malloc(sizeof(Funcionarios));
 
-    lerCPF(cpfBusca,20);
+    lerCPF(cpfBusca,20,'0');
 
     arqFuncionarios = fopen("Funcionarios/funcionarios.dat", "rb");
     arqTemp = fopen("Funcionarios/temp.dat", "wb");
@@ -433,7 +433,7 @@ void alterarDadoFunc(int opcao, Funcionarios* funcionario, FILE* arqFuncionarios
             break;
         case 4:
             
-            lerCPF(novoCpf, 20);
+            lerCPF(novoCpf, 20,'0');
 
             retorno = confirmarAlteracao();
 

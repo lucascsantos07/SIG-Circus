@@ -6,6 +6,8 @@
 #include "../Agendamentos/agendamentos.h"
 #include "../Ingressos/ingressos.h"
 #include "../Utilitarios/utilitarios.h"
+#include "../Funcionarios/funcionarios.h"
+#include "../Clientes/clientes.h"
 
 #define True 1
 #define False 0
@@ -135,7 +137,9 @@ int validarCPF(char cpf[]) {
 
 }
 
-void lerCPF(char cpf[], int tamanho){
+void lerCPF(char cpf[], int tamanho, char usuario){
+
+    int cadastrado = True;
 
     do{
         printf("\n   Digite seu CPF: ");
@@ -146,8 +150,84 @@ void lerCPF(char cpf[], int tamanho){
             printf("\n   CPF inválido!\n");
         }
 
-    }while(!validarCPF(cpf));
+        if (usuario == 'F') {
+            if (!verificarCPFUnicoFuncionario(cpf)) {
+                printf("\n   CPF já cadastrado para outro funcionário!\n");
+                cadastrado = True;
+            } else {
+                cadastrado = False;
+            }
+        } else if (usuario == 'C') {
+            if (!verificarCPFUnicoCliente(cpf)) {
+                printf("\n   CPF já cadastrado para outro cliente!\n");
+                cadastrado = True;
+            } else {
+                cadastrado = False;
+            }
+        } else {
+            cadastrado = False;
+        }
 
+    }while(!validarCPF(cpf) || cadastrado);
+
+}
+
+int verificarCPFUnicoFuncionario(const char cpf[]) {
+    FILE* arqFuncionarios;
+    Funcionarios* func;
+
+    if (func == NULL) {
+        printf("Erro de memória!\n");
+        exit(1);
+    }
+    
+    arqFuncionarios = fopen("Funcionarios/funcionarios.dat", "rb");
+    if (arqFuncionarios == NULL) {
+        printf("\n\n\nERROR!\n\n\n");
+        exit(1);
+    }
+    func = (Funcionarios*)malloc(sizeof(Funcionarios));
+    
+    while (fread(func, sizeof(Funcionarios), 1, arqFuncionarios)) {
+        if (strcmp(func->cpf, cpf) == 0) {
+            fclose(arqFuncionarios);
+            free(func);
+            return False; // CPF já existe
+        }
+    }
+
+    fclose(arqFuncionarios);
+    free(func);
+    return True; // CPF é único
+}
+
+int verificarCPFUnicoCliente(const char cpf[]) {
+    FILE* arqCliente;
+    Cliente* cli;
+
+    if (cli == NULL) {
+        printf("Erro de memória!\n");
+        exit(1);
+    }
+    
+    arqCliente = fopen("Clientes/clientes.dat", "rb");
+    if (arqCliente == NULL) {
+        printf("\n\n\nERROR!\n\n\n");
+        exit(1);
+    }
+    cli = (Cliente*)malloc(sizeof(Cliente));
+    
+    while (fread(cli, sizeof(Cliente), 1, arqCliente)) {
+        if (strcmp(cli->cpf, cpf) == 0) {
+            fclose(arqCliente);
+            free(cli);
+            return False; 
+        }
+    }
+
+    fclose(arqCliente);
+    free(cli);
+    return True; // CPF é único
 }
 
 //creditos: GPT-5
@@ -399,13 +479,15 @@ int verificarTamanhoMinimoString(const char str[], int tamanhoMinimo){
 }
 
 void lerTelefone(char telefone[], int tamanho) {
-    int valido;
-    printf("\n   Digite seu telefone: ");
-    fgets(telefone, tamanho, stdin);
-    telefone[strcspn(telefone, "\n")] = 0;
-    valido = verificarLetraEmString(telefone) * verificarTamanhoMinimoString(telefone, 7);
-    if (!valido) {
-        printf("\nTelefone inválido. Por favor, insira um telefone válido.\n");
+    int valido = 0;
+    while (!valido) {
+        printf("\n   Digite seu telefone: ");
+        fgets(telefone, tamanho, stdin);
+        telefone[strcspn(telefone, "\n")] = 0;
+        valido = verificarLetraEmString(telefone) * verificarTamanhoMinimoString(telefone, 7);
+        if (!valido) {
+            printf("\nTelefone inválido. Por favor, insira um telefone válido.\n");
+        }
     }
 }
 
@@ -533,4 +615,20 @@ int lerIdEspetaculo(){
     fclose(arqAgendamentos);
     free(agendamento);
     return idEspetaculo;
+}
+
+void lerNomeEspetaculo(char nomeEspetaculo[], int tamanho){
+
+    do {
+
+        printf("\n   Digite o nome do espetáculo: ");
+        fgets(nomeEspetaculo, tamanho, stdin);
+        nomeEspetaculo[strcspn(nomeEspetaculo, "\n")] = '\0';
+
+        if(!validarNome(nomeEspetaculo)) {
+            printf("\n   Nome do Espetáculo inválido! Apenas letras e espaços são permitidos.\n");
+        }
+
+    } while(!validarNome(nomeEspetaculo));
+
 }

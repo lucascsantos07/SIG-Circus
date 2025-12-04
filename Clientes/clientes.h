@@ -20,6 +20,7 @@ struct cliente{
     char email[50];
     char cpf[20];
     int status;
+    Cliente* prox;
 };
 
 Cliente* coletarDadosCliente(void);

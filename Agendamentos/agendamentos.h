@@ -17,6 +17,7 @@ void exibirModuloAgendamentos(void);
 typedef struct agendamento Agendamento;
 
 struct agendamento{
+    char nomeEspetaculo[100];
     char data[12];
     char cpfResponsavel[20];
     char cidade[50];

@@ -56,7 +56,7 @@ void telaCadastroVendaIngresso(void) {
     
     ingresso = ColetarDadosIngressos();
 
-    if (ingresso != '\0') {
+    if (ingresso != NULL) {
 
         ExibirIngresso(ingresso);
 
@@ -86,7 +86,7 @@ void consultarVendaIngresso(void) {
     printf("==============================================================================\n");
 
     ingresso = (Ingressos*)malloc(sizeof(Ingressos));
-    lerCPF(cpfInput,20);
+    lerCPF(cpfInput,20,'0');
 
     arqIngressos = fopen("Ingressos/ingressos.dat", "rb");
     if (arqIngressos == NULL) {
@@ -249,7 +249,7 @@ Ingressos* ColetarDadosIngressos(void) {
     Agendamento* agendamento;
     agendamento = (Agendamento*)malloc(sizeof(Agendamento));
 
-    lerCPF(ingresso->cpfCliente, 20);
+    lerCPF(ingresso->cpfCliente, 20, '0');
 
     printf("\nAgendamentos Ativos\n");
     ExibirTodosAgendamentos();

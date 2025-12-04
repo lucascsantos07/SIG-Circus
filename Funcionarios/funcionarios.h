@@ -17,6 +17,7 @@ struct funcionarios {
     char salario[20];
     char cargo[30];
     int status;
+    Funcionarios* prox;
 };
 
 char menuFuncionarios(void);

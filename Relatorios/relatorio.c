@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "relatorio.h"
 #include "../Agendamentos/agendamentos.h"
 #include "../Clientes/clientes.h"
 #include "../Utilitarios/utilitarios.h"
-#include "relatorio.h"
 #include "../Funcionarios/funcionarios.h"
 #include "../Ingressos/ingressos.h"
 
@@ -340,12 +340,17 @@ void menuRelatoriosIngressos(void){
     printf("\nDigite sua opção: ");
 }
 
+// Creáditos ao chatGPT por ajudar na implementação da função abaixo
+// a partir de um código referencial de @flaviusgorgonio
+
 void relatorioAgendamentos(int status){
     limparTela();
 
     FILE *arqAgendamentos;
-    Agendamento* ag;
-    ag = (Agendamento*)malloc(sizeof(Agendamento));
+    Funcionarios* funcionario;
+    Agendamento tempAg;
+
+    Ag* listaOrdenada = NULL;
 
     arqAgendamentos = fopen("Agendamentos/agendamento.dat", "rb");
     if (arqAgendamentos == NULL){
@@ -353,116 +358,153 @@ void relatorioAgendamentos(int status){
         return;
     }
 
+    while (fread(&tempAg, sizeof(Agendamento), 1, arqAgendamentos)) {
+
+        if (status == 2 || tempAg.status == status) {
+            inserirOrdenado(&listaOrdenada, &tempAg);
+        }
+    }
+
+    fclose(arqAgendamentos);
+
     printf("\n==============================================================================\n");
     printf("||                     ~ ~ ~ Relatório de Agendamentos ~ ~ ~                ||\n");
     printf("==============================================================================\n");
 
-    printf("\nID  | Data       | Hora  | Cidade               | Capacidade | Preço   | Ingressos Vendidos | CPF Responsável | Status\n");
-    printf("---------------------------------------------------------------------------------------------------------------------------\n");
+    printf("\nID  |  Nome do Espetáculo  | Data       | Hora  | Cidade               | Capacidade | Preço   | Ingressos Vendidos | Nome do Responsável | Status\n");
+    printf("---------------------------------------------------------------------------------------------------------------------------------------------------\n");
 
-    if (status == 2){
-        while(fread(ag, sizeof(Agendamento), 1, arqAgendamentos)){
-            printf("%d | %s | %s | %s | %d | %.2f | %d | %s | %s\n",
-                ag->id, ag->data, ag->horario, ag->cidade,
-                ag->capacidade, ag->precoIngresso,
-                ag->quantIngressosVend, ag->cpfResponsavel,
-                ag->status ? "Ativo" : "Cancelado");
+    Ag* aux = listaOrdenada;
+
+    if (status == 2) {
+        while (aux != NULL) {
+            funcionario = encontrarFuncionariosPorCpf(aux->ag.cpfResponsavel);
+
+            printf("%d | %s | %s | %s | %s | %d | %.2f | %d | %s | %s\n",
+                aux->ag.id, aux->ag.nomeEspetaculo, aux->ag.data, aux->ag.horario, aux->ag.cidade,
+                aux->ag.capacidade, aux->ag.precoIngresso,
+                aux->ag.quantIngressosVend, funcionario->nome,
+                aux->ag.status ? "Ativo" : "Cancelado");
+
+            aux = aux->prox;
         }
-    }
+    } else if (status == 0 || status == 1) {
+        while (aux != NULL) {
+            if (aux->ag.status == status) {
+                funcionario = encontrarFuncionariosPorCpf(aux->ag.cpfResponsavel);
 
-    else if (status == 0 || status == 1){
-        while (fread(ag, sizeof(Agendamento), 1, arqAgendamentos)) {
-            if (ag->status == status) {
-                printf("%d | %s | %s | %s | %d | %.2f | %d | %s | %s\n",
-                    ag->id, ag->data, ag->horario, ag->cidade,
-                    ag->capacidade, ag->precoIngresso,
-                    ag->quantIngressosVend, ag->cpfResponsavel,
-                    ag->status ? "Ativo" : "Cancelado");
+                printf("%d | %s | %s | %s | %s | %d | %.2f | %d | %s | %s\n",
+                    aux->ag.id, aux->ag.nomeEspetaculo, aux->ag.data, aux->ag.horario, aux->ag.cidade,
+                    aux->ag.capacidade, aux->ag.precoIngresso,
+                    aux->ag.quantIngressosVend, funcionario->nome,
+                    aux->ag.status ? "Ativo" : "Cancelado");
             }
+            aux = aux->prox;
         }
+
     }
-    fclose(arqAgendamentos);
-    free(ag);
+
+    while (listaOrdenada != NULL) {
+        Ag* tmp = listaOrdenada;
+        listaOrdenada = listaOrdenada->prox;
+        free(tmp);
+    }
 }
+
 
 void relatorioClientes(int status){
     limparTela();
 
-    FILE *arqCliente;
-    Cliente* cli;
-    cli = (Cliente*)malloc(sizeof(Cliente));
+    Cliente* listaClientes = NULL;
 
-    arqCliente = fopen("Clientes/clientes.dat", "rb");
-    if (arqCliente == NULL){
-        printf("\n  Nenhum cliente encontrado!\n");
-        return;
-    }
+    lerClientes("Clientes/clientes.dat", &listaClientes);
 
-    printf("\n==============================================================================\n");
+    printf("\n=============================================================================\n");
     printf("||                       ~ ~ ~ Relatório de Clientes ~ ~ ~                  ||\n");
-    printf("==============================================================================\n");
+    printf("=============================================================================\n");
     printf("\nCPF           | Nome                           | Data de Nasc.   | Email          | Status\n");
     printf("--------------------------------------------------------------------------------------------\n");
 
-    if (status == 2){
-        while (fread(cli, sizeof(Cliente), 1, arqCliente) == 1) {
-            printf("%s | %s | %s | %s | %s\n",
-            cli->cpf, cli->nome, cli->dataNascimento, cli->email,
-            cli->status ? "Ativo" : "Inativo");
-        }
-    }
-
-    else if (status == 0 || status == 1){
-        while (fread(cli, sizeof(Cliente), 1, arqCliente)) {
-            if (cli->status == status) {
-                printf("%s | %s | %s | %s | %s\n",
-                cli->cpf, cli->nome, cli->dataNascimento, cli->email,
-                cli->status ? "Ativo" : "Inativo");
-            }
-        }
-    }
-    fclose(arqCliente);
-    free(cli);
-}
-
-void relatorioFuncionarios(int status) {
-limparTela();
-
-    Funcionarios* funcionario;
-    FILE* arqFuncionarios;
-
-    funcionario = (Funcionarios*)malloc(sizeof(Funcionarios));
-
-    arqFuncionarios = fopen("Funcionarios/funcionarios.dat", "rb");
-
-    printf("\n===============================================================================================\n");
-    printf("||                             ~ ~ ~ Relatório de Funcionárioss ~ ~ ~                        ||\n");
-    printf("===============================================================================================\n");
-    printf("CPF | Nome | Email | Data de Nascimento | Sexo | Endereço | Telefone | Salário | Cargo | Status\n");
-    printf("-----------------------------------------------------------------------------------------------");
+    Cliente* temp = listaClientes;
 
     if (status == 2) {
-        while (fread(funcionario, sizeof(Funcionarios), 1, arqFuncionarios)) {
-        printf("\n%s | %s | %s | %s | %s | %s | %s | %s | %s | %s", funcionario->cpf, funcionario->nome, funcionario->email, funcionario->dataNascimento,  funcionario->sexo, funcionario->endereco, funcionario->telefone, funcionario->salario, funcionario->cargo, funcionario->status ? "Ativo" : "Inativo");
+        while (temp != NULL) {
+            printf("%s | %s | %s | %s | %s\n",
+                temp->cpf, temp->nome, temp->dataNascimento, temp->email,
+                temp->status ? "Ativo" : "Inativo");
+            temp = temp->prox;
         }
-    } else if (status == 0 || status == 1) {
-        while (fread(funcionario, sizeof(Funcionarios), 1, arqFuncionarios)) {
-            if (funcionario->status == status) {
-            printf("\n%s | %s | %s | %s | %s | %s | %s | %s | %s | %s", funcionario->cpf, funcionario->nome, funcionario->email, funcionario->dataNascimento,  funcionario->sexo, funcionario->endereco, funcionario->telefone, funcionario->salario, funcionario->cargo, funcionario->status ? "Ativo" : "Inativo");
+    } else if( status == 0 || status == 1) {
+        while (temp != NULL) {
+            if (temp->status == status) {
+                printf("%s | %s | %s | %s | %s\n",
+                    temp->cpf, temp->nome, temp->dataNascimento, temp->email,
+                    temp->status ? "Ativo" : "Inativo");
             }
+            temp = temp->prox;
         }
     }
 
+    while (listaClientes != NULL) {
+        Cliente* aux = listaClientes;
+        listaClientes = listaClientes->prox;
+        free(aux);
+    }
 
-    fclose(arqFuncionarios);
-    free(funcionario);
+    return;
 }
 
-relatorioIngressos(int status) {
+void relatorioFuncionarios(int status){
+    limparTela();
+
+    Funcionarios* listaFuncionarios = NULL;
+
+    lerFuncionarios("Funcionarios/funcionarios.dat", &listaFuncionarios);
+
+    printf("\n============================================================================================\n");
+    printf("||                              ~ ~ ~ Relatório de Funcionários ~ ~ ~                     ||\n");
+    printf("============================================================================================\n");
+    printf("\nCPF | Nome | Data de Nasc. | Email | Sexo | Endereço | Telefone | Salário | Cargo |status\n");
+    printf("--------------------------------------------------------------------------------------------\n");
+
+    Funcionarios* temp = listaFuncionarios;
+
+    if (status == 2) {
+        while (temp != NULL) {
+            printf("\n%s | %s | %s | %s | %s | %s | %s | %s | %s | %s",
+            temp->cpf, temp->nome, temp->dataNascimento, temp->email, 
+            temp->sexo, temp->endereco, temp->telefone, temp->salario, 
+            temp->cargo, temp->status ? "Ativo" : "Inativo");
+            temp = temp->prox;
+        }
+    } else if (status == 0 || status == 1) {
+        while (temp != NULL) {
+            if (temp->status == status) {
+                printf("\n%s | %s | %s | %s | %s | %s | %s | %s | %s | %s",
+                temp->cpf, temp->nome, temp->dataNascimento, temp->email, 
+                temp->sexo, temp->endereco, temp->telefone, temp->salario, 
+                temp->cargo, temp->status ? "Ativo" : "Inativo");
+            }
+            temp = temp->prox;
+        }
+    }
+
+    while (listaFuncionarios != NULL) {
+        Funcionarios* aux = listaFuncionarios;
+        listaFuncionarios = listaFuncionarios->prox;
+        free(aux);
+    }
+
+    return;
+}
+
+void relatorioIngressos(int status) {
     limparTela();
 
     Ingressos* ingresso;
     FILE* arqIngresso;
+    Cliente* cliente;
+    Agendamento* agendamento;
 
     ingresso = (Ingressos*)malloc(sizeof(Ingressos));
 
@@ -471,20 +513,38 @@ relatorioIngressos(int status) {
     printf("\n===========================================================================\n");
     printf("||                     ~ ~ ~ Relatório de Ingressos ~ ~ ~                ||\n");
     printf("===========================================================================\n");
-    printf("ID | CPF do cliente | Quantidade de Ingressos | ID do espetáculo | Status\n");
-    printf("-------------------------------------------------------------------------");
+    printf("ID | Nome do cliente | Quantidade de Ingressos | Nome do espetáculo | Status\n");
+    printf("----------------------------------------------------------------------------\n");
 
+    cliente = (Cliente*)malloc(sizeof(Cliente));
+    agendamento = (Agendamento*)malloc(sizeof(Cliente));
+
+    
     if (status == 2) {
         while (fread(ingresso, sizeof(Ingressos), 1, arqIngresso)) {
-        printf("\n%d | %s | %d | %d | %s ", ingresso->id, ingresso->cpfCliente, ingresso->quantidadeIngressos, ingresso->idEspetaculo, ingresso->status ? "Ativo" : "Inativo");
+            cliente = encontrarClientePorCPF(ingresso->cpfCliente);
+            agendamento = encontrarAgendamentoPorID(ingresso->idEspetaculo);
+            if (cliente == 0) {
+                printf("\nCliente não encontrado. Informações estão incompletas.\n");
+            } else if (agendamento == 0) {
+                printf("\nAgendamento não encontrado. Informações estão incompletas.\n");
+            }
+            printf("\n%d | %s | %d | %s | %s ", ingresso->id, cliente->nome, ingresso->quantidadeIngressos, agendamento->nomeEspetaculo, ingresso->status ? "Ativo" : "Inativo");
         }
     } else if (status == 0 || status == 1) {
         while (fread(ingresso, sizeof(Ingressos), 1, arqIngresso)) {
-            if (ingresso->status == status) {
-                printf("\n%d | %s | %d | %d | %s ", ingresso->id, ingresso->cpfCliente, ingresso->quantidadeIngressos, ingresso->idEspetaculo, ingresso->status ? "Ativo" : "Inativo");            }
+                if (ingresso->status == status) {
+                    if (cliente == 0) {
+                    printf("\nCliente não encontrado. Informações estão incompletas.\n");
+                } else if (agendamento == 0) {
+                    printf("\nAgendamento não encontrado. Informações estão incompletas.\n");
+                }
+                printf("\n%d | %s | %d | %s | %s ", ingresso->id, cliente->nome, ingresso->quantidadeIngressos, agendamento->nomeEspetaculo, ingresso->status ? "Ativo" : "Inativo");            }
         }
     }
 
+    free(cliente);
+    free(agendamento);
     fclose(arqIngresso);
     free(ingresso);
 }
@@ -500,6 +560,7 @@ int buscarAgendamentosPorCidade(const char* cidadeBuscada) {
         printf("\nErro ao abrir o arquivo de agendamentos!\n");
         return 0;
     }
+    Funcionarios* funcionario;
 
     Agendamento* ag;
     ag = (Agendamento*)malloc(sizeof(Agendamento));
@@ -509,16 +570,17 @@ int buscarAgendamentosPorCidade(const char* cidadeBuscada) {
     printf("||                               ~ ~ ~ Relatório de Agendamentos Filtrados Por Cidades ~ ~ ~                          ||\n");
     printf("========================================================================================================================\n");
 
-    printf("\nID  |    Data    | Hora  |        Cidade        | Capacidade |  Preço  | Ingressos Vendidos | CPF Responsável | Status\n");
+    printf("\nID  |    Data    | Hora  |        Cidade        | Capacidade |  Preço  | Ingressos Vendidos | Nome do Responsável | Status\n");
     printf("------------------------------------------------------------------------------------------------------------------------\n");
 
     while (fread(ag, sizeof(Agendamento), 1, arqAgendamentos)) {
         if (strcasecmp(ag->cidade, cidadeBuscada) == 0) {
             encontrados++;
+            funcionario = encontrarFuncionariosPorCpf(ag->cpfResponsavel);
             printf("%d | %s | %s | %s | %d | %.2f | %d | %s | %s\n",
                 ag->id, ag->data, ag->horario, ag->cidade,
                 ag->capacidade, ag->precoIngresso,
-                ag->quantIngressosVend, ag->cpfResponsavel,
+                ag->quantIngressosVend, funcionario->nome,
                 ag->status ? "Ativo" : "Cancelado");
         }
     }
@@ -575,7 +637,7 @@ int buscarClientesPorNome(const char* nomeBuscado) {
     printf("--------------------------------------------------------------------------------------------\n");
 
     while (fread(cli, sizeof(Cliente), 1, arqCliente)) {
-        if (strcasestr(cli->nome, nomeBuscado) != NULL) {
+        if (strncasecmp(cli->nome, nomeBuscado, strlen(nomeBuscado)) == 0) {
             encontrados++;
             printf("%s | %s | %s | %s | %s\n",
                 cli->cpf, cli->nome, cli->dataNascimento, cli->email,
@@ -628,11 +690,11 @@ int buscarFuncionariosPorNome(const char *nomeBuscado) {
     arqFuncionarios = fopen("Funcionarios/funcionarios.dat", "r+b");
     if (arqFuncionarios == NULL) {
         printf("\n\n\nERROR!\n\n\n");
-        return;
+        return 0 ;
     }
 
     while (fread(func, sizeof(Funcionarios), 1, arqFuncionarios)) {
-        if (strcasestr(func->nome, nomeBuscado) != NULL) {
+        if (strncasecmp(func->nome, nomeBuscado,  strlen(nomeBuscado)) == 0) {
             encontrados++;
             printf("%s | %s | %s | %s | %s | %s | %s | %s | %s | %s \n", func->nome, func->dataNascimento, func->email, func->cpf, func->sexo, func->endereco, func->telefone, func->salario, func->cargo, func->status ? "Ativo" : "Inativo");
         }
@@ -668,13 +730,12 @@ void filtrarFuncionariosPorNome(void) {
 
 }
 
-int BuscarIngressosPorEspetaculo(const int* espetaculoID) {
+int buscarIngressosPorEspetaculo(const int* espetaculoID) {
     limparTela();
 
     FILE* arqIngresso;
     Cliente* cliente;
-
-    int found = False;
+    Agendamento* agendamento;
 
     Ingressos* ing;
     ing = (Ingressos*)malloc(sizeof(Ingressos));
@@ -684,24 +745,25 @@ int BuscarIngressosPorEspetaculo(const int* espetaculoID) {
     printf("\n============================================================================================\n");
     printf("||                              ~ ~ ~ Relatório de Ingressos ~ ~ ~                        ||\n");
     printf("============================================================================================\n");
-    printf("\nID do  ingresso | Nome do Cliente | Quantidade  | ID do espetáculo    | Status\n");
+    printf("\nID do  ingresso | Nome do Cliente | Quantidade  | Nome do espetáculo    | Status\n");
     printf("--------------------------------------------------------------------------------------------\n");
 
     arqIngresso = fopen("Ingressos/ingressos.dat", "r+b");
     if (arqIngresso == NULL) {
         printf("\n\n\nERROR\n\n\n");
-        return;
+        return 0;
     }
 
     while (fread(ing, sizeof(Ingressos), 1, arqIngresso)) {
-        if (ing->idEspetaculo == espetaculoID) {
+        if (ing->idEspetaculo == *espetaculoID) {
             encontrados++;
             cliente = encontrarClientePorCPF(ing->cpfCliente);
+            agendamento = encontrarAgendamentoPorID(ing->idEspetaculo);
 
             if (cliente == NULL) {
             printf("Cliente não encontrado.\n");
             } else {
-            printf("%d | %s | %d | %d | %s \n", ing->id, cliente->nome, ing->quantidadeIngressos, ing->idEspetaculo, ing->status ? "Ativo":"Inativo");
+            printf("%d | %s | %d | %s | %s \n", ing->id, cliente->nome, ing->quantidadeIngressos, agendamento->nomeEspetaculo, ing->status ? "Ativo":"Inativo");
             }
 
             
@@ -709,6 +771,7 @@ int BuscarIngressosPorEspetaculo(const int* espetaculoID) {
     }
 
     free(cliente);
+    free(agendamento);
     fclose(arqIngresso);
     free(ing);
 
@@ -730,7 +793,7 @@ void filtrarIngressosPorEspetaculo(void) {
     scanf("%d", &idBuscado);
     getchar();
 
-    encontrados = BuscarIngressosPorEspetaculo(idBuscado);
+    encontrados = buscarIngressosPorEspetaculo(&idBuscado);
 
     if (!encontrados) {
         printf("\nNenhum ingresso no espetáculo com ID: \"%d\"\n", idBuscado);
@@ -738,14 +801,15 @@ void filtrarIngressosPorEspetaculo(void) {
 
 }
 
-Cliente* encontrarClientePorCPF(char* cpfParametro[]) {
+Cliente* encontrarClientePorCPF(char cpfParametro[]) {
     FILE* arqCliente;
     Cliente* cli;
-    cli = (Cliente*)malloc(sizeof(Cliente));
     arqCliente = fopen("Clientes/clientes.dat", "rb");
     if (arqCliente == NULL) {
         printf("\n\n\nERROR!\n\n\n");
+        exit(1);
     }
+    cli = (Cliente*)malloc(sizeof(Cliente));
 
     while (fread(cli, sizeof(Cliente), 1, arqCliente)) {
         if (strcmp(cli->cpf, cpfParametro) == 0) {
@@ -755,5 +819,162 @@ Cliente* encontrarClientePorCPF(char* cpfParametro[]) {
     }
 
     fclose(arqCliente);
+    free(cli);
+    return 0;
+}
+
+Agendamento* encontrarAgendamentoPorID(int idEspParametro) {
+    FILE* arqAgendamento;
+    Agendamento* ag;
+    ag = (Agendamento*)malloc(sizeof(Agendamento));
+    arqAgendamento = fopen("Agendamentos/agendamento.dat", "rb");
+    if (arqAgendamento == NULL) {
+        printf("\n\n\nERROR\n\n\n");
+        return 0;
+    }
+
+    while(fread(ag, sizeof(Agendamento), 1, arqAgendamento)) {
+        if (ag->id == idEspParametro) {
+            fclose(arqAgendamento);
+            return ag;
+        }
+    }
+
+    fclose(arqAgendamento);
     return NULL;
+}
+
+Funcionarios* encontrarFuncionariosPorCpf(char cpfParametro[]) {
+    FILE* arqFuncionarios;
+    Funcionarios* funcionario;
+    funcionario = (Funcionarios*)malloc(sizeof(Funcionarios));
+    arqFuncionarios = fopen("Funcionarios/funcionarios.dat", "rb");
+    if (arqFuncionarios == NULL) {
+        printf("\n\n\nERROR\n\n\n");
+        return NULL;
+    }
+
+    while(fread(funcionario, sizeof(Funcionarios), 1, arqFuncionarios)) {
+        if (strcmp(funcionario->cpf, cpfParametro) == 0) {
+            fclose(arqFuncionarios);
+            return funcionario;
+        }
+    }
+
+    fclose(arqFuncionarios);
+    return NULL;
+}
+
+// Créditos ao ChatGPT da OpenAI pela ajuda nesta função abaixo
+
+int dataParaInt(const char* data) {
+    int d, m, a;
+    sscanf(data, "%d/%d/%d", &d, &m, &a);
+    return a*10000 + m*100 + d;
+}
+
+
+void inserirOrdenado(Ag** lista, Agendamento* novoAg) {
+    Ag* novo = (Ag*)malloc(sizeof(Ag));
+    novo->ag = *novoAg;
+    novo->prox = NULL;
+
+    int dataNovo = dataParaInt(novoAg->data);
+
+    Ag *atual = *lista, *anterior = NULL;
+
+    while (atual != NULL && dataParaInt(atual->ag.data) < dataNovo) {
+        anterior = atual;
+        atual = atual->prox;
+    }
+
+    if (anterior == NULL) {
+        novo->prox = *lista;
+        *lista = novo;
+    } else {
+        anterior->prox = novo;
+        novo->prox = atual;
+    }
+}
+
+
+void lerClientes(const char* nomeArquivo, Cliente** lista) {
+    FILE *arqCliente;
+    Cliente* novaCliente;
+    
+    arqCliente = fopen(nomeArquivo, "rb");
+    if (arqCliente == NULL) {
+        printf("Erro na abertura do arquivo de clientes!\n");
+        exit(1);
+    }
+
+    while (1) {
+        novaCliente = (Cliente*)malloc(sizeof(Cliente));
+        if (novaCliente == NULL) {
+            printf("Erro ao alocar memória para o cliente.\n");
+            fclose(arqCliente);
+            exit(1);
+        }
+
+        if (fread(novaCliente, sizeof(Cliente), 1, arqCliente) != 1) {
+            free(novaCliente);
+            break;
+        }
+
+        if (*lista == NULL || strcmp(novaCliente->nome, (*lista)->nome) < 0) {
+            novaCliente->prox = *lista;
+            *lista = novaCliente;
+        } else {
+            Cliente* anter = *lista, *atual = (*lista)->prox;
+            while (atual != NULL && strcmp(novaCliente->nome, atual->nome) > 0) {
+                anter = atual;
+                atual = atual->prox;
+            }
+            anter->prox = novaCliente;
+            novaCliente->prox = atual;
+        }
+    }
+
+    fclose(arqCliente);
+}
+
+void lerFuncionarios(const char* nomeArquivo, Funcionarios** lista) {
+    FILE *arqFuncionarios;
+    Funcionarios* novoFuncionario;
+    
+    arqFuncionarios = fopen(nomeArquivo, "rb");
+    if (arqFuncionarios == NULL) {
+        printf("Erro na abertura do arquivo de funcionários!\n");
+        exit(1);
+    }
+
+    while (1) {
+        novoFuncionario = (Funcionarios*)malloc(sizeof(Funcionarios));
+        if (novoFuncionario == NULL) {
+            printf("Erro ao alocar memória para o funcionário.\n");
+            fclose(arqFuncionarios);
+            exit(1);
+        }
+
+        if (fread(novoFuncionario, sizeof(Funcionarios), 1, arqFuncionarios) != 1) {
+            free(novoFuncionario);
+            break;
+        }
+
+        // Inserção ordenada por nome
+        if (*lista == NULL || strcmp(novoFuncionario->nome, (*lista)->nome) < 0) {
+            novoFuncionario->prox = *lista;
+            *lista = novoFuncionario;
+        } else {
+            Funcionarios* anter = *lista, *atual = (*lista)->prox;
+            while (atual != NULL && strcmp(novoFuncionario->nome, atual->nome) > 0) {
+                anter = atual;
+                atual = atual->prox;
+            }
+            anter->prox = novoFuncionario;
+            novoFuncionario->prox = atual;
+        }
+    }
+
+    fclose(arqFuncionarios);
 }

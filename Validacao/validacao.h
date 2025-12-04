@@ -10,7 +10,7 @@ int validarEmail(const char email[]);
 void lerEmail(char email[], int tamanho);
 
 int validarCPF(char cpf[]);
-void lerCPF(char cpf[], int tamanho);
+void lerCPF(char cpf[], int tamanho, char usuario);
 
 int validarData(const char data[]);
 void lerData(char data[], int tamanho);
@@ -47,6 +47,12 @@ int validarFormaDePagamento(int pagamento);
 
 void lerFormaDePagamento(int pagamento);
 
+void lerNomeEspetaculo(char nomeEspetaculo[], int tamanho);
+
 int lerIdEspetaculo();
+
+int verificarCPFUnicoFuncionario(const char cpf[]);
+
+int verificarCPFUnicoCliente(const char cpf[]);
 
 #endif

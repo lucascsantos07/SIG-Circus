@@ -87,7 +87,7 @@ void listarDadosCliente(void){
 
     cliente = (Cliente*) malloc(sizeof(Cliente));
     
-    lerCPF(cpfLido,20);
+    lerCPF(cpfLido,20,'0');
     
     arq_cliente= fopen("Clientes/clientes.dat","rb");
 
@@ -133,7 +133,7 @@ void editarDadoscliente(void){
 
     cliente = (Cliente*) malloc(sizeof(Cliente)); 
 
-    lerCPF(cpfBusca,20);
+    lerCPF(cpfBusca,20, '0');
 
     arqCliente= fopen("Clientes/clientes.dat","r+b");
 
@@ -185,7 +185,7 @@ void excluirContacliente(void){
 
     cliente = (Cliente*) malloc(sizeof(Cliente)); 
 
-    lerCPF(cpfBusca, 20);
+    lerCPF(cpfBusca, 20, '0');
 
     arqCliente= fopen("Clientes/clientes.dat","r+b");
 
@@ -240,7 +240,7 @@ void excluirClientePermanente(void) {
 
     cliente = (Cliente*) malloc(sizeof(Cliente));
 
-    lerCPF(cpfBusca,20);
+    lerCPF(cpfBusca,20, '0');
 
     temIngresso = verificarTemIngresso(cpfBusca);
 
@@ -319,7 +319,7 @@ Cliente* coletarDadosCliente(void){
     
     cliente = (Cliente*) malloc(sizeof(Cliente));
 
-    lerCPF(cliente->cpf, 20);
+    lerCPF(cliente->cpf, 20, 'C');
 
     lerNome(cliente->nome, 50);
 
@@ -352,7 +352,6 @@ void confirmacaoCadastroCliente(Cliente *cliente){
     printf("   <-------------  Digite 2 para cancelar cadastro  --------------------->\n");
     printf("\n  Opção: ");
     scanf("%c",&opcao);
-    getchar();
 
     limparBuffer();
 
@@ -390,7 +389,7 @@ void alterarDado(char opcao, Cliente* cliente, FILE* arqCliente){
     switch (opcao){
         case '1':
 
-            lerCPF(novoCpf,20);
+            lerCPF(novoCpf,20, '0');
             retorno = confirmarAlteracao();
             if(retorno==1){
                 strcpy(cliente->cpf,novoCpf);
