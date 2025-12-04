@@ -175,6 +175,8 @@ void lerCPF(char cpf[], int tamanho, char usuario){
 int verificarCPFUnicoFuncionario(const char cpf[]) {
     FILE* arqFuncionarios;
     Funcionarios* func;
+    func = (Funcionarios*)malloc(sizeof(Funcionarios));
+
 
     if (func == NULL) {
         printf("Erro de memória!\n");
@@ -204,6 +206,8 @@ int verificarCPFUnicoFuncionario(const char cpf[]) {
 int verificarCPFUnicoCliente(const char cpf[]) {
     FILE* arqCliente;
     Cliente* cli;
+    cli = (Cliente*)malloc(sizeof(Cliente));
+
 
     if (cli == NULL) {
         printf("Erro de memória!\n");
