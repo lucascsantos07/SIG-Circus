@@ -6,6 +6,8 @@
 #include "../Agendamentos/agendamentos.h"
 #include "../Ingressos/ingressos.h"
 #include "../Utilitarios/utilitarios.h"
+#include "../Funcionarios/funcionarios.h"
+#include "../Clientes/clientes.h"
 
 #define True 1
 #define False 0
@@ -135,7 +137,9 @@ int validarCPF(char cpf[]) {
 
 }
 
-void lerCPF(char cpf[], int tamanho){
+void lerCPF(char cpf[], int tamanho, char usuario){
+
+    int cadastrado = True;
 
     do{
         printf("\n   Digite seu CPF: ");
@@ -146,8 +150,84 @@ void lerCPF(char cpf[], int tamanho){
             printf("\n   CPF inválido!\n");
         }
 
-    }while(!validarCPF(cpf));
+        if (usuario == 'F') {
+            if (!verificarCPFUnicoFuncionario(cpf)) {
+                printf("\n   CPF já cadastrado para outro funcionário!\n");
+                cadastrado = True;
+            } else {
+                cadastrado = False;
+            }
+        } else if (usuario == 'C') {
+            if (!verificarCPFUnicoCliente(cpf)) {
+                printf("\n   CPF já cadastrado para outro cliente!\n");
+                cadastrado = True;
+            } else {
+                cadastrado = False;
+            }
+        } else {
+            cadastrado = False;
+        }
 
+    }while(!validarCPF(cpf) || cadastrado);
+
+}
+
+int verificarCPFUnicoFuncionario(const char cpf[]) {
+    FILE* arqFuncionarios;
+    Funcionarios* func;
+
+    if (func == NULL) {
+        printf("Erro de memória!\n");
+        exit(1);
+    }
+    
+    arqFuncionarios = fopen("Funcionarios/funcionarios.dat", "rb");
+    if (arqFuncionarios == NULL) {
+        printf("\n\n\nERROR!\n\n\n");
+        exit(1);
+    }
+    func = (Funcionarios*)malloc(sizeof(Funcionarios));
+    
+    while (fread(func, sizeof(Funcionarios), 1, arqFuncionarios)) {
+        if (strcmp(func->cpf, cpf) == 0) {
+            fclose(arqFuncionarios);
+            free(func);
+            return False; // CPF já existe
+        }
+    }
+
+    fclose(arqFuncionarios);
+    free(func);
+    return True; // CPF é único
+}
+
+int verificarCPFUnicoCliente(const char cpf[]) {
+    FILE* arqCliente;
+    Cliente* cli;
+
+    if (cli == NULL) {
+        printf("Erro de memória!\n");
+        exit(1);
+    }
+    
+    arqCliente = fopen("Clientes/clientes.dat", "rb");
+    if (arqCliente == NULL) {
+        printf("\n\n\nERROR!\n\n\n");
+        exit(1);
+    }
+    cli = (Cliente*)malloc(sizeof(Cliente));
+    
+    while (fread(cli, sizeof(Cliente), 1, arqCliente)) {
+        if (strcmp(cli->cpf, cpf) == 0) {
+            fclose(arqCliente);
+            free(cli);
+            return False; 
+        }
+    }
+
+    fclose(arqCliente);
+    free(cli);
+    return True; // CPF é único
 }
 
 //creditos: GPT-5

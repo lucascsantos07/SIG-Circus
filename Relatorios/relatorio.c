@@ -516,20 +516,36 @@ void relatorioIngressos(int status) {
     printf("ID | Nome do cliente | Quantidade de Ingressos | Nome do espetáculo | Status\n");
     printf("----------------------------------------------------------------------------\n");
 
-    cliente = encontrarClientePorCPF(ingresso->cpfCliente);
-    agendamento = encontrarAgendamentoPorID(ingresso->idEspetaculo);
+    cliente = (Cliente*)malloc(sizeof(Cliente));
+    agendamento = (Agendamento*)malloc(sizeof(Cliente));
 
+    
     if (status == 2) {
         while (fread(ingresso, sizeof(Ingressos), 1, arqIngresso)) {
-        printf("\n%d | %s | %d | %s | %s ", ingresso->id, cliente->nome, ingresso->quantidadeIngressos, agendamento->nomeEspetaculo, ingresso->status ? "Ativo" : "Inativo");
+            cliente = encontrarClientePorCPF(ingresso->cpfCliente);
+            agendamento = encontrarAgendamentoPorID(ingresso->idEspetaculo);
+            if (cliente == 0) {
+                printf("\nCliente não encontrado. Informações estão incompletas.\n");
+            }
+            if (agendamento == 0) {
+                printf("\nAgendamento não encontrado. Informações estão incompletas.\n");
+            }
+            printf("\n%d | %s | %d | %s | %s ", ingresso->id, cliente->nome, ingresso->quantidadeIngressos, agendamento->nomeEspetaculo, ingresso->status ? "Ativo" : "Inativo");
         }
     } else if (status == 0 || status == 1) {
         while (fread(ingresso, sizeof(Ingressos), 1, arqIngresso)) {
-            if (ingresso->status == status) {
+                if (ingresso->status == status) {
+                    if (cliente == 0) {
+                    printf("\nCliente não encontrado. Informações estão incompletas.\n");
+                } else if (agendamento == 0) {
+                    printf("\nAgendamento não encontrado. Informações estão incompletas.\n");
+                }
                 printf("\n%d | %s | %d | %s | %s ", ingresso->id, cliente->nome, ingresso->quantidadeIngressos, agendamento->nomeEspetaculo, ingresso->status ? "Ativo" : "Inativo");            }
         }
     }
 
+    free(cliente);
+    free(agendamento);
     fclose(arqIngresso);
     free(ingresso);
 }
@@ -789,11 +805,12 @@ void filtrarIngressosPorEspetaculo(void) {
 Cliente* encontrarClientePorCPF(char cpfParametro[]) {
     FILE* arqCliente;
     Cliente* cli;
-    cli = (Cliente*)malloc(sizeof(Cliente));
     arqCliente = fopen("Clientes/clientes.dat", "rb");
     if (arqCliente == NULL) {
         printf("\n\n\nERROR!\n\n\n");
+        exit(1);
     }
+    cli = (Cliente*)malloc(sizeof(Cliente));
 
     while (fread(cli, sizeof(Cliente), 1, arqCliente)) {
         if (strcmp(cli->cpf, cpfParametro) == 0) {
@@ -803,7 +820,8 @@ Cliente* encontrarClientePorCPF(char cpfParametro[]) {
     }
 
     fclose(arqCliente);
-    return NULL;
+    free(cli);
+    return 0;
 }
 
 Agendamento* encontrarAgendamentoPorID(int idEspParametro) {
@@ -813,7 +831,7 @@ Agendamento* encontrarAgendamentoPorID(int idEspParametro) {
     arqAgendamento = fopen("Agendamentos/agendamento.dat", "rb");
     if (arqAgendamento == NULL) {
         printf("\n\n\nERROR\n\n\n");
-        return NULL;
+        return 0;
     }
 
     while(fread(ag, sizeof(Agendamento), 1, arqAgendamento)) {

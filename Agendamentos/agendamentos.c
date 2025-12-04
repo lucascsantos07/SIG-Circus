@@ -538,7 +538,7 @@ int lerCpfResponsavel(char cpf[20]){
     funcionario = (Funcionarios*) malloc(sizeof(Funcionarios));
 
     do{
-        lerCPF(cpf, 20);
+        lerCPF(cpf, 20, '0');
 
         encontrado = 0;
 
