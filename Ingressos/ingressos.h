@@ -15,6 +15,7 @@ struct ingressos {
     int capacidadeMax;
     float precoIngresso;
     int formaPag;
+    Ingressos* prox;
 };
 
 void menuVendasIngressos(void);
