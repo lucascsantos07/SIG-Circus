@@ -42,5 +42,7 @@ Agendamento* encontrarAgendamentoPorID(int idEspParametro);
 Funcionarios* encontrarFuncionariosPorCpf(char cpfParametro[]);
 void lerFuncionarios(const char* nomeArquivo, Funcionarios** lista);
 void lerIngressos(const char* nomeArquivo, Ingressos** lista);
+void lerIngressos(const char* nomeArquivo, Ingressos** lista);
+
 
 #endif

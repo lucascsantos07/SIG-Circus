@@ -498,59 +498,122 @@ void relatorioFuncionarios(int status){
     return;
 }
 
+// void relatorioIngressos(int status) {
+//     limparTela();
+
+//     Ingressos* ingresso;
+//     FILE* arqIngresso;
+//     Cliente* cliente;
+//     Agendamento* agendamento;
+
+//     ingresso = (Ingressos*)malloc(sizeof(Ingressos));
+
+//     arqIngresso = fopen("Ingressos/ingressos.dat", "rb");
+
+//     printf("\n===========================================================================\n");
+//     printf("||                     ~ ~ ~ Relatório de Ingressos ~ ~ ~                ||\n");
+//     printf("===========================================================================\n");
+//     printf("ID | Nome do cliente | Quantidade de Ingressos | Nome do espetáculo | Status\n");
+//     printf("----------------------------------------------------------------------------\n");
+
+//     cliente = (Cliente*)malloc(sizeof(Cliente));
+//     agendamento = (Agendamento*)malloc(sizeof(Cliente));
+
+    
+//     if (status == 2) {
+//         while (fread(ingresso, sizeof(Ingressos), 1, arqIngresso)) {
+//             cliente = encontrarClientePorCPF(ingresso->cpfCliente);
+//             agendamento = encontrarAgendamentoPorID(ingresso->idEspetaculo);
+//             if (cliente == 0) {
+//                 printf("\nCliente não encontrado. Informações estão incompletas.\n");
+//             }
+//             if (agendamento == 0) {
+//                 printf("\nAgendamento não encontrado. Informações estão incompletas.\n");
+//             }
+//             printf("\n%d | %s | %d | %s | %s ", ingresso->id, cliente->nome, ingresso->quantidadeIngressos, agendamento->nomeEspetaculo, ingresso->status ? "Ativo" : "Inativo");
+//         }
+//     } else if (status == 0 || status == 1) {
+//         while (fread(ingresso, sizeof(Ingressos), 1, arqIngresso)) {
+//             cliente = encontrarClientePorCPF(ingresso->cpfCliente);
+//             agendamento = encontrarAgendamentoPorID(ingresso->idEspetaculo);
+//             if (ingresso->status == status) {
+//                 if (cliente == 0) {
+//                 printf("\nCliente não encontrado. Informações estão incompletas.\n");
+//             } else if (agendamento == 0) {
+//                 printf("\nAgendamento não encontrado. Informações estão incompletas.\n");
+//             }
+//             printf("\n%d | %s | %d | %s | %s ", ingresso->id, cliente->nome, ingresso->quantidadeIngressos, agendamento->nomeEspetaculo, ingresso->status ? "Ativo" : "Inativo");            }
+//         }
+//     }
+
+//     free(cliente);
+//     free(agendamento);
+//     fclose(arqIngresso);
+//     free(ingresso);
+// }
+
 void relatorioIngressos(int status) {
     limparTela();
 
-    Ingressos* ingresso;
-    FILE* arqIngresso;
     Cliente* cliente;
     Agendamento* agendamento;
 
-    ingresso = (Ingressos*)malloc(sizeof(Ingressos));
+    Ingressos* lista = NULL;
+    lerIngressos("Ingressos/ingressos.dat", &lista);
 
-    arqIngresso = fopen("Ingressos/ingressos.dat", "rb");
+    printf("\n============================================================================================\n");
+    printf("||                                ~ ~ ~ Relatório de Ingressos ~ ~ ~                      ||\n");
+    printf("============================================================================================\n");
+    printf("\nID | Nome do Espetáculo | Nome do Cliente | Quantidade de Ingressos | Preço | Total | Status\n");
+    printf("--------------------------------------------------------------------------------------------\n");
 
-    printf("\n===========================================================================\n");
-    printf("||                     ~ ~ ~ Relatório de Ingressos ~ ~ ~                ||\n");
-    printf("===========================================================================\n");
-    printf("ID | Nome do cliente | Quantidade de Ingressos | Nome do espetáculo | Status\n");
-    printf("----------------------------------------------------------------------------\n");
-
+    
     cliente = (Cliente*)malloc(sizeof(Cliente));
     agendamento = (Agendamento*)malloc(sizeof(Cliente));
 
-    
+    Ingressos* temp = lista;
+
     if (status == 2) {
-        while (fread(ingresso, sizeof(Ingressos), 1, arqIngresso)) {
-            cliente = encontrarClientePorCPF(ingresso->cpfCliente);
-            agendamento = encontrarAgendamentoPorID(ingresso->idEspetaculo);
+        while (temp != NULL) {
+            cliente = encontrarClientePorCPF(temp->cpfCliente);
+            agendamento = encontrarAgendamentoPorID(temp->idEspetaculo);
             if (cliente == 0) {
                 printf("\nCliente não encontrado. Informações estão incompletas.\n");
             }
             if (agendamento == 0) {
                 printf("\nAgendamento não encontrado. Informações estão incompletas.\n");
             }
-            printf("\n%d | %s | %d | %s | %s ", ingresso->id, cliente->nome, ingresso->quantidadeIngressos, agendamento->nomeEspetaculo, ingresso->status ? "Ativo" : "Inativo");
+            printf("%d | %s | %s | %d | %.2f | %.2f | %s\n",
+                temp->id, agendamento->nomeEspetaculo, cliente->nome, 
+                temp->quantidadeIngressos, temp->precoIngresso,
+                temp->valorTotal, temp->status ? "Ativo" : "Inativo");
+            temp = temp->prox;
         }
-    } else if (status == 0 || status == 1) {
-        while (fread(ingresso, sizeof(Ingressos), 1, arqIngresso)) {
-            cliente = encontrarClientePorCPF(ingresso->cpfCliente);
-            agendamento = encontrarAgendamentoPorID(ingresso->idEspetaculo);
-            if (ingresso->status == status) {
-                if (cliente == 0) {
-                printf("\nCliente não encontrado. Informações estão incompletas.\n");
-            } else if (agendamento == 0) {
-                printf("\nAgendamento não encontrado. Informações estão incompletas.\n");
+    }
+    else if (status == 0 || status == 1) {
+        while (temp != NULL) {
+            if (temp->status == status) {
+                printf("%d | %s | %s | %s | %s | %s | %d | %.2f | %.2f | %s\n",
+                    temp->id, agendamento->nomeEspetaculo, temp->data, temp->horario,
+                    cliente->nome, temp->cpfResponsavel,
+                    temp->quantidadeIngressos, temp->precoIngresso,
+                    temp->valorTotal,
+                    temp->status ? "Ativo" : "Inativo");
             }
-            printf("\n%d | %s | %d | %s | %s ", ingresso->id, cliente->nome, ingresso->quantidadeIngressos, agendamento->nomeEspetaculo, ingresso->status ? "Ativo" : "Inativo");            }
+            temp = temp->prox;
         }
     }
 
-    free(cliente);
-    free(agendamento);
-    fclose(arqIngresso);
-    free(ingresso);
+    // libera memória
+    while (lista != NULL) {
+        Ingressos* aux = lista;
+        lista = lista->prox;
+        free(aux);
+    }
+
+    return;
 }
+
 
 int buscarAgendamentosPorCidade(const char* cidadeBuscada) {
     limparTela();
@@ -980,4 +1043,49 @@ void lerFuncionarios(const char* nomeArquivo, Funcionarios** lista) {
     }
 
     fclose(arqFuncionarios);
+}
+
+
+void lerIngressos(const char* nomeArquivo, Ingressos** lista) {
+    FILE *arqIngresso;
+    Ingressos* novo;
+
+    arqIngresso = fopen(nomeArquivo, "rb");
+    if (arqIngresso == NULL) {
+        printf("Erro na abertura do arquivo de ingressos!\n");
+        exit(1);
+    }
+
+    while (1) {
+        novo = (Ingressos*) malloc(sizeof(Ingressos));
+        if (novo == NULL) {
+            printf("Erro ao alocar memória para o ingresso.\n");
+            fclose(arqIngresso);
+            exit(1);
+        }
+
+        if (fread(novo, sizeof(Ingressos), 1, arqIngresso) != 1) {
+            free(novo);
+            break;
+        }
+
+        // Inserção ordenada por cidade
+        if (*lista == NULL || strcmp(novo->cidade, (*lista)->cidade) < 0) {
+            novo->prox = *lista;
+            *lista = novo;
+        } else {
+            Ingressos* ant = *lista;
+            Ingressos* atual = (*lista)->prox;
+
+            while (atual != NULL && strcmp(novo->cidade, atual->cidade) > 0) {
+                ant = atual;
+                atual = atual->prox;
+            }
+
+            ant->prox = novo;
+            novo->prox = atual;
+        }
+    }
+
+    fclose(arqIngresso);
 }
